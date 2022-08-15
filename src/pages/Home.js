@@ -32,11 +32,10 @@ const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
 );
 
 const Home = () => {
-    const { authStore, user } = useContext(AuthContext);
+    const { authStore } = useContext(AuthContext);
     const navigate = useNavigate();
-    console.log(user);
     useEffect(() => {
-        if (!authStore.user && !user) navigate("/login");
+        if (!authStore.user) navigate("/login");
     }, []);
     return (
         <>
@@ -45,10 +44,8 @@ const Home = () => {
                     <div className="logo"></div>
                     <div className="login-dropdown">
                         <span >{authStore.user
-                            ? authStore.user.username
-                            : user
-                            ? user.username
-                            : ""}</span>
+                            ? authStore.user.name_uppercase
+                            :""}</span>
                         <Button
                             onClick={() => {
                                 authStore.logOut(navigate);

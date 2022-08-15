@@ -9,6 +9,7 @@ class AuthStore {
     error = null;
     constructor() {
         makeAutoObservable(this);
+        this.userLogined();
     }
     async loginUser(user, navigate) {
         const response = await axios.post(
@@ -46,10 +47,15 @@ class AuthStore {
         }
     }
 
+    userLogined(){
+        this.user =JSON.parse( window.localStorage.getItem("user"));
+    }
+
     async logOut(navigate) {
         console.log("logout");
         this.user = null;
-        await window.localStorage.removeItem("user");
+        window.localStorage.removeItem("user");
+        console.log("this.user",this.user);
         navigate("/login");
     }
 }

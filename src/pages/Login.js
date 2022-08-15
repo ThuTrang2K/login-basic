@@ -7,9 +7,9 @@ import { AuthContext } from "../context";
 
 const Login = () => {
     const navigate = useNavigate();
-    const {authStore, user}= useContext(AuthContext)
+    const {authStore}= useContext(AuthContext)
     useEffect(()=>{
-        if( user) navigate("/")
+        if( authStore.user) navigate("/")
     },[])
     const onFinish = (values) => {
         const newUser ={
