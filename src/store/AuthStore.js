@@ -25,6 +25,7 @@ class AuthStore {
             console.log(response.data);
             this.loginInfo = response.data;
             this.error =response.data ? null: "Lỗi";
+            window.localStorage.setItem("token", JSON.stringify(response.data.access_token));
             await this.getUser();
             navigate("/");
         });
@@ -55,6 +56,7 @@ class AuthStore {
         console.log("logout");
         this.user = null;
         window.localStorage.removeItem("user");
+        window.localStorage.removeItem("token");
         console.log("this.user",this.user);
         navigate("/login");
     }
