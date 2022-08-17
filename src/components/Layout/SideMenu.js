@@ -29,6 +29,7 @@ const SideMenu = () => {
                     marginTop: 64,
                     position: "fixed",
                     width: 200,
+                    fontSize:12
                 }}
             >
                 <Menu.Item key="/dashboard">

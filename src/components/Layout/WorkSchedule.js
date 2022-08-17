@@ -1,8 +1,10 @@
-import { HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, DatePicker, Table } from "antd";
+import { HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, DatePicker, Table } from "antd";
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context";
+import "./style.scss";
+import moment from 'moment'
 
 const columns = [
     {
@@ -26,6 +28,11 @@ const columns = [
         key: "attenders",
     },
     {
+        title: "Địa điểm",
+        dataIndex: "location",
+        key: "location",
+    },
+    {
         title: "Chủ trì",
         dataIndex: "host",
         key: "host",
@@ -33,26 +40,60 @@ const columns = [
 ];
 
 const WorkSchedule = observer(() => {
+    const [date, setDate ]=useState(moment()) ;
     const { workSchedulesStore } = useContext(AuthContext);
     useEffect(() => {
-        workSchedulesStore.getschedules();
-    }, []);
+        workSchedulesStore.getschedules(date);
+    }, [date]);
+    const handleDatePicker = (date, dateString) => {
+        console.log("date",date);
+        setDate(date);
+        // workSchedulesStore.getschedules();
+    };
+    
     return (
         <>
-            <Breadcrumb
-                style={{
-                    margin: "16px 0",
-                    fontWeight: 500,
-                    fontSize: 12,
-                }}
-            >
-                <Breadcrumb.Item>
-                    <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>Lịch cơ quan</Breadcrumb.Item>
-            </Breadcrumb>
+            <div className="workschedule-header">
+                <Breadcrumb
+                    style={{
+                        margin: "16px 0",
+                        fontWeight: 500,
+                        fontSize: 12,
+                    }}
+                >
+                    <Breadcrumb.Item>
+                        <HomeOutlined />
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>Lịch cơ quan</Breadcrumb.Item>
+                </Breadcrumb>
+                <div>
+                    <DatePicker
+                        style={{ marginRight: 20 }}
+                        // defaultValue={'2015/01/01'}
+                        // defaultValue={moment('2015/01')}
+                        onChange={handleDatePicker}
+                        placeholder="Chọn tuần"
+                        defaultValue={moment()}
+                        format={(value) => {
+                            return `Tuần ${value.format("WW")}, ${value.format(
+                                "YYYY"
+                            )}`;
+                        }}
+                        picker="week"
+                    />
+                    <Button
+                        type="primary"
+                        style={{ backgroundColor: "#2c65ac", border: "none" }}
+                    >
+                        {" "}
+                        <PlusCircleOutlined /> Tạo sự kiện mới
+                    </Button>
+                </div>
+            </div>
 
             <Table
+                bordered
+                style={{fontSize:"12px !important"}}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {

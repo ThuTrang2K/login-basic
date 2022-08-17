@@ -1,16 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import {
-    Dropdown,
-    Space,
-    Breadcrumb,
-    Layout,
-    Menu,
-    Button,
-    Tag,
-    Table,
-} from "antd";
+import { Layout, Button } from "antd";
 import "./style.scss";
 import { AuthContext } from "../context";
 import { useNavigate } from "react-router-dom";
@@ -60,7 +51,6 @@ const HomePage = () => {
                             marginTop: 46,
                         }}
                     >
-                        
                         <Content
                             className="site-layout-background"
                             style={{
@@ -68,7 +58,7 @@ const HomePage = () => {
                                 margin: 0,
                                 minHeight: "100vh",
                             }}
-                        >   
+                        >
                             <Outlet />
                         </Content>
                     </Layout>

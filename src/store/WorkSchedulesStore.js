@@ -4,14 +4,17 @@ import React from "react";
 
 class WorkSchedulesStore {
     schedules = [];
-
     constructor() {
         makeAutoObservable(this);
     }
-    async getschedules() {
-        const access_token =JSON.parse( window.localStorage.getItem("token"));
+    async getschedules(date) {
+        const startDate = date.startOf("week").format("YYYY-MM-DD");
+
+        const endDate = date.endOf("week").format("YYYY-MM-DD");
+        console.log();
+        const access_token = JSON.parse(window.localStorage.getItem("token"));
         const response = await axios.get(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules?from_date=2021-08-02&to_date=2021-08-08`,
+            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules?from_date=${startDate}&to_date=${endDate}`,
             {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
