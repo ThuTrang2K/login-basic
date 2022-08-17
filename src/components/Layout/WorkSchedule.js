@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context";
 import "./style.scss";
 import moment from 'moment'
+import { Link } from "react-router-dom";
 
 const columns = [
     {
@@ -84,9 +85,10 @@ const WorkSchedule = observer(() => {
                     <Button
                         type="primary"
                         style={{ backgroundColor: "#2c65ac", border: "none" }}
+                        
                     >
                         {" "}
-                        <PlusCircleOutlined /> Tạo sự kiện mới
+                        <Link style={{ color:"white" }} to={`/company-work-schedule/create`}><PlusCircleOutlined /> Tạo sự kiện mới</Link> 
                     </Button>
                 </div>
             </div>
