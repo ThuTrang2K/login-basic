@@ -40,7 +40,7 @@ const SideMenu = () => {
                 <Menu.Item key="/company-work-schedule">
                     <CalendarOutlined />
                     <span>Lịch cơ quan</span>
-                    <Link to="/company-work-schedule"></Link>
+                    <Link to='/company-work-schedule'></Link>
                 </Menu.Item>
                 <Menu.SubMenu key="/item" title="sub menu">
                     

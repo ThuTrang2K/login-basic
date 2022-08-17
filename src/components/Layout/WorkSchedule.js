@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context";
 import "./style.scss";
 import moment from 'moment'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const columns = [
     {
@@ -41,6 +41,7 @@ const columns = [
 ];
 
 const WorkSchedule = observer(() => {
+    const navigate = useNavigate();
     const [date, setDate ]=useState(moment()) ;
     const { workSchedulesStore } = useContext(AuthContext);
     useEffect(() => {
@@ -99,7 +100,7 @@ const WorkSchedule = observer(() => {
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {
-                            console.log(event.currentTarget);
+                            navigate(`view/${record.schedule_code}`)
                         }, // click row
                     };
                 }}

@@ -7,19 +7,24 @@ class EventStore  {
     constructor() {
         makeAutoObservable(this);
     }
-    // async getUserById(id) {
-    //     const response = await axios.get(
-    //         `https://prod.example.fafu.com.vn/employee/${id}`
-    //     );
-    //     runInAction(() => {
-    //         response.data.gender =
-    //             response.data.gender === 1 ? "male" : "female";
-    //         response.data.birthday = new Date(response.data.birthday)
-    //             .toISOString()
-    //             .slice(0, 10);
-    //         this.user = response.data;
-    //     });
-    // }
+    async getEventById(id) {
+        const access_token = JSON.parse(window.localStorage.getItem("token"));
+        const response = await axios.get(
+            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            }
+        );
+        runInAction(() => {
+            // response.data.gender =
+            //     response.data.gender === 1 ? "male" : "female";
+            // response.data.birthday = new Date(response.data.birthday)
+            //     .toISOString()
+            //     .slice(0, 10);
+            this.event = response.data;
+        });
+    }
 
     async createEvent(data){
         return await axios.post(
