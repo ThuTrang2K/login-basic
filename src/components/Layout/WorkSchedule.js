@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context";
 import "./style.scss";
 import moment from 'moment'
+import vi from "moment/locale/vi";
 import { Link, useNavigate } from "react-router-dom";
 
 const columns = [
@@ -12,14 +13,25 @@ const columns = [
         title: "Ngày tháng",
         dataIndex: "start_at",
         key: "start_at",
+        width:"100px",
+        render: (text, record) => (
+            <>
+            
+            <div style={{fontWeight:"bold"}}><div style={{fontWeight:"bold"}}>{moment(record?.start_at).locale("vi", vi).format('dddd').charAt(0).toUpperCase()+ moment(record?.start_at).locale("vi", vi).format('dddd').slice(1)}</div>
+            {moment(record?.start_at).utc().format('DD/MM')}</div>
+            </>
+          )
     },
     {
         title: "Nội dung công việc",
         dataIndex: "title",
         key: "title",
-        // render: (text, record) => (
-        //     <span>{moment(record.start_at)} {record.title} </span>
-        //   )
+        render: (text, record) => (
+            <>
+            <div style={{fontWeight:"bold"}}>{moment(record?.start_at).locale("vi", vi).format('HH[h]mm') }<span>{record?.end_at && ` đến ${moment(record?.end_at).locale("vi", vi).format('HH[h]mm')}`}</span></div>
+            <span>{!record.title ? record.event_notice : record.title} </span>
+            </>
+          )
     },
     {
         title: "Tài liệu",

@@ -34,14 +34,18 @@ class EventStore {
             `https://stg.vimc.fafu.com.vn/api/v1/work-schedules`,
             {
                 attenders: data.attenders,
+                end_time: data.end_time,
                 end_at: data.end_at,
+                start_date: data.start_date,
+                start_time:data.start_time,
                 event_notice: data.event_notice,
-                // file_ids: data.file_ids,
+                file_ids: [],
                 host: data.host,
                 location: data.location,
                 preparation: data.preparation,
                 start_at: data.start_at,
-                title: data.title,
+                title: '',
+                assignees: data.assignees
             },
             {
                 headers: {
@@ -90,7 +94,7 @@ class EventStore {
                     children: item.users.map((user) => {
                         return {
                             title: user.name_uppercase,
-                            value: user.name_uppercase,
+                            value: user.user_name,
                         };
                     }),
                 };
