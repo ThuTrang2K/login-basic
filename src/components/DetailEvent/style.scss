@@ -12,6 +12,10 @@
             border-bottom: none ;
         }
     }
+
+.detail-icon {
+    color: rgb(44, 101, 172);
+    margin-right: 4px;
 }
 
 .ant-descriptions-row > td {
@@ -38,4 +42,5 @@
 .ant-descriptions-row > td {
     padding: 16px 32px;
     border-bottom: 1px solid #f0f0f0;
+}
 }

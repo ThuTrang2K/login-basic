@@ -16,22 +16,20 @@ import {
 import "antd/dist/antd.css";
 import { AuthContext, StudentContext } from "../../context";
 import { observer } from "mobx-react-lite";
-import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
-const CreateEvent = observer(({ handleClose }) => {
+const UpdateEvent = observer(({ handleClose }) => {
     const { eventStore } = useContext(AuthContext);
     let navigate = useNavigate();
-
     const onFinish = (fieldsValue) => {
-        const values = {
-            ...fieldsValue,
-            birthday: fieldsValue["birthday"].toISOString(),
-            gender: fieldsValue["gender"] === "male" ? 1 : 0,
-        };
-        console.log("value", values);
-        eventStore.addUser(values);
+        // const values = {
+        //     ...fieldsValue,
+        //     birthday: fieldsValue["birthday"].toISOString(),
+        //     gender: fieldsValue["gender"] === "male" ? 1 : 0,
+        // };
+        // console.log("value", values);
+        // eventStore.addUser(values);
         handleClose();
     };
 
@@ -46,29 +44,6 @@ const CreateEvent = observer(({ handleClose }) => {
     });
     return (
         <div className="create-event-container">
-            <Breadcrumb
-                style={{
-                    margin: "16px 0",
-                    fontWeight: 500,
-                    fontSize: 12,
-                }}
-            >
-                <Breadcrumb.Item>
-                    <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>Lịch cơ quan</Breadcrumb.Item>
-                <Breadcrumb.Item>Tạo lịch cơ quan</Breadcrumb.Item>
-            </Breadcrumb>
-            <div style={{ marginBottom: "16px" }}>
-                <span className="back-button">
-                    <ArrowLeftOutlined
-                        onClick={() => {
-                            navigate(-1);
-                        }}
-                    />
-                </span>
-                <span className="create-title">Tạo mới sự kiện</span>
-            </div>
             <div className="create-form">
                 <div className="">
                     <Form
@@ -192,8 +167,9 @@ const CreateEvent = observer(({ handleClose }) => {
                                 type="primary"
                                 className="mx-2"
                                 htmlType="submit"
+                                onClick={handleClose}
                             >
-                                Tạo sự kiện mới
+                                Cập nhật sự kiện
                             </Button>
                         </Form.Item>
                     </Form>
@@ -203,4 +179,4 @@ const CreateEvent = observer(({ handleClose }) => {
     );
 });
 
-export default CreateEvent;
+export default UpdateEvent;

@@ -1,13 +1,16 @@
-import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CalendarOutlined, DeleteOutlined, EditOutlined, FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 import { Badge, Breadcrumb, Button, Descriptions, Modal } from "antd";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { AuthContext } from "../../context";
 import "./style.scss";
+import UpdateEvent from "../UpdateEvent";
+import moment from "moment";
 
 const DetailEvent = observer(() => {
     const { eventStore } = useContext(AuthContext);
+    const [open, setOpen]= useState(false)
     let navigate = useNavigate();
     const { schedule_code } = useParams();
     const event = eventStore.event;
@@ -25,6 +28,9 @@ const DetailEvent = observer(() => {
             },
         });
     };
+    const handleClose=()=>{
+        setOpen(false);
+    }
     return (
         <>
             <Breadcrumb
@@ -50,7 +56,7 @@ const DetailEvent = observer(() => {
                 </span>
                 <span className="create-title">Chi tiết sự kiện</span>
             </div>
-            <div className="detail-desc">
+            {!open ? <div className="detail-desc">
                 <Descriptions>
                     <Descriptions.Item
                         labelStyle={{ fontWeight: "bold" }}
@@ -61,13 +67,13 @@ const DetailEvent = observer(() => {
                         Mô tả chi tiết :
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Ngày thực hiện">
-                        {event?.start_at}
+                    <span className="detail-icon"><CalendarOutlined /></span> {moment(event?.start_at).utc().format('DD-MM-YYYY')}
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Thời gian bắt đầu">
-                        {event?.start_at}
+                    <span className="detail-icon"><FieldTimeOutlined /></span>{ moment(event?.start_at).utc().format('HH:MM')}
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Thời gian kết thúc">
-                        {!event?.start_at ? "Không rõ." : event.start_at}
+                        {!event?.end_at ? "Không rõ." :  moment(event?.end_at).utc().format('HH:MM')}
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Chủ trì">
                         {event?.host}
@@ -78,8 +84,7 @@ const DetailEvent = observer(() => {
                     <Descriptions.Item span="12" label="Chuẩn bị">
                         {event?.preparation}
                     </Descriptions.Item>
-                    <Descriptions.Item span="12" label="Nội dung sự kiện">
-                        {event?.event_notice}
+                    <Descriptions.Item span="12" label="Nội dung sự kiện">{event.event_notice}
                     </Descriptions.Item>
                     <Descriptions.Item
                         span="12"
@@ -95,19 +100,19 @@ const DetailEvent = observer(() => {
                         {/* {event?.assignees} */}
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Ngày tạo">
-                        {event?.created_at}
+                        {moment(event?.created_at).utc().format('DD-MM-YYYY | HH:MM')}
                     </Descriptions.Item>
                     <Descriptions.Item span="12" label="Chỉnh sửa lần cuối">
-                        {event?.updated_at}
+                        {moment(event?.updated_at).utc().format('DD-MM-YYYY | HH:MM')}
                     </Descriptions.Item>
                 </Descriptions>
                 <div style={{ textAlign:"right",marginTop:16}}>
                     <Button style={{ textAlign:"right",marginRight:16}} danger onClick={handleDelete}>
                     <DeleteOutlined /> Xóa
                     </Button>
-                    <Button style={{ textAlign:"right",marginTop:24}}><EditOutlined /> Chỉnh sửa</Button>
+                    <Button style={{ textAlign:"right",marginTop:24}} onClick={()=>{setOpen(!open)}}><EditOutlined /> Chỉnh sửa</Button>
                 </div>
-            </div>
+            </div> : <UpdateEvent handleClose={handleClose}/>}
         </>
     );
 });

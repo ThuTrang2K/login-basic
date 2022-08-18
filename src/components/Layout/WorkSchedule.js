@@ -17,6 +17,9 @@ const columns = [
         title: "Nội dung công việc",
         dataIndex: "title",
         key: "title",
+        // render: (text, record) => (
+        //     <span>{moment(record.start_at)} {record.title} </span>
+        //   )
     },
     {
         title: "Tài liệu",
