@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ckeditor, { CKEditor } from "@ckeditor/ckeditor5-react";
 import "./style.scss";
@@ -12,6 +12,7 @@ import {
     Breadcrumb,
     Select,
     TimePicker,
+    TreeSelect,
 } from "antd";
 import "antd/dist/antd.css";
 import { AuthContext, StudentContext } from "../../context";
@@ -20,10 +21,12 @@ import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
+
 const CreateEvent = observer(({ handleClose }) => {
     const { eventStore } = useContext(AuthContext);
     let navigate = useNavigate();
-
+    useEffect(()=>{eventStore.getListDepartmentsUsers()
+    console.log(eventStore.departments);},[])
     const onFinish = (fieldsValue) => {
         const values = {
             ...fieldsValue,
@@ -38,8 +41,23 @@ const CreateEvent = observer(({ handleClose }) => {
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
-
-    const options = [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }];
+    // const onChange = (newValue: string[]) => {
+    //     console.log('onChange ', value);
+    //     setValue(newValue);
+    //   };
+    const treeData = eventStore.departments
+    const tProps = {
+        treeData,
+        // value,
+        // onChange,
+        treeCheckable: true,
+        // showCheckedStrategy: SHOW_PARENT,
+        placeholder: '--Chọn người nhận thông báo--',
+        style: {
+          width: '100%',
+        },
+      };
+    // const options =eventStore.departments;
     const [form] = Form.useForm();
     form.setFieldsValue({
         start_at: moment(),
@@ -175,16 +193,18 @@ const CreateEvent = observer(({ handleClose }) => {
                             <Input placeholder="--Thành viện tham gia--" />
                         </Form.Item>
                         <Form.Item label="Thông báo">
-                            <Select
+                            
+                            {/* <Select
                                 mode="multiple"
                                 style={{
                                     width: "100%",
                                 }}
-                                placeholder="Please select"
-                                defaultValue={["1", "2"]}
+                                placeholder="--Chọn người được thông báo--"
+                                // defaultValue={["1", "2"]}
                                 // onChange={handleChange}
                                 options={options}
-                            />
+                            /> */}
+                            <TreeSelect {...tProps}/>
                         </Form.Item>
 
                         <Form.Item style={{ textAlign: "right" }}>
