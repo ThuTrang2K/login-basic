@@ -20,9 +20,10 @@ import { observer } from "mobx-react-lite";
 import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import vi from "moment/locale/vi";
 
 const CreateEvent = observer(() => {
-    const { eventStore,workSchedulesStore } = useContext(AuthContext);
+    const { eventStore, workSchedulesStore } = useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState("");
     let navigate = useNavigate();
     useEffect(() => {
@@ -32,17 +33,35 @@ const CreateEvent = observer(() => {
     const onFinish = (fieldsValue) => {
         const values = {
             ...fieldsValue,
-            event_notice:eventNotice,
-            start_date:fieldsValue["start_at"].toISOString(),
-            end_at: fieldsValue["end_time"].toISOString(),
-            start_at: fieldsValue["start_time"].toISOString(),
+            event_notice: eventNotice,
+            start_date: fieldsValue["start_at"].toISOString(),
+            end_at:
+                fieldsValue["end_time"] &&
+                fieldsValue["end_time"].toISOString(),
+            start_at: moment(
+                `${fieldsValue["start_at"].format("YYYY-MM-DD")} ${fieldsValue[
+                    "start_time"
+                ].format("HH:mm:ss")}`
+            )
+                .locale("vi", vi)
+                .toISOString(),
             start_time: fieldsValue["start_time"].toISOString(),
-            end_time: fieldsValue["end_time"].toISOString(),
-            assignees: fieldsValue["assignees"]? fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) : []
+            end_time:
+                fieldsValue["end_time"] &&
+                fieldsValue["end_time"].toISOString(),
+            assignees: fieldsValue["assignees"]
+                ? fieldsValue["assignees"].map((item) => {
+                      return {
+                          assignee_code: item,
+                          assignee_type: "USER",
+                          permission: "VIEW",
+                      };
+                  })
+                : [],
         };
         console.log("value", values);
         eventStore.createEvent(values);
-        // workSchedulesStore.getschedules();
+        workSchedulesStore.getschedules();
         setTimeout(() => navigate(-1), 500);
     };
 
@@ -83,12 +102,13 @@ const CreateEvent = observer(() => {
                 <Breadcrumb.Item>Tạo lịch cơ quan</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ marginBottom: "16px" }}>
-                <span className="back-button">
-                    <ArrowLeftOutlined
-                        onClick={() => {
-                            navigate(-1);
-                        }}
-                    />
+                <span
+                    className="back-button"
+                    onClick={() => {
+                        navigate(-1);
+                    }}
+                >
+                    <ArrowLeftOutlined />
                 </span>
                 <span className="create-title">Tạo mới sự kiện</span>
             </div>
@@ -188,10 +208,7 @@ const CreateEvent = observer(() => {
                         <Form.Item label="Chuẩn bị" name="preparation">
                             <Input placeholder="Chuẩn bị" />
                         </Form.Item>
-                        <Form.Item
-                            label="Nội dung sự kiện"
-                            name="event_notice"
-                        >
+                        <Form.Item label="Nội dung sự kiện" name="event_notice">
                             <CKEditor
                                 editor={ClassicEditor}
                                 onChange={(event, editor) => {

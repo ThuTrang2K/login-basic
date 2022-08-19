@@ -56,11 +56,11 @@ const DetailEvent = observer(() => {
                 <Breadcrumb.Item>Chi tiết sự kiện</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ marginBottom: "16px" }}>
-                <span className="back-button">
-                    <ArrowLeftOutlined
-                        onClick={() => {
+                <span className="back-button" onClick={() => {
                             navigate(-1);
-                        }}
+                        }}>
+                    <ArrowLeftOutlined
+                        
                     />
                 </span>
                 <span className="create-title">Chi tiết sự kiện</span>
@@ -118,21 +118,27 @@ const DetailEvent = observer(() => {
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Nội dung sự kiện">
-                            <div
-                                dangerouslySetInnerHTML={{
-                                    __html: event.event_notice,
-                                }}
-                                className="editor"
-                            ></div>
+                            {event.event_notice ? (
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html: event.event_notice,
+                                    }}
+                                    className="editor"
+                                ></div>
+                            ) : (
+                                <div className="no-infor">
+                                    Không có nội dung sự kiện.
+                                </div>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
                             label="Tài liệu đính kèm
 "
                         >
-                            {event?.file_ids.length<=0 ? (
+                            {event?.file_ids?.length <= 0 ? (
                                 <div className="no-infor">
-                                Không có tài liệu đính kèm.
+                                    Không có tài liệu đính kèm.
                                 </div>
                             ) : (
                                 event?.file_ids
@@ -142,14 +148,26 @@ const DetailEvent = observer(() => {
                             span="12"
                             label="Thành viên tham gia"
                         >
-                            {event?.attenders}
+                            {event?.attenders ? (
+                                event?.attenders
+                            ) : (
+                                <div className="no-infor">
+                                    Không có thành viên tham gia.
+                                </div>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thông báo">
-                            {event?.assignees
-                                ?.map((item) => {
-                                    return item.name_uppercase;
-                                })
-                                .join(", ")}
+                            {event?.assignees ? (
+                                event?.assignees
+                                    ?.map((item) => {
+                                        return item.name_uppercase;
+                                    })
+                                    .join(", ")
+                            ) : (
+                                <div className="no-infor">
+                                    Không có người nhận thông báo.
+                                </div>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Ngày tạo">
                             {moment(event?.created_at)

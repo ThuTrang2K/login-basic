@@ -17,7 +17,7 @@ const columns = [
         render: (text, record) => (
             <>          
             <div style={{fontWeight:"bold"}}><div style={{fontWeight:"bold"}}>{moment(record?.start_at).locale("vi", vi).format('dddd').charAt(0).toUpperCase()+ moment(record?.start_at).locale("vi", vi).format('dddd').slice(1)}</div>
-            <div>{moment(record?.start_at).format('DD/MM')}</div>
+            <div>{moment(record?.start_at).locale("vi", vi).format('DD/MM')}</div>
             </div>
         
             </>

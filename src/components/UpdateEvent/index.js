@@ -2,23 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ckeditor, { CKEditor } from "@ckeditor/ckeditor5-react";
 import "./style.scss";
-import {
-    Button,
-    Form,
-    Input,
-    DatePicker,
-    TimePicker,
-    TreeSelect,
-} from "antd";
+import { Button, Form, Input, DatePicker, TimePicker, TreeSelect } from "antd";
 import "antd/dist/antd.css";
 import { AuthContext } from "../../context";
 import { observer } from "mobx-react-lite";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
+import vi from "moment/locale/vi";
 
 const UpdateEvent = observer(() => {
-    const { eventStore,workSchedulesStore } = useContext(AuthContext);
-    const [eventNotice, setEventNotice] = useState(eventStore?.event?.event_notice);
+    const { eventStore, workSchedulesStore } = useContext(AuthContext);
+    const [eventNotice, setEventNotice] = useState(
+        eventStore?.event?.event_notice
+    );
     let navigate = useNavigate();
     const { schedule_code } = useParams();
     useEffect(() => {
@@ -26,31 +22,53 @@ const UpdateEvent = observer(() => {
         eventStore.getEventById(schedule_code);
     }, []);
     const [form] = Form.useForm();
-    {eventStore.event &&
+
+    eventStore.event &&
         form.setFieldsValue({
-        start_at: moment(eventStore.event.start_at),
-        start_time: moment(eventStore.event.start_at),
-        end_time:  moment(eventStore.event.end_at),
-        host: eventStore.event.host,
-        location: eventStore.event.location,
-        preparation: eventStore.event.preparation,
-        attenders: eventStore.event.attenders,
-        assignees: eventStore.event.assignees.map((item=>{return {value: item.name_uppercase}})),
-        // birthday: moment(data.birthday, 'YYYY-MM-DD'),
-    });}
+            start_at: moment(eventStore.event.start_at),
+            start_time: moment(eventStore.event.start_at),
+            end_time: eventStore.event?.end_at ? moment(eventStore.event?.end_at): null,
+            host: eventStore.event?.host,
+            location: eventStore.event?.location,
+            preparation: eventStore.event?.preparation,
+            attenders: eventStore.event?.attenders,
+            assignees: eventStore.event.assignees.map((item) => {
+                return { value: item.name_uppercase };
+            }),
+        });
+
     const onFinish = (fieldsValue) => {
         const values = {
             ...fieldsValue,
-            event_notice:eventNotice ,
-            start_date:fieldsValue["start_at"].toISOString(),
-            end_at: fieldsValue["end_time"].toISOString(),
-            start_at: fieldsValue["start_at"].toISOString().slice(0,10)+fieldsValue["start_time"].toISOString().slice(-14),
+            event_notice: eventNotice,
+            start_date: fieldsValue["start_at"].toISOString(),
+            end_at:
+                fieldsValue["end_time"] &&
+                fieldsValue["end_time"].toISOString(),
+            start_at: moment(
+                `${fieldsValue["start_at"].format("YYYY-MM-DD")} ${fieldsValue[
+                    "start_time"
+                ].format("HH:mm:ss")}`
+            )
+                .locale("vi", vi)
+                .toISOString(),
             start_time: fieldsValue["start_time"].toISOString(),
-            end_time: fieldsValue["end_time"].toISOString(),
-            assignees: fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) || []
+            end_time:
+                fieldsValue["end_time"] &&
+                fieldsValue["end_time"].toISOString(),
+            assignees:
+                (fieldsValue["assignees"] &&
+                    fieldsValue["assignees"].map((item) => {
+                        return {
+                            assignee_code: item,
+                            assignee_type: "USER",
+                            permission: "VIEW",
+                        };
+                    })) ||
+                [],
         };
         console.log("value", values);
-        eventStore.UpdateEvent(values,schedule_code);
+        eventStore.UpdateEvent(values, schedule_code);
         workSchedulesStore.getschedules();
         setTimeout(() => navigate(-1), 500);
     };
@@ -64,18 +82,15 @@ const UpdateEvent = observer(() => {
         // value,
         // onChange,
         treeCheckable: true,
-        // showCheckedStrategy: SHOW_PARENT,
         placeholder: "--Chọn người nhận thông báo--",
         style: {
             width: "100%",
         },
     };
 
-    // const options =eventStore.departments;
     if (!eventStore.event) return null;
     return (
         <div className="create-event-container">
-            
             <div className="create-form">
                 <div className="">
                     <Form
@@ -172,10 +187,7 @@ const UpdateEvent = observer(() => {
                         <Form.Item label="Chuẩn bị" name="preparation">
                             <Input placeholder="Chuẩn bị" />
                         </Form.Item>
-                        <Form.Item
-                            label="Nội dung sự kiện"
-                            name="event_notice"
-                        >
+                        <Form.Item label="Nội dung sự kiện" name="event_notice">
                             <CKEditor
                                 editor={ClassicEditor}
                                 name="event_notice"

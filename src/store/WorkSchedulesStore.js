@@ -8,9 +8,9 @@ class WorkSchedulesStore {
         makeAutoObservable(this);
     }
     async getschedules(date) {
-        const startDate = date.startOf("week").format("YYYY-MM-DD");
+        const startDate = date?.startOf("week").format("YYYY-MM-DD");
 
-        const endDate = date.endOf("week").format("YYYY-MM-DD");
+        const endDate = date?.endOf("week").format("YYYY-MM-DD");
         console.log(startDate,endDate);
         const access_token = JSON.parse(window.localStorage.getItem("token"));
         const response = await axios.get(
