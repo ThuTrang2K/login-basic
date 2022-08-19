@@ -80,19 +80,27 @@ const DetailEvent = observer(() => {
                             <span className="detail-icon">
                                 <CalendarOutlined />
                             </span>{" "}
-                            {moment(event?.start_at).utc().format("DD-MM-YYYY")}
+                            {moment(event?.start_at).format("DD-MM-YYYY")}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thời gian bắt đầu">
                             <span className="detail-icon">
                                 <FieldTimeOutlined />
                             </span>
-                            {moment(event?.start_at).locale("vi", vi).format("HH[h]mm")}
+                            {moment(event?.start_at)
+                                .locale("vi", vi)
+                                .format("HH[h]mm")}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thời gian kết thúc">
                             <span className="detail-icon">
                                 <FieldTimeOutlined />
                             </span>
-                            {moment(event?.end_at).locale("vi", vi).format("HH[h]mm")}
+                            {event?.end_at ? (
+                                moment(event?.end_at)
+                                    .locale("vi", vi)
+                                    .format("HH[h]mm")
+                            ) : (
+                                <div className="no-infor">Không rõ.</div>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Chủ trì">
                             {event?.host}
@@ -101,17 +109,34 @@ const DetailEvent = observer(() => {
                             {event?.location}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Chuẩn bị">
-                            {event?.preparation}
+                            {event?.preparation ? (
+                                event?.preparation
+                            ) : (
+                                <div className="no-infor">
+                                    Không có chuẩn bị.
+                                </div>
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Nội dung sự kiện">
-                        <div dangerouslySetInnerHTML={{__html:event.event_notice}} className='editor'></div>
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: event.event_notice,
+                                }}
+                                className="editor"
+                            ></div>
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
                             label="Tài liệu đính kèm
 "
                         >
-                            {event?.file_ids}
+                            {event?.file_ids.length<=0 ? (
+                                <div className="no-infor">
+                                Không có tài liệu đính kèm.
+                                </div>
+                            ) : (
+                                event?.file_ids
+                            )}
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
@@ -120,9 +145,11 @@ const DetailEvent = observer(() => {
                             {event?.attenders}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thông báo">
-                            {event?.assignees?.map(item=>{
-                                return item.name_uppercase
-                            }).join(', ')}
+                            {event?.assignees
+                                ?.map((item) => {
+                                    return item.name_uppercase;
+                                })
+                                .join(", ")}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Ngày tạo">
                             {moment(event?.created_at)

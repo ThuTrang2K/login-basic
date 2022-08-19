@@ -18,7 +18,7 @@ import moment from "moment";
 
 const UpdateEvent = observer(() => {
     const { eventStore,workSchedulesStore } = useContext(AuthContext);
-    const [eventNotice, setEventNotice] = useState("");
+    const [eventNotice, setEventNotice] = useState(eventStore?.event?.event_notice);
     let navigate = useNavigate();
     const { schedule_code } = useParams();
     useEffect(() => {
@@ -34,7 +34,6 @@ const UpdateEvent = observer(() => {
         host: eventStore.event.host,
         location: eventStore.event.location,
         preparation: eventStore.event.preparation,
-        event_notice: eventStore.event.event_notice,
         attenders: eventStore.event.attenders,
         assignees: eventStore.event.assignees.map((item=>{return {value: item.name_uppercase}})),
         // birthday: moment(data.birthday, 'YYYY-MM-DD'),
@@ -42,10 +41,10 @@ const UpdateEvent = observer(() => {
     const onFinish = (fieldsValue) => {
         const values = {
             ...fieldsValue,
-            event_notice:eventNotice,
+            event_notice:eventNotice ,
             start_date:fieldsValue["start_at"].toISOString(),
             end_at: fieldsValue["end_time"].toISOString(),
-            start_at: fieldsValue["start_at"].toISOString(),
+            start_at: fieldsValue["start_at"].toISOString().slice(0,10)+fieldsValue["start_time"].toISOString().slice(-14),
             start_time: fieldsValue["start_time"].toISOString(),
             end_time: fieldsValue["end_time"].toISOString(),
             assignees: fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) || []
@@ -182,6 +181,7 @@ const UpdateEvent = observer(() => {
                                 name="event_notice"
                                 value="hello"
                                 id="event_notice"
+                                data={eventStore.event.event_notice}
                                 onChange={(event, editor) => {
                                     setEventNotice(editor.getData());
                                 }}
