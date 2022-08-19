@@ -15,6 +15,7 @@ import "./style.scss";
 import UpdateEvent from "../UpdateEvent";
 import moment from "moment";
 import vi from "moment/locale/vi";
+import useCapitalizeFirstLetter from "../../hook/useCapitalizeFirstLetter";
 
 const DetailEvent = observer(() => {
     const { eventStore } = useContext(AuthContext);
@@ -31,7 +32,7 @@ const DetailEvent = observer(() => {
         Modal.confirm({
             title: "Bạn có chắc chắn muốn xóa?",
             onOk: () => {
-                // eventStore.deleteEvent(schedule_code);
+                eventStore.deleteEvent(schedule_code);
                 setTimeout(() => navigate(-1), 500);
             },
         });
@@ -103,7 +104,7 @@ const DetailEvent = observer(() => {
                             {event?.preparation}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Nội dung sự kiện">
-                            {event.event_notice}
+                        <div dangerouslySetInnerHTML={{__html:event.event_notice}} className='editor'></div>
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
@@ -119,7 +120,9 @@ const DetailEvent = observer(() => {
                             {event?.attenders}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thông báo">
-                            {/* {event?.assignees} */}
+                            {event?.assignees?.map(item=>{
+                                return item.name_uppercase
+                            }).join(', ')}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Ngày tạo">
                             {moment(event?.created_at)
@@ -151,7 +154,7 @@ const DetailEvent = observer(() => {
                     </div>
                 </div>
             ) : (
-                <UpdateEvent handleClose={handleClose} />
+                <UpdateEvent event={event} handleClose={handleClose} />
             )}
         </>
     );

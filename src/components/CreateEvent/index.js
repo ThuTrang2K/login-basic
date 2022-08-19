@@ -38,12 +38,12 @@ const CreateEvent = observer(() => {
             start_at: fieldsValue["start_time"].toISOString(),
             start_time: fieldsValue["start_time"].toISOString(),
             end_time: fieldsValue["end_time"].toISOString(),
-            assignees: fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) || []
+            assignees: fieldsValue["assignees"]? fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) : []
         };
         console.log("value", values);
         eventStore.createEvent(values);
-        workSchedulesStore.getschedules();
-        navigate(-1);
+        // workSchedulesStore.getschedules();
+        setTimeout(() => navigate(-1), 500);
     };
 
     const onFinishFailed = (errorInfo) => {

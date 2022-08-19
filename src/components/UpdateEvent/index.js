@@ -1,49 +1,82 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ckeditor, { CKEditor } from "@ckeditor/ckeditor5-react";
 import "./style.scss";
 import {
     Button,
-    Checkbox,
     Form,
     Input,
     DatePicker,
-    Radio,
-    Breadcrumb,
-    Select,
     TimePicker,
+    TreeSelect,
 } from "antd";
 import "antd/dist/antd.css";
-import { AuthContext, StudentContext } from "../../context";
+import { AuthContext } from "../../context";
 import { observer } from "mobx-react-lite";
-import { useNavigate } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import moment from "moment";
 
-const UpdateEvent = observer(({ handleClose }) => {
-    const { eventStore } = useContext(AuthContext);
+const UpdateEvent = observer(() => {
+    const { eventStore,workSchedulesStore } = useContext(AuthContext);
+    const [eventNotice, setEventNotice] = useState("");
     let navigate = useNavigate();
+    const { schedule_code } = useParams();
+    useEffect(() => {
+        eventStore.getListDepartmentsUsers();
+        eventStore.getEventById(schedule_code);
+    }, []);
+    const [form] = Form.useForm();
+    {eventStore.event &&
+        form.setFieldsValue({
+        start_at: moment(eventStore.event.start_at),
+        start_time: moment(eventStore.event.start_at),
+        end_time:  moment(eventStore.event.end_at),
+        host: eventStore.event.host,
+        location: eventStore.event.location,
+        preparation: eventStore.event.preparation,
+        event_notice: eventStore.event.event_notice,
+        attenders: eventStore.event.attenders,
+        assignees: eventStore.event.assignees.map((item=>{return {value: item.name_uppercase}})),
+        // birthday: moment(data.birthday, 'YYYY-MM-DD'),
+    });}
     const onFinish = (fieldsValue) => {
-        // const values = {
-        //     ...fieldsValue,
-        //     birthday: fieldsValue["birthday"].toISOString(),
-        //     gender: fieldsValue["gender"] === "male" ? 1 : 0,
-        // };
-        // console.log("value", values);
-        // eventStore.addUser(values);
-        handleClose();
+        const values = {
+            ...fieldsValue,
+            event_notice:eventNotice,
+            start_date:fieldsValue["start_at"].toISOString(),
+            end_at: fieldsValue["end_time"].toISOString(),
+            start_at: fieldsValue["start_at"].toISOString(),
+            start_time: fieldsValue["start_time"].toISOString(),
+            end_time: fieldsValue["end_time"].toISOString(),
+            assignees: fieldsValue["assignees"].map((item)=>{return {assignee_code:item, assignee_type:"USER",permission:"VIEW"}}) || []
+        };
+        console.log("value", values);
+        eventStore.UpdateEvent(values,schedule_code);
+        workSchedulesStore.getschedules();
+        setTimeout(() => navigate(-1), 500);
     };
 
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
+    const treeData = eventStore.departments;
+    const tProps = {
+        treeData,
+        // value,
+        // onChange,
+        treeCheckable: true,
+        // showCheckedStrategy: SHOW_PARENT,
+        placeholder: "--Chọn người nhận thông báo--",
+        style: {
+            width: "100%",
+        },
+    };
 
-    const options = [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }];
-    const [form] = Form.useForm();
-    form.setFieldsValue({
-        start_at: moment(),
-    });
+    // const options =eventStore.departments;
+    if (!eventStore.event) return null;
     return (
         <div className="create-event-container">
+            
             <div className="create-form">
                 <div className="">
                     <Form
@@ -84,7 +117,7 @@ const UpdateEvent = observer(({ handleClose }) => {
                             </Form.Item>
                             <Form.Item
                                 style={{ width: "100%" }}
-                                name="start"
+                                name="start_time"
                                 label="Thời gian bắt đầu"
                                 rules={[
                                     {
@@ -97,19 +130,19 @@ const UpdateEvent = observer(({ handleClose }) => {
                                     style={{ width: "100%" }}
                                     placeholder="Bắt đầu"
                                     showSecond={false}
-                                    format={`hh:mm`}
+                                    format={`HH:mm`}
                                 />
                             </Form.Item>
                             <Form.Item
                                 style={{ width: "100%" }}
-                                name="end_at"
+                                name="end_time"
                                 label="Thời gian kết thúc"
                             >
                                 <TimePicker
                                     style={{ width: "100%" }}
                                     placeholder="Kết thúc"
                                     showSecond={false}
-                                    format={`hh:mm`}
+                                    format={`HH:mm`}
                                 />
                             </Form.Item>
                         </div>
@@ -140,8 +173,19 @@ const UpdateEvent = observer(({ handleClose }) => {
                         <Form.Item label="Chuẩn bị" name="preparation">
                             <Input placeholder="Chuẩn bị" />
                         </Form.Item>
-                        <Form.Item label="Nội dung sự kiện" name="event_notice">
-                            <CKEditor editor={ClassicEditor} />
+                        <Form.Item
+                            label="Nội dung sự kiện"
+                            name="event_notice"
+                        >
+                            <CKEditor
+                                editor={ClassicEditor}
+                                name="event_notice"
+                                value="hello"
+                                id="event_notice"
+                                onChange={(event, editor) => {
+                                    setEventNotice(editor.getData());
+                                }}
+                            />
                         </Form.Item>
                         <Form.Item label="Tài liệu đính kèm" name="file_ids">
                             <Input type="file" />
@@ -149,17 +193,8 @@ const UpdateEvent = observer(({ handleClose }) => {
                         <Form.Item label="Thành viên tham gia" name="attenders">
                             <Input placeholder="--Thành viện tham gia--" />
                         </Form.Item>
-                        <Form.Item label="Thông báo">
-                            <Select
-                                mode="multiple"
-                                style={{
-                                    width: "100%",
-                                }}
-                                placeholder="Please select"
-                                defaultValue={["1", "2"]}
-                                // onChange={handleChange}
-                                options={options}
-                            />
+                        <Form.Item label="Thông báo" name="assignees">
+                            <TreeSelect {...tProps} />
                         </Form.Item>
 
                         <Form.Item style={{ textAlign: "right" }}>
@@ -167,7 +202,6 @@ const UpdateEvent = observer(({ handleClose }) => {
                                 type="primary"
                                 className="mx-2"
                                 htmlType="submit"
-                                onClick={handleClose}
                             >
                                 Cập nhật sự kiện
                             </Button>

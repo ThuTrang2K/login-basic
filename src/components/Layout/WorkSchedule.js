@@ -15,10 +15,9 @@ const columns = [
         key: "start_at",
         width:"100px",
         render: (text, record) => (
-            <>
-            
+            <>          
             <div style={{fontWeight:"bold"}}><div style={{fontWeight:"bold"}}>{moment(record?.start_at).locale("vi", vi).format('dddd').charAt(0).toUpperCase()+ moment(record?.start_at).locale("vi", vi).format('dddd').slice(1)}</div>
-            {moment(record?.start_at).utc().format('DD/MM')}</div>
+            {moment.utc(record?.start_at).format('DD/MM')}</div>
             </>
           )
     },
@@ -29,7 +28,7 @@ const columns = [
         render: (text, record) => (
             <>
             <div style={{fontWeight:"bold"}}>{moment(record?.start_at).locale("vi", vi).format('HH[h]mm') }<span>{record?.end_at && ` đến ${moment(record?.end_at).locale("vi", vi).format('HH[h]mm')}`}</span></div>
-            <span>{!record.title ? record.event_notice : record.title} </span>
+            <span>{!record.title ? <div dangerouslySetInnerHTML={{__html:record.event_notice}}/> : record.title} </span>
             </>
           )
     },
