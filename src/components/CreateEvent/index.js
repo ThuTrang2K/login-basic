@@ -13,6 +13,7 @@ import {
     Select,
     TimePicker,
     TreeSelect,
+    ConfigProvider,
 } from "antd";
 import "antd/dist/antd.css";
 import { AuthContext, StudentContext } from "../../context";
@@ -21,6 +22,7 @@ import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import vi from "moment/locale/vi";
+import locale from 'antd/es/date-picker/locale/vi_VN';
 
 const CreateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
@@ -28,12 +30,11 @@ const CreateEvent = observer(() => {
     let navigate = useNavigate();
     useEffect(() => {
         eventStore.getListDepartmentsUsers();
-        console.log(eventStore.departments);
     }, []);
-    const onFinish = (fieldsValue) => {
+    const onFinish = async(fieldsValue) => {
         const values = {
             ...fieldsValue,
-            event_notice: eventNotice,
+            event_notice:  eventNotice,
             start_date: fieldsValue["start_at"].toISOString(),
             end_at:
                 fieldsValue["end_time"] &&
@@ -60,8 +61,8 @@ const CreateEvent = observer(() => {
                 : [],
         };
         console.log("value", values);
-        eventStore.createEvent(values);
-        workSchedulesStore.getschedules();
+        await eventStore.createEvent(values);
+        await workSchedulesStore.getschedules(moment());
         setTimeout(() => navigate(-1), 500);
     };
 
@@ -145,6 +146,7 @@ const CreateEvent = observer(() => {
                                 ]}
                             >
                                 <DatePicker
+                                    locale={locale}
                                     style={{ width: "100%" }}
                                     // defaultValue={moment()}
                                     format={`DD/MM/YYYY`}

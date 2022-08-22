@@ -15,7 +15,7 @@ import "./style.scss";
 import UpdateEvent from "../UpdateEvent";
 import moment from "moment";
 import vi from "moment/locale/vi";
-import useCapitalizeFirstLetter from "../../hook/useCapitalizeFirstLetter";
+import useCapitalizeTheFirstLetter from "../../hook/useCapitalizeFirstLetter";
 
 const DetailEvent = observer(() => {
     const { eventStore } = useContext(AuthContext);
@@ -40,6 +40,9 @@ const DetailEvent = observer(() => {
     const handleClose = () => {
         setOpen(false);
     };
+    const assignees = event?.assignees?.filter(
+        (item) => item.permission !== "CREATE"
+    );
     return (
         <>
             <Breadcrumb
@@ -56,12 +59,13 @@ const DetailEvent = observer(() => {
                 <Breadcrumb.Item>Chi tiết sự kiện</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ marginBottom: "16px" }}>
-                <span className="back-button" onClick={() => {
-                            navigate(-1);
-                        }}>
-                    <ArrowLeftOutlined
-                        
-                    />
+                <span
+                    className="back-button"
+                    onClick={() => {
+                        navigate(-1);
+                    }}
+                >
+                    <ArrowLeftOutlined />
                 </span>
                 <span className="create-title">Chi tiết sự kiện</span>
             </div>
@@ -136,13 +140,11 @@ const DetailEvent = observer(() => {
                             label="Tài liệu đính kèm
 "
                         >
-                            {event?.file_ids?.length <= 0 ? (
-                                <div className="no-infor">
-                                    Không có tài liệu đính kèm.
-                                </div>
-                            ) : (
-                                event?.file_ids
-                            )}
+                            {/* {event?.file_ids?.length <= 0 ?  */}
+
+                            <div className="no-infor">
+                                Không có tài liệu đính kèm.
+                            </div>
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
@@ -157,10 +159,10 @@ const DetailEvent = observer(() => {
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Thông báo">
-                            {event?.assignees ? (
-                                event?.assignees
-                                    ?.map((item) => {
-                                        return item.name_uppercase;
+                            {assignees && assignees.length > 0 ? (
+                                assignees
+                                    .map((item) => {
+                                        return useCapitalizeTheFirstLetter(item.name_uppercase);
                                     })
                                     .join(", ")
                             ) : (
@@ -170,14 +172,27 @@ const DetailEvent = observer(() => {
                             )}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Ngày tạo">
+                            {event?.assignees &&
+                                useCapitalizeTheFirstLetter(event?.assignees.find(
+                                    (item) => item.permission === "CREATE"
+                                ).name_uppercase)}{" "}
+                            -{" "}
                             {moment(event?.created_at)
                                 .locale("vi", vi)
                                 .format("DD-MM-YYYY | HH[h]mm")}
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Chỉnh sửa lần cuối">
-                            {moment(event?.updated_at)
-                                .locale("vi", vi)
-                                .format("DD-MM-YYYY | HH[h]mm")}
+                            {event?.last_edit_by ? (
+                                `${
+                                    useCapitalizeTheFirstLetter(event.last_edit_by.name_uppercase)
+                                } - ${moment(event?.updated_at)
+                                    .locale("vi", vi)
+                                    .format("DD-MM-YYYY | HH[h]mm")}`
+                            ) : (
+                                <div className="no-infor">
+                                    Không có thông tin.
+                                </div>
+                            )}
                         </Descriptions.Item>
                     </Descriptions>
                     <div style={{ textAlign: "right", marginTop: 16 }}>

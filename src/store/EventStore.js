@@ -20,11 +20,6 @@ class EventStore {
             }
         );
         runInAction(() => {
-            // response.data.gender =
-            //     response.data.gender === 1 ? "male" : "female";
-            // response.data.birthday = new Date(response.data.birthday)
-            //     .toISOString()
-            //     .slice(0, 10);
             this.event = response.data;
         });
     }
@@ -82,8 +77,7 @@ class EventStore {
                 preparation: data.preparation,
                 start_at: data.start_at,
                 title: "",
-                assignees: data.assignees,
-                assign_person_update:{}
+                assign_person_update:data.assign_person_update
             },
             {
                 headers: {

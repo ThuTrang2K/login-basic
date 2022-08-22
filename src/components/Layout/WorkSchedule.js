@@ -6,6 +6,7 @@ import { AuthContext } from "../../context";
 import "./style.scss";
 import moment from 'moment'
 import vi from "moment/locale/vi";
+import locale from 'antd/es/date-picker/locale/vi_VN';
 import { Link, useNavigate } from "react-router-dom";
 
 const columns = [
@@ -66,7 +67,6 @@ const WorkSchedule = observer(() => {
     const handleDatePicker = (date, dateString) => {
         console.log("date",date);
         setDate(date);
-        // workSchedulesStore.getschedules();
     };
     
     return (
@@ -80,15 +80,14 @@ const WorkSchedule = observer(() => {
                     }}
                 >
                     <Breadcrumb.Item>
-                        <HomeOutlined />
+                            <HomeOutlined />
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>Lịch cơ quan</Breadcrumb.Item>
                 </Breadcrumb>
                 <div>
                     <DatePicker
+                    locale={locale}
                         style={{ marginRight: 20 }}
-                        // defaultValue={'2015/01/01'}
-                        // defaultValue={moment('2015/01')}
                         onChange={handleDatePicker}
                         placeholder="Chọn tuần"
                         defaultValue={moment()}
@@ -120,7 +119,6 @@ const WorkSchedule = observer(() => {
                         }, // click row
                     };
                 }}
-                key={workSchedulesStore?.schedules?.schedule_code}
                 columns={columns}
                 dataSource={workSchedulesStore?.schedules}
                 pagination={false}

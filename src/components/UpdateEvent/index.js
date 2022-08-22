@@ -9,6 +9,8 @@ import { observer } from "mobx-react-lite";
 import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 import vi from "moment/locale/vi";
+import locale from 'antd/es/date-picker/locale/vi_VN';
+
 
 const UpdateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
@@ -22,7 +24,8 @@ const UpdateEvent = observer(() => {
         eventStore.getEventById(schedule_code);
     }, []);
     const [form] = Form.useForm();
-
+    const pre_assignees =  eventStore.event?.assignees
+    ?.filter((item)=>(item.permission !== "CREATE")).map(item =>item.assignee_code)
     eventStore.event &&
         form.setFieldsValue({
             start_at: moment(eventStore.event.start_at),
@@ -32,47 +35,44 @@ const UpdateEvent = observer(() => {
             location: eventStore.event?.location,
             preparation: eventStore.event?.preparation,
             attenders: eventStore.event?.attenders,
-            assignees: eventStore.event.assignees.map((item) => {
-                return { value: item.name_uppercase };
-            }),
+            assignees: pre_assignees,
         });
 
-    const onFinish = (fieldsValue) => {
+    const onFinish = async(fieldsValue) => {
+        const {assignees, ...rest}=fieldsValue;
+        console.log(pre_assignees,assignees);
+        const assign_person_update={new_items:(assignees.filter((item)=>!pre_assignees.includes(item))).map(item=>({assignee_code: item,
+        assignee_type: "USER",
+        permission: "VIEW"})), remove_items:(pre_assignees.filter((item)=>!assignees.includes(item))).map(item=>({assignee_code: item,
+            assignee_type: "USER",
+            permission: "VIEW"}))}
         const values = {
-            ...fieldsValue,
+            ...rest,
             event_notice: eventNotice,
-            start_date: fieldsValue["start_at"].toISOString(),
+            start_date: rest["start_at"].toISOString(),
             end_at:
-                fieldsValue["end_time"] &&
-                fieldsValue["end_time"].toISOString(),
+                rest["end_time"] &&
+                rest["end_time"].toISOString(),
             start_at: moment(
-                `${fieldsValue["start_at"].format("YYYY-MM-DD")} ${fieldsValue[
+                `${rest["start_at"].format("YYYY-MM-DD")} ${rest[
                     "start_time"
                 ].format("HH:mm:ss")}`
             )
                 .locale("vi", vi)
                 .toISOString(),
-            start_time: fieldsValue["start_time"].toISOString(),
+            start_time: rest["start_time"].toISOString(),
+            file_ids:[],
             end_time:
-                fieldsValue["end_time"] &&
-                fieldsValue["end_time"].toISOString(),
-            assignees:
-                (fieldsValue["assignees"] &&
-                    fieldsValue["assignees"].map((item) => {
-                        return {
-                            assignee_code: item,
-                            assignee_type: "USER",
-                            permission: "VIEW",
-                        };
-                    })) ||
-                [],
+                rest["end_time"] &&
+                rest["end_time"].toISOString(),
+            assign_person_update:assign_person_update,
+                
         };
         console.log("value", values);
-        eventStore.UpdateEvent(values, schedule_code);
-        workSchedulesStore.getschedules();
-        setTimeout(() => navigate(-1), 500);
+        await eventStore.UpdateEvent(values, schedule_code);
+        await workSchedulesStore.getschedules(moment());
+        navigate(-1);
     };
-
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
@@ -102,7 +102,6 @@ const UpdateEvent = observer(() => {
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
-                        autoComplete="off"
                     >
                         <div
                             style={{
@@ -124,6 +123,7 @@ const UpdateEvent = observer(() => {
                                 ]}
                             >
                                 <DatePicker
+                                locale={locale}
                                     style={{ width: "100%" }}
                                     // defaultValue={moment()}
                                     format={`DD/MM/YYYY`}

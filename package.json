@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^4.15.5",
     "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
     "mobx": "^6.6.1",
     "mobx-react-lite": "^3.4.0",
     "moment": "^2.29.4",
@@ -47,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv-webpack": "^8.0.1"
   }
 }
