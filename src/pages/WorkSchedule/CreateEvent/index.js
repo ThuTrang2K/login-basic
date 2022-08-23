@@ -4,16 +4,12 @@ import ckeditor, { CKEditor } from "@ckeditor/ckeditor5-react";
 import "./style.scss";
 import {
     Button,
-    Checkbox,
     Form,
     Input,
     DatePicker,
-    Radio,
     Breadcrumb,
-    Select,
     TimePicker,
     TreeSelect,
-    ConfigProvider,
 } from "antd";
 import "antd/dist/antd.css";
 import { observer } from "mobx-react-lite";
@@ -21,20 +17,25 @@ import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import vi from "moment/locale/vi";
-import locale from 'antd/es/date-picker/locale/vi_VN';
+import locale from "antd/es/date-picker/locale/vi_VN";
 import { AuthContext } from "../../../context";
 
 const CreateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState("");
     let navigate = useNavigate();
+    const [form] = Form.useForm();
     useEffect(() => {
         eventStore.getListDepartmentsUsers();
+
+        form.setFieldsValue({
+            start_at: moment(),
+        });
     }, []);
-    const onFinish = async(fieldsValue) => {
+    const onFinish = async (fieldsValue) => {
         const values = {
             ...fieldsValue,
-            event_notice:  eventNotice,
+            event_notice: eventNotice,
             start_date: fieldsValue["start_at"].toISOString(),
             end_at:
                 fieldsValue["end_time"] &&
@@ -83,10 +84,7 @@ const CreateEvent = observer(() => {
     };
 
     // const options =eventStore.departments;
-    const [form] = Form.useForm();
-    form.setFieldsValue({
-        start_at: moment(),
-    });
+
     return (
         <div className="create-event-container">
             <Breadcrumb
@@ -149,6 +147,7 @@ const CreateEvent = observer(() => {
                                     locale={locale}
                                     style={{ width: "100%" }}
                                     // defaultValue={moment()}
+                                    initialValues={moment()}
                                     format={`DD/MM/YYYY`}
                                 />
                             </Form.Item>

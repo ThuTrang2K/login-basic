@@ -147,3 +147,13 @@
 .ant-table {
   font-size: 12px !important;
 }
+.hire-td td.ant-table-cell {
+  display: none;
+}
+
+.hire-tr .ant-table-thead {
+  display: none;
+}
+.ant-table-wrapper {
+  margin-top: 16px;
+}
