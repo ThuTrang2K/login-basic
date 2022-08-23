@@ -10,12 +10,12 @@ import { Badge, Breadcrumb, Button, Descriptions, Modal } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { AuthContext } from "../../context";
 import "./style.scss";
 import UpdateEvent from "../UpdateEvent";
 import moment from "moment";
 import vi from "moment/locale/vi";
-import useCapitalizeTheFirstLetter from "../../hook/useCapitalizeFirstLetter";
+import { AuthContext } from "../../../context";
+import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 
 const DetailEvent = observer(() => {
     const { eventStore } = useContext(AuthContext);

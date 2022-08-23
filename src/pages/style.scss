@@ -130,3 +130,20 @@
   font-weight: 400;
   margin-bottom: 0.5rem
 }
+
+// lịch cơ quan
+.ant-table-thead > tr > th {  
+  background: #2c65ac !important;
+  color: white !important;
+}
+
+.ant-breadcrumb {
+  color: #2c65ac !important;
+}
+.ant-breadcrumb li:last-child {
+  color: #2c65ac !important;
+}
+
+.ant-table {
+  font-size: 12px !important;
+}

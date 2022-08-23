@@ -1,12 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import CreateEvent from "./components/CreateEvent";
-import DetailEvent from "./components/DetailEvent";
+
 import Home from "./components/Layout/Home";
-import WorkSchedule from "./components/Layout/WorkSchedule";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
+import WorkSchedule from "./pages/WorkSchedule";
+import CreateEvent from "./pages/WorkSchedule/CreateEvent";
+import DetailEvent from "./pages/WorkSchedule/DetailEvent";
 
 function App() {
     return (

@@ -3,7 +3,7 @@ import { Breadcrumb, Button, DatePicker, Table } from "antd";
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context";
-import "./style.scss";
+import "../style.scss";
 import moment from 'moment'
 import vi from "moment/locale/vi";
 import locale from 'antd/es/date-picker/locale/vi_VN';

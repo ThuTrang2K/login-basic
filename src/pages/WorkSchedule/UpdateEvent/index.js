@@ -2,70 +2,77 @@ import React, { useContext, useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ckeditor, { CKEditor } from "@ckeditor/ckeditor5-react";
 import "./style.scss";
-import {
-    Button,
-    Checkbox,
-    Form,
-    Input,
-    DatePicker,
-    Radio,
-    Breadcrumb,
-    Select,
-    TimePicker,
-    TreeSelect,
-    ConfigProvider,
-} from "antd";
+import { Button, Form, Input, DatePicker, TimePicker, TreeSelect } from "antd";
 import "antd/dist/antd.css";
-import { AuthContext, StudentContext } from "../../context";
 import { observer } from "mobx-react-lite";
-import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 import vi from "moment/locale/vi";
 import locale from 'antd/es/date-picker/locale/vi_VN';
+import { AuthContext } from "../../../context";
 
-const CreateEvent = observer(() => {
+
+const UpdateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
-    const [eventNotice, setEventNotice] = useState("");
+    const [eventNotice, setEventNotice] = useState(
+        eventStore?.event?.event_notice
+    );
     let navigate = useNavigate();
+    const { schedule_code } = useParams();
     useEffect(() => {
         eventStore.getListDepartmentsUsers();
+        eventStore.getEventById(schedule_code);
     }, []);
+    const [form] = Form.useForm();
+    const pre_assignees =  eventStore.event?.assignees
+    ?.filter((item)=>(item.permission !== "CREATE")).map(item =>item.assignee_code)
+    eventStore.event &&
+        form.setFieldsValue({
+            start_at: moment(eventStore.event.start_at),
+            start_time: moment(eventStore.event.start_at),
+            end_time: eventStore.event?.end_at ? moment(eventStore.event?.end_at): null,
+            host: eventStore.event?.host,
+            location: eventStore.event?.location,
+            preparation: eventStore.event?.preparation,
+            attenders: eventStore.event?.attenders,
+            assignees: pre_assignees,
+        });
+
     const onFinish = async(fieldsValue) => {
+        const {assignees, ...rest}=fieldsValue;
+        console.log(pre_assignees,assignees);
+        const assign_person_update={new_items:(assignees.filter((item)=>!pre_assignees.includes(item))).map(item=>({assignee_code: item,
+        assignee_type: "USER",
+        permission: "VIEW"})), remove_items:(pre_assignees.filter((item)=>!assignees.includes(item))).map(item=>({assignee_code: item,
+            assignee_type: "USER",
+            permission: "VIEW"}))}
         const values = {
-            ...fieldsValue,
-            event_notice:  eventNotice,
-            start_date: fieldsValue["start_at"].toISOString(),
+            ...rest,
+            event_notice: eventNotice,
+            start_date: rest["start_at"].toISOString(),
             end_at:
-                fieldsValue["end_time"] &&
-                fieldsValue["end_time"].toISOString(),
+                rest["end_time"] &&
+                rest["end_time"].toISOString(),
             start_at: moment(
-                `${fieldsValue["start_at"].format("YYYY-MM-DD")} ${fieldsValue[
+                `${rest["start_at"].format("YYYY-MM-DD")} ${rest[
                     "start_time"
                 ].format("HH:mm:ss")}`
             )
                 .locale("vi", vi)
                 .toISOString(),
-            start_time: fieldsValue["start_time"].toISOString(),
+            start_time: rest["start_time"].toISOString(),
+            file_ids:[],
             end_time:
-                fieldsValue["end_time"] &&
-                fieldsValue["end_time"].toISOString(),
-            assignees: fieldsValue["assignees"]
-                ? fieldsValue["assignees"].map((item) => {
-                      return {
-                          assignee_code: item,
-                          assignee_type: "USER",
-                          permission: "VIEW",
-                      };
-                  })
-                : [],
+                rest["end_time"] &&
+                rest["end_time"].toISOString(),
+            assign_person_update:assign_person_update,
+                
         };
         console.log("value", values);
-        await eventStore.createEvent(values);
+        await eventStore.UpdateEvent(values, schedule_code);
         await workSchedulesStore.getschedules(moment());
         navigate(-1);
     };
-
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
@@ -75,44 +82,15 @@ const CreateEvent = observer(() => {
         // value,
         // onChange,
         treeCheckable: true,
-        // showCheckedStrategy: SHOW_PARENT,
         placeholder: "--Chọn người nhận thông báo--",
         style: {
             width: "100%",
         },
     };
 
-    // const options =eventStore.departments;
-    const [form] = Form.useForm();
-    form.setFieldsValue({
-        start_at: moment(),
-    });
+    if (!eventStore.event) return null;
     return (
         <div className="create-event-container">
-            <Breadcrumb
-                style={{
-                    margin: "16px 0",
-                    fontWeight: 500,
-                    fontSize: 12,
-                }}
-            >
-                <Breadcrumb.Item>
-                    <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>Lịch cơ quan</Breadcrumb.Item>
-                <Breadcrumb.Item>Tạo lịch cơ quan</Breadcrumb.Item>
-            </Breadcrumb>
-            <div style={{ marginBottom: "16px" }}>
-                <span
-                    className="back-button"
-                    onClick={() => {
-                        navigate(-1);
-                    }}
-                >
-                    <ArrowLeftOutlined />
-                </span>
-                <span className="create-title">Tạo mới sự kiện</span>
-            </div>
             <div className="create-form">
                 <div className="">
                     <Form
@@ -124,7 +102,6 @@ const CreateEvent = observer(() => {
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
-                        autoComplete="off"
                     >
                         <div
                             style={{
@@ -146,7 +123,7 @@ const CreateEvent = observer(() => {
                                 ]}
                             >
                                 <DatePicker
-                                    locale={locale}
+                                locale={locale}
                                     style={{ width: "100%" }}
                                     // defaultValue={moment()}
                                     format={`DD/MM/YYYY`}
@@ -213,6 +190,10 @@ const CreateEvent = observer(() => {
                         <Form.Item label="Nội dung sự kiện" name="event_notice">
                             <CKEditor
                                 editor={ClassicEditor}
+                                name="event_notice"
+                                value="hello"
+                                id="event_notice"
+                                data={eventStore.event.event_notice}
                                 onChange={(event, editor) => {
                                     setEventNotice(editor.getData());
                                 }}
@@ -234,7 +215,7 @@ const CreateEvent = observer(() => {
                                 className="mx-2"
                                 htmlType="submit"
                             >
-                                Tạo sự kiện mới
+                                Cập nhật sự kiện
                             </Button>
                         </Form.Item>
                     </Form>
@@ -244,4 +225,4 @@ const CreateEvent = observer(() => {
     );
 });
 
-export default CreateEvent;
+export default UpdateEvent;
