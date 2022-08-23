@@ -33,7 +33,7 @@ class AuthStore {
     async getUser() {
         if (this.loginInfo) {
             const response = await axios.get(
-                "https://stg.vimc.fafu.com.vn/api/v1/users/current-user",
+                `${process.env.REACT_APP_BASE_URL}/api/v1/users/current-user`,
                 {
                     headers: {
                         Authorization: `Bearer ${this.loginInfo?.access_token}`,

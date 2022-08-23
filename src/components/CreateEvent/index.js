@@ -63,7 +63,7 @@ const CreateEvent = observer(() => {
         console.log("value", values);
         await eventStore.createEvent(values);
         await workSchedulesStore.getschedules(moment());
-        setTimeout(() => navigate(-1), 500);
+        navigate(-1);
     };
 
     const onFinishFailed = (errorInfo) => {

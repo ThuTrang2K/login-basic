@@ -6,6 +6,7 @@ import Home from "./components/Layout/Home";
 import WorkSchedule from "./components/Layout/WorkSchedule";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 />
             </Route>
             <Route path="/login" element={<Login />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }

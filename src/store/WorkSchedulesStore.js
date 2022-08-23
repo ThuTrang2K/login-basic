@@ -13,8 +13,9 @@ class WorkSchedulesStore {
         const endDate = date?.endOf("week").format("YYYY-MM-DD");
         console.log(startDate,endDate);
         const access_token = JSON.parse(window.localStorage.getItem("token"));
+        console.log(process.env);
         const response = await axios.get(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules?from_date=${startDate}&to_date=${endDate}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules?from_date=${startDate}&to_date=${endDate}`,
             {
                 headers: {
                     Authorization: `Bearer ${access_token}`,

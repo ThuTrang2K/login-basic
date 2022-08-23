@@ -12,7 +12,7 @@ class EventStore {
     }
     async getEventById(id) {
         const response = await axios.get(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules/${id}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
@@ -26,7 +26,7 @@ class EventStore {
 
     async createEvent(data) {
         return await axios.post(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules`,
             {
                 attenders: data.attenders,
                 end_time: data.end_time,
@@ -52,7 +52,7 @@ class EventStore {
 
     async deleteEvent(id) {
         return await axios.delete(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules/${id}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
@@ -63,7 +63,7 @@ class EventStore {
 
     async UpdateEvent(data, id) {
         return await axios.put(
-            `https://stg.vimc.fafu.com.vn/api/v1/work-schedules/${id}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules/${id}`,
             {
                 attenders: data.attenders,
                 end_time: data.end_time,
@@ -88,7 +88,7 @@ class EventStore {
     }
     async getListDepartmentsUsers() {
         const response = await axios.get(
-            `https://stg.vimc.fafu.com.vn/api/v1/departments/users`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/departments/users`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
