@@ -3,10 +3,12 @@ import {
     CalendarOutlined,
     DeleteOutlined,
     EditOutlined,
+    EyeOutlined,
     FieldTimeOutlined,
+    FileImageOutlined,
     HomeOutlined,
 } from "@ant-design/icons";
-import { Badge, Breadcrumb, Button, Descriptions, Modal } from "antd";
+import { Badge, Breadcrumb, Button, Descriptions, Modal, Tooltip } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
@@ -140,11 +142,37 @@ const DetailEvent = observer(() => {
                             label="Tài liệu đính kèm
 "
                         >
-                            {/* {event?.file_ids?.length <= 0 ?  */}
-
-                            <div className="no-infor">
-                                Không có tài liệu đính kèm.
-                            </div>
+                            <ul className="file-list">
+                                {event?.file_ids?.length > 0 ? (
+                                    event?.file_ids.map((item) => (
+                                        <li>
+                                            <Tooltip
+                                                placement="top"
+                                                title="Tải xuống"
+                                            >
+                                                <a  className="" onClick={()=>{eventStore.downLoad(item.file_id, item.file_title) }}>
+                                                    <FileImageOutlined
+                                                        style={{
+                                                            marginRight: "5px",
+                                                        }}
+                                                    />
+                                                    {item.file_title}
+                                                </a>
+                                            </Tooltip>
+                                            <Tooltip
+                                                placement="top"
+                                                title="Xem tài liệu"
+                                            >
+                                                <EyeOutlined />
+                                            </Tooltip>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <div className="no-infor">
+                                        Không có tài liệu đính kèm.
+                                    </div>
+                                )}
+                            </ul>
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"
@@ -162,7 +190,9 @@ const DetailEvent = observer(() => {
                             {assignees && assignees.length > 0 ? (
                                 assignees
                                     .map((item) => {
-                                        return useCapitalizeTheFirstLetter(item.name_uppercase);
+                                        return useCapitalizeTheFirstLetter(
+                                            item.name_uppercase
+                                        );
                                     })
                                     .join(", ")
                             ) : (
@@ -173,9 +203,11 @@ const DetailEvent = observer(() => {
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Ngày tạo">
                             {event?.assignees &&
-                                useCapitalizeTheFirstLetter(event?.assignees.find(
-                                    (item) => item.permission === "CREATE"
-                                ).name_uppercase)}{" "}
+                                useCapitalizeTheFirstLetter(
+                                    event?.assignees.find(
+                                        (item) => item.permission === "CREATE"
+                                    ).name_uppercase
+                                )}{" "}
                             -{" "}
                             {moment(event?.created_at)
                                 .locale("vi", vi)
@@ -183,9 +215,9 @@ const DetailEvent = observer(() => {
                         </Descriptions.Item>
                         <Descriptions.Item span="12" label="Chỉnh sửa lần cuối">
                             {event?.last_edit_by ? (
-                                `${
-                                    useCapitalizeTheFirstLetter(event.last_edit_by.name_uppercase)
-                                } - ${moment(event?.updated_at)
+                                `${useCapitalizeTheFirstLetter(
+                                    event.last_edit_by.name_uppercase
+                                )} - ${moment(event?.updated_at)
                                     .locale("vi", vi)
                                     .format("DD-MM-YYYY | HH[h]mm")}`
                             ) : (

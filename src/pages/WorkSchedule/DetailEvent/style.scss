@@ -51,3 +51,26 @@
     min-width: 70px;
     font-style: italic;
 }
+
+//file
+.file-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+        margin: 0 5px;
+        color: rgb(44, 101, 172);
+        &:hover{
+            opacity:0.8;
+        }
+    }
+
+    .anticon.anticon-file-image svg{
+
+    }
+    .anticon.anticon-eye svg{
+        color: rgb(91, 140, 0);
+        cursor: pointer;
+    }
+}

@@ -54,3 +54,24 @@
     line-height: 28px;
     word-break: break-all;
 }
+//upload
+
+.ant-upload-list-item-error .ant-upload-list-item-name {
+    font-size: 12px;
+    color: none;
+}
+
+.anticon svg {
+    font-size: 12px;    
+}
+
+.ant-layout, .ant-layout * {
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+    color: #2c65ac;
+    border-color: #2c65ac;
+    background: #fff;
+}

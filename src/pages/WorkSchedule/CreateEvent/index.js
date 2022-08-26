@@ -10,15 +10,22 @@ import {
     Breadcrumb,
     TimePicker,
     TreeSelect,
+    Upload,
+    message,
 } from "antd";
 import "antd/dist/antd.css";
 import { observer } from "mobx-react-lite";
-import { ArrowLeftOutlined, HomeOutlined } from "@ant-design/icons";
+import {
+    ArrowLeftOutlined,
+    HomeOutlined,
+    UploadOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import vi from "moment/locale/vi";
 import locale from "antd/es/date-picker/locale/vi_VN";
 import { AuthContext } from "../../../context";
+import Item from "antd/lib/list/Item";
 
 const CreateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
@@ -33,6 +40,18 @@ const CreateEvent = observer(() => {
         });
     }, []);
     const onFinish = async (fieldsValue) => {
+        // Chạy song song
+        // await Promise.all(
+        //     fieldsValue?.file_ids?.fileList.forEach((item) =>
+        //         eventStore.uploadFile(item)
+        //     )
+        // );
+
+        // Chạy lần lượt
+        for (const item of fieldsValue?.file_ids?.fileList) {
+            await eventStore.uploadFile(item);
+        }
+
         const values = {
             ...fieldsValue,
             event_notice: eventNotice,
@@ -62,6 +81,7 @@ const CreateEvent = observer(() => {
                 : [],
         };
         console.log("value", values);
+
         await eventStore.createEvent(values);
         await workSchedulesStore.getschedules(moment());
         navigate(-1);
@@ -73,18 +93,32 @@ const CreateEvent = observer(() => {
     const treeData = eventStore.departments;
     const tProps = {
         treeData,
-        // value,
-        // onChange,
         treeCheckable: true,
-        // showCheckedStrategy: SHOW_PARENT,
         placeholder: "--Chọn người nhận thông báo--",
         style: {
             width: "100%",
         },
     };
 
-    // const options =eventStore.departments;
+    const props = {
+        name: "file",
+        multiple: true,
+        // action: "https://stg.vimc.fafu.com.vn/api/v1/upload",
+        beforeUpload: (file) => {
+            return false;
+        },
+        headers: {
+            authorization: "authorization-text",
+        },
 
+        onChange(info) {
+            if (info.file.status === "done") {
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === "error") {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+    };
     return (
         <div className="create-event-container">
             <Breadcrumb
@@ -218,7 +252,11 @@ const CreateEvent = observer(() => {
                             />
                         </Form.Item>
                         <Form.Item label="Tài liệu đính kèm" name="file_ids">
-                            <Input type="file" />
+                            <Upload {...props}>
+                                <Button icon={<UploadOutlined />}>
+                                    Chọn tài liệu đính kèm
+                                </Button>
+                            </Upload>
                         </Form.Item>
                         <Form.Item label="Thành viên tham gia" name="attenders">
                             <Input placeholder="--Thành viện tham gia--" />
