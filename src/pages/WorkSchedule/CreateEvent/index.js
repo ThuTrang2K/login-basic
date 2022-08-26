@@ -103,7 +103,6 @@ const CreateEvent = observer(() => {
     const props = {
         name: "file",
         multiple: true,
-        // action: "https://stg.vimc.fafu.com.vn/api/v1/upload",
         beforeUpload: (file) => {
             return false;
         },

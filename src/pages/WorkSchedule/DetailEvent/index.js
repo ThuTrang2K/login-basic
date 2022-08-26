@@ -27,6 +27,11 @@ const DetailEvent = observer(() => {
     const event = eventStore.event;
     console.log("data", event);
     //2021-08-09T14:00:00+07:00
+    //preview
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewImage, setPreviewImage] = useState("");
+    const [previewTitle, setPreviewTitle] = useState("");
+    const handleCancel = () => setPreviewVisible(false);
     useEffect(() => {
         eventStore.getEventById(schedule_code);
     }, [schedule_code]);
@@ -144,29 +149,82 @@ const DetailEvent = observer(() => {
                         >
                             <ul className="file-list">
                                 {event?.file_ids?.length > 0 ? (
-                                    event?.file_ids.map((item) => (
-                                        <li>
-                                            <Tooltip
-                                                placement="top"
-                                                title="Tải xuống"
-                                            >
-                                                <a  className="" onClick={()=>{eventStore.downLoad(item.file_id, item.file_title) }}>
-                                                    <FileImageOutlined
-                                                        style={{
-                                                            marginRight: "5px",
+                                    event?.file_ids.map((item) => {
+                                        const fileExtension = item.file_title
+                                            .slice(
+                                                (Math.max(
+                                                    0,
+                                                    item.file_title.lastIndexOf(
+                                                        "."
+                                                    )
+                                                ) || Infinity) + 1
+                                            )
+                                            .toLowerCase();
+                                        return (
+                                            <li>
+                                                <Tooltip
+                                                    placement="top"
+                                                    title="Tải xuống"
+                                                >
+                                                    <a
+                                                        className=""
+                                                        onClick={() => {
+                                                            eventStore.downLoad(
+                                                                item.file_id,
+                                                                item.file_title
+                                                            );
                                                         }}
+                                                    >
+                                                        <FileImageOutlined
+                                                            style={{
+                                                                marginRight:
+                                                                    "5px",
+                                                            }}
+                                                        />
+                                                        {item.file_title}
+                                                    </a>
+                                                </Tooltip>
+                                                {(fileExtension === "png" ||
+                                                    fileExtension ===
+                                                        "jpg") && (
+                                                    <Tooltip
+                                                        placement="top"
+                                                        title="Xem tài liệu"
+                                                    >
+                                                        <EyeOutlined
+                                                            onClick={() => {
+                                                                setPreviewImage(
+                                                                    `${process.env.REACT_APP_BASE_URL}/api/v1/images/${item.file_id}?access_token=${eventStore.access_token}`
+                                                                );
+                                                                setPreviewTitle(
+                                                                    item.file_title
+                                                                );
+                                                                setPreviewVisible(
+                                                                    true
+                                                                );
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                )}
+
+                                                <Modal
+                                                    style={{ overFlow: "" }}
+                                                    visible={previewVisible}
+                                                    title={previewTitle}
+                                                    footer={null}
+                                                    onCancel={handleCancel}
+                                                >
+                                                    <img
+                                                        alt="example"
+                                                        style={{
+                                                            width: "100%",
+                                                        }}
+                                                        src={previewImage}
                                                     />
-                                                    {item.file_title}
-                                                </a>
-                                            </Tooltip>
-                                            <Tooltip
-                                                placement="top"
-                                                title="Xem tài liệu"
-                                            >
-                                                <EyeOutlined />
-                                            </Tooltip>
-                                        </li>
-                                    ))
+                                                </Modal>
+                                            </li>
+                                        );
+                                    })
                                 ) : (
                                     <div className="no-infor">
                                         Không có tài liệu đính kèm.
