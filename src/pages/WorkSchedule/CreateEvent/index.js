@@ -40,9 +40,14 @@ const CreateEvent = observer(() => {
         });
     }, []);
     const onFinish = async (fieldsValue) => {
-        for (const item of fieldsValue?.file_ids?.fileList) {
-            await eventStore.uploadFile(item);
-        }
+        await Promise.all(
+            fieldsValue?.file_ids?.fileList.map((item) =>
+                eventStore.uploadFile(item)
+            )
+        );
+        // for (const item of fieldsValue?.file_ids?.fileList) {
+        //     await eventStore.uploadFile(item);
+        // }
         const values = {
             ...fieldsValue,
             event_notice: eventNotice,

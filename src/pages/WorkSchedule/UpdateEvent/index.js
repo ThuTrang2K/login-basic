@@ -49,16 +49,20 @@ const UpdateEvent = observer(() => {
             preparation: eventStore.event?.preparation,
             attenders: eventStore.event?.attenders,
             assignees: pre_assignees,
-            // file_ids: eventStore.event?.file_ids
         });
 
     const onFinish = async (fieldsValue) => {
         const newFile = fieldsValue?.file_ids?.fileList.filter((file)=>file.status!=="done")||[];
         const oldFile = fieldsValue?.file_ids?.fileList.filter((file)=>file.status==="done").map((file)=>file.uid) || eventStore.event.file_ids.map((file)=>file.file_id)
         console.log("oldFile",oldFile);
-        for (const item of newFile) {
-            await eventStore.uploadFile(item);
-        }
+        await Promise.all(
+            newFile.map((item) =>
+                eventStore.uploadFile(item)
+            )
+        );
+        // for (const item of newFile) {
+        //     await eventStore.uploadFile(item);
+        // }
 
         const { assignees, ...rest } = fieldsValue;
         const assign_person_update = {
@@ -123,8 +127,8 @@ const UpdateEvent = observer(() => {
             return false;
         },
         defaultFileList:eventStore.event.file_ids.map(item=>({uid:item.file_id, name: item.file_title,status: 'done'})),showUploadList: {
-            showDownloadIcon: true,
-            downloadIcon: 'Download',
+            // showDownloadIcon: true,
+            // downloadIcon: 'Download',
             showRemoveIcon: true,
             // removeIcon: <StarOutlined onClick={e => console.log(e, 'custom removeIcon event')} />,
           },
