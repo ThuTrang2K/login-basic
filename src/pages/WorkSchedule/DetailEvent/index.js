@@ -25,7 +25,7 @@ const DetailEvent = observer(() => {
     let navigate = useNavigate();
     const { schedule_code } = useParams();
     const event = eventStore.event;
-    console.log("data", event);
+    // console.log("data", event);
     //2021-08-09T14:00:00+07:00
     //preview
     const [previewVisible, setPreviewVisible] = useState(false);

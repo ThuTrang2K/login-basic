@@ -68,7 +68,6 @@ class EventStore {
     }
 
     async createEvent(data) {
-        console.log("create");
         await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules`,
             {
@@ -107,7 +106,7 @@ class EventStore {
     }
 
     async UpdateEvent(data, id) {
-        return await axios.put(
+         await axios.put(
             `${process.env.REACT_APP_BASE_URL}/api/v1/work-schedules/${id}`,
             {
                 attenders: data.attenders,
@@ -116,7 +115,7 @@ class EventStore {
                 start_date: data.start_date,
                 start_time: data.start_time,
                 event_notice: data.event_notice,
-                file_ids: this.files,
+                file_ids: [...this.files,...data.file_ids],
                 host: data.host,
                 location: data.location,
                 preparation: data.preparation,
@@ -130,6 +129,7 @@ class EventStore {
                 },
             }
         );
+        this.files = [];
     }
     async getListDepartmentsUsers() {
         const response = await axios.get(

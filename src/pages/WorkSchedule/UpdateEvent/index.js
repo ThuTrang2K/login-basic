@@ -19,7 +19,7 @@ import moment from "moment";
 import vi from "moment/locale/vi";
 import locale from "antd/es/date-picker/locale/vi_VN";
 import { AuthContext } from "../../../context";
-import { UploadOutlined } from "@ant-design/icons";
+import { StarOutlined, UploadOutlined } from "@ant-design/icons";
 
 const UpdateEvent = observer(() => {
     const { eventStore, workSchedulesStore } = useContext(AuthContext);
@@ -31,6 +31,7 @@ const UpdateEvent = observer(() => {
     useEffect(() => {
         eventStore.getListDepartmentsUsers();
         eventStore.getEventById(schedule_code);
+        
     }, []);
     const [form] = Form.useForm();
     const pre_assignees = eventStore.event?.assignees
@@ -48,11 +49,18 @@ const UpdateEvent = observer(() => {
             preparation: eventStore.event?.preparation,
             attenders: eventStore.event?.attenders,
             assignees: pre_assignees,
+            // file_ids: eventStore.event?.file_ids
         });
 
     const onFinish = async (fieldsValue) => {
+        const newFile = fieldsValue?.file_ids?.fileList.filter((file)=>file.status!=="done")||[];
+        const oldFile = fieldsValue?.file_ids?.fileList.filter((file)=>file.status==="done").map((file)=>file.uid) || eventStore.event.file_ids.map((file)=>file.file_id)
+        console.log("oldFile",oldFile);
+        for (const item of newFile) {
+            await eventStore.uploadFile(item);
+        }
+
         const { assignees, ...rest } = fieldsValue;
-        console.log(pre_assignees, assignees);
         const assign_person_update = {
             new_items: assignees
                 .filter((item) => !pre_assignees.includes(item))
@@ -69,11 +77,6 @@ const UpdateEvent = observer(() => {
                     permission: "VIEW",
                 })),
         };
-
-        for (const item of fieldsValue?.file_ids?.fileList) {
-            await eventStore.uploadFile(item);
-        }
-
         const values = {
             ...rest,
             event_notice: eventNotice,
@@ -87,7 +90,7 @@ const UpdateEvent = observer(() => {
                 .locale("vi", vi)
                 .toISOString(),
             start_time: rest["start_time"].toISOString(),
-            file_ids: [],
+            file_ids: oldFile,
             end_time: rest["end_time"] && rest["end_time"].toISOString(),
             assign_person_update: assign_person_update,
         };
@@ -119,6 +122,13 @@ const UpdateEvent = observer(() => {
         beforeUpload: (file) => {
             return false;
         },
+        defaultFileList:eventStore.event.file_ids.map(item=>({uid:item.file_id, name: item.file_title,status: 'done'})),showUploadList: {
+            showDownloadIcon: true,
+            downloadIcon: 'Download',
+            showRemoveIcon: true,
+            // removeIcon: <StarOutlined onClick={e => console.log(e, 'custom removeIcon event')} />,
+          },
+
         onChange(info) {
             if (info.file.status === "done") {
                 message.success(`${info.file.name} file uploaded successfully`);
@@ -241,12 +251,11 @@ const UpdateEvent = observer(() => {
                             />
                         </Form.Item>
                         <Form.Item label="Tài liệu đính kèm" name="file_ids">
-                            <Upload {...props} >
+                            <Upload {...props}>
                                 <Button icon={<UploadOutlined />}>
-                                    Upload
+                                    Chọn tài liệu đính kèm
                                 </Button>
                             </Upload>
-                            
                         </Form.Item>
                         <Form.Item label="Thành viên tham gia" name="attenders">
                             <Input placeholder="--Thành viện tham gia--" />

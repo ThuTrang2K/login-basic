@@ -40,18 +40,9 @@ const CreateEvent = observer(() => {
         });
     }, []);
     const onFinish = async (fieldsValue) => {
-        // Chạy song song
-        // await Promise.all(
-        //     fieldsValue?.file_ids?.fileList.forEach((item) =>
-        //         eventStore.uploadFile(item)
-        //     )
-        // );
-
-        // Chạy lần lượt
         for (const item of fieldsValue?.file_ids?.fileList) {
             await eventStore.uploadFile(item);
         }
-
         const values = {
             ...fieldsValue,
             event_notice: eventNotice,
