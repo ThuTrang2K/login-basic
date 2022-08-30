@@ -36,7 +36,7 @@ function App() {
                     element={<GeneralNotifications />}
                 />
                 <Route
-                    path="/utility/general-notifications/view/:id"
+                    path="/utility/general-notifications/view/:news_id"
                     element={<DetailNews />}
                 />
                 <Route

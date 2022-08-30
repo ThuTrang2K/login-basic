@@ -1,4 +1,7 @@
 import {
+    DeleteOutlined,
+    EditOutlined,
+    EyeOutlined,
     HomeOutlined,
     MoreOutlined,
 } from "@ant-design/icons";
@@ -22,14 +25,13 @@ const GeneralNotifications = observer(() => {
     useEffect(() => {
         generalNotifStore.getGeneralNotif();
     }, []);
-    console.log("data", generalNotifStore?.news);
     const menu =(id)=> (
         <Menu
             items={[
                 {
                     label: (
                         <Link to={`/utility/general-notifications/view/${id}`}>
-                            Xem chi tiết
+                            <EyeOutlined />&nbsp; Xem chi tiết
                         </Link>
                     ),
                     key: "0",
@@ -37,13 +39,13 @@ const GeneralNotifications = observer(() => {
                 {
                     label: (
                         <Link to={`/utility/general-notifications/update/${id}`}>
-                            Sửa thông tin
+                            <EditOutlined />&nbsp; Sửa thông tin
                         </Link>
                     ),
                     key: "1",
                 },
                 {
-                    label: <Link to="">Xóa</Link>,
+                    label: <Link to=""> <DeleteOutlined />&nbsp; Xóa</Link>,
                     key: "2",
                     danger: true,
                     onClick:()=>handleDelete(id)
