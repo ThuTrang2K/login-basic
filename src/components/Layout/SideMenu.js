@@ -4,10 +4,13 @@ import {
     CalendarOutlined,
     FileOutlined,
     HomeOutlined,
+    SolutionOutlined,
     TeamOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
+import './style.scss'
+
 function getItem(label, key, icon, children) {
     return {
         key,
@@ -16,11 +19,13 @@ function getItem(label, key, icon, children) {
         label,
     };
 }
+
 const { Sider } = Layout;
 const SideMenu = () => {
     return (
         <Sider width={200} className="site-layout-background">
             <Menu
+            className="side-menu"
                 mode="inline"
                 defaultSelectedKeys={[window.location.pathname==='/'?"/dashboard":window.location.pathname]}
                 style={{
@@ -42,9 +47,9 @@ const SideMenu = () => {
                     <span>Lịch cơ quan</span>
                     <Link to='/company-work-schedule'></Link>
                 </Menu.Item>
-                <Menu.SubMenu key="/item" title="sub menu">
+                <Menu.SubMenu key="/item" title="Tiện ích" icon={<SolutionOutlined />}>
                     
-                    <Menu.Item>item 3</Menu.Item>
+                    <Menu.Item key={"/utility/general-notifications"}><Link to='/utility/general-notifications'>Thông báo chung</Link></Menu.Item>
                 </Menu.SubMenu>
             </Menu>
         </Sider>

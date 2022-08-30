@@ -101,4 +101,17 @@
 .ant-layout-header {
   background-color: #2c65ac !important;
 }
+//side menu
+.side-menu {
+  li.ant-menu-item,li.ant-menu-submenu.ant-menu-submenu-inline {
+    color: rgb(58, 90, 125);
+    height: 48px;
+    line-height: 48px;
+    font-weight: 700;
+    font-size: 0.78rem;}
+   
+}
+
+
+
 

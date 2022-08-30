@@ -175,7 +175,6 @@ const WorkSchedule = observer(() => {
                 </div>
             </div>
             <Table
-                // className="hire-td"
                 bordered
                 style={{ fontSize: "12px !important" }}
                 rowKey={(record) => record.schedule_code}
