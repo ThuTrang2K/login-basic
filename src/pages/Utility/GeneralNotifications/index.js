@@ -1,7 +1,4 @@
 import {
-    ArrowLeftOutlined,
-    EyeOutlined,
-    FileImageOutlined,
     HomeOutlined,
     MoreOutlined,
 } from "@ant-design/icons";
@@ -12,29 +9,26 @@ import {
     Dropdown,
     Menu,
     Modal,
-    Space,
-    Tooltip,
 } from "antd";
 import React, { useContext, useEffect } from "react";
 import "./style.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context";
 import { observer } from "mobx-react-lite";
 import FileAttached from "../../../components/FileAttached";
 
 const GeneralNotifications = observer(() => {
-    const navigate = useNavigate();
-    const { generalNotifStore, eventStore } = useContext(AuthContext);
+    const { generalNotifStore } = useContext(AuthContext);
     useEffect(() => {
         generalNotifStore.getGeneralNotif();
     }, []);
     console.log("data", generalNotifStore?.news);
-    const menu = (
+    const menu =(id)=> (
         <Menu
             items={[
                 {
                     label: (
-                        <Link to={`/utility/general-notifications/view/68`}>
+                        <Link to={`/utility/general-notifications/view/${id}`}>
                             Xem chi tiết
                         </Link>
                     ),
@@ -42,7 +36,7 @@ const GeneralNotifications = observer(() => {
                 },
                 {
                     label: (
-                        <Link to={`/utility/general-notifications/update/68`}>
+                        <Link to={`/utility/general-notifications/update/${id}`}>
                             Sửa thông tin
                         </Link>
                     ),
@@ -52,10 +46,20 @@ const GeneralNotifications = observer(() => {
                     label: <Link to="">Xóa</Link>,
                     key: "2",
                     danger: true,
+                    onClick:()=>handleDelete(id)
                 },
             ]}
         />
     );
+    const handleDelete = (id) => {
+        Modal.confirm({
+            title: "Bạn có chắc chắn muốn xóa?",
+            onOk: async() => {
+                await generalNotifStore.deleteNews(id);
+                await generalNotifStore.getGeneralNotif();
+            },
+        });
+    };
     return (
         <div className="general-notif-container">
             <div className="notif-header">
@@ -91,7 +95,7 @@ const GeneralNotifications = observer(() => {
                             <div className="notif-item-title">
                                 {item.subject}
                             </div>
-                            <Dropdown overlay={menu} trigger={["click"]}>
+                            <Dropdown overlay={menu(item.id)} trigger={["click"]}>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <div className="notif-item-more">
                                         <MoreOutlined />

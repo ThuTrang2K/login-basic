@@ -23,7 +23,7 @@ class GeneralNotifStore {
     }
 
     async createNews(data) {
-        await axios.post(
+        return await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/v1/news`,
             {
                 subject: data.subject,
@@ -31,6 +31,18 @@ class GeneralNotifStore {
                 author: data.author,
                 attachments_request: data.attachments_request,
             },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+         
+    }
+
+    async deleteNews(id) {
+        return await axios.delete(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/news/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
