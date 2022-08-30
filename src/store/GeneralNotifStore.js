@@ -11,7 +11,7 @@ class GeneralNotifStore  {
     }
     async getGeneralNotif() {
         const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/news?page=1&size=10`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/news?page=0&size=10`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,

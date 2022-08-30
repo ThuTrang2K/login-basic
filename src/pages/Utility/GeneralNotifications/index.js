@@ -11,6 +11,7 @@ import "./style.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context";
 import { observer } from "mobx-react-lite";
+import FileAttached from "../../../components/FileAttached";
 
 const GeneralNotifications = observer(() => {
     const navigate = useNavigate();
@@ -105,92 +106,8 @@ const GeneralNotifications = observer(() => {
                                 </div>
                             )}
                             <div className="notif-item-file">
-                                Tài liệu đính kèm:
-                                {/* <ul className="file-list">
-                                {item?.attachments.length > 0 ? (
-                                    item?.attachments.map((item) => {
-                                        const fileExtension = item.file_name
-                                            .slice(
-                                                (Math.max(
-                                                    0,
-                                                    item.file_title.lastIndexOf(
-                                                        "."
-                                                    )
-                                                ) || Infinity) + 1
-                                            )
-                                            .toLowerCase();
-                                        return (
-                                            <li>
-                                                <Tooltip
-                                                    placement="top"
-                                                    title="Tải xuống"
-                                                >
-                                                    <a
-                                                        className=""
-                                                        onClick={() => {
-                                                            eventStore.downLoad(
-                                                                item.file_id,
-                                                                item.file_name
-                                                            );
-                                                        }}
-                                                    >
-                                                        <FileImageOutlined
-                                                            style={{
-                                                                marginRight:
-                                                                    "5px",
-                                                            }}
-                                                        />
-                                                        {item.file_name}
-                                                    </a>
-                                                </Tooltip>
-                                                {(fileExtension === "png" ||
-                                                    fileExtension ===
-                                                        "jpg") && (
-                                                    <Tooltip
-                                                        placement="top"
-                                                        title="Xem tài liệu"
-                                                    >
-                                                        <EyeOutlined
-                                                            onClick={() => {
-                                                                setPreviewImage(
-                                                                    `${process.env.REACT_APP_BASE_URL}/api/v1/images/${item.file_id}?access_token=${eventStore.access_token}`
-                                                                );
-                                                                setPreviewTitle(
-                                                                    item.file_title
-                                                                );
-                                                                setPreviewVisible(
-                                                                    true
-                                                                );
-                                                            }}
-                                                        />
-                                                    </Tooltip>
-                                                )}
-
-                                                <Modal
-                                                    style={{ overFlow: "" }}
-                                                    visible={previewVisible}
-                                                    title={previewTitle}
-                                                    footer={null}
-                                                    onCancel={handleCancel}
-                                                >
-                                                    <img
-                                                        alt="example"
-                                                        style={{
-                                                            width: "100%",
-                                                        }}
-                                                        src={previewImage}
-                                                    />
-                                                </Modal>
-                                            </li>
-                                        );
-                                    })
-                                ) : (
-                                    <div className="no-infor">
-                                        Không có tài liệu đính kèm.
-                                    </div>
-                                )}
-                            </ul> */}
-                            
+                                <div className="file-title">Tài liệu đính kèm: &nbsp;</div>
+                                <FileAttached files={item?.attachments} dataStore={eventStore} fileName="file_name" fileId="file_id" />
                             </div>
                         </div>
                     </div>

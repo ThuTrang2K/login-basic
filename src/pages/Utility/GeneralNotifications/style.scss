@@ -63,8 +63,11 @@
         }
 
         &-file {
+            display: flex;
             margin: 10px 10px 15px 0px;
-            font-weight: bold;
+            .file-title {
+                font-weight: bold;
+            }
         }
     }
 }
