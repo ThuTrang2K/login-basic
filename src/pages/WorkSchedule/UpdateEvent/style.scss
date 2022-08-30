@@ -1,27 +1,4 @@
 .create-event-container{
-    .back-button {
-        transform: translateX(-10px);
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        -webkit-box-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        align-items: center;
-        font-size: 15px;
-        display: inline-flex;
-        cursor: pointer;
-        transition: all 0.3s ease 0s;
-         &:hover {
-            background: rgb(255, 255, 255);
-         }
-    }
-    .create-title {
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 28px;
-        word-break: break-all;
-    }
     .create-form {
         background: rgb(255, 255, 255);
         padding: 1rem;

@@ -1,8 +1,10 @@
 import { EyeOutlined, FileImageOutlined } from "@ant-design/icons";
 import { Modal, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../context";
 
-const FileAttached = ({ files, dataStore, fileName, fileId }) => {
+const FileAttached = ({ files, fileName, fileId }) => {
+    const { fileStore} = useContext(AuthContext);
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
@@ -25,7 +27,7 @@ const FileAttached = ({ files, dataStore, fileName, fileId }) => {
                                 <a
                                     className=""
                                     onClick={() => {
-                                        dataStore.downLoad(
+                                        fileStore.downLoad(
                                             item[`${fileId}`],
                                             item[`${fileName}`]
                                         );
@@ -51,7 +53,7 @@ const FileAttached = ({ files, dataStore, fileName, fileId }) => {
                                                 }/api/v1/images/${
                                                     item[`${fileId}`]
                                                 }?access_token=${
-                                                    dataStore.access_token
+                                                    fileStore.access_token
                                                 }`
                                             );
                                             setPreviewTitle(

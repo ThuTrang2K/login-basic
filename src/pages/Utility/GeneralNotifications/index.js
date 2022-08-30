@@ -5,7 +5,16 @@ import {
     HomeOutlined,
     MoreOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Button, Divider, Dropdown, Menu, Modal, Space, Tooltip } from "antd";
+import {
+    Breadcrumb,
+    Button,
+    Divider,
+    Dropdown,
+    Menu,
+    Modal,
+    Space,
+    Tooltip,
+} from "antd";
 import React, { useContext, useEffect } from "react";
 import "./style.scss";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +24,7 @@ import FileAttached from "../../../components/FileAttached";
 
 const GeneralNotifications = observer(() => {
     const navigate = useNavigate();
-    const { generalNotifStore ,eventStore} = useContext(AuthContext);
+    const { generalNotifStore, eventStore } = useContext(AuthContext);
     useEffect(() => {
         generalNotifStore.getGeneralNotif();
     }, []);
@@ -106,8 +115,14 @@ const GeneralNotifications = observer(() => {
                                 </div>
                             )}
                             <div className="notif-item-file">
-                                <div className="file-title">Tài liệu đính kèm: &nbsp;</div>
-                                <FileAttached files={item?.attachments} dataStore={eventStore} fileName="file_name" fileId="file_id" />
+                                <div className="file-title">
+                                    Tài liệu đính kèm: &nbsp;
+                                </div>
+                                <FileAttached
+                                    files={item?.attachments}
+                                    fileName="file_name"
+                                    fileId="file_id"
+                                />
                             </div>
                         </div>
                     </div>

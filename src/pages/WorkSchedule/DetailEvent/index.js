@@ -145,7 +145,7 @@ const DetailEvent = observer(() => {
                             label="Tài liệu đính kèm
 "
                         >
-                        <FileAttached files={event?.file_ids} dataStore={eventStore} fileName="file_title" fileId="file_id" />
+                        <FileAttached files={event?.file_ids} fileName="file_title" fileId="file_id" />
                         </Descriptions.Item>
                         <Descriptions.Item
                             span="12"

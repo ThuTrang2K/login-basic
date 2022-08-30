@@ -22,7 +22,7 @@ import { AuthContext } from "../../../context";
 import { StarOutlined, UploadOutlined } from "@ant-design/icons";
 
 const UpdateEvent = observer(() => {
-    const { eventStore, workSchedulesStore } = useContext(AuthContext);
+    const { eventStore, workSchedulesStore,fileStore } = useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState(
         eventStore?.event?.event_notice
     );
@@ -57,7 +57,7 @@ const UpdateEvent = observer(() => {
         console.log("oldFile",oldFile);
         await Promise.all(
             newFile.map((item) =>
-                eventStore.uploadFile(item)
+            fileStore.uploadFile(item)
             )
         );
         // for (const item of newFile) {
@@ -94,7 +94,7 @@ const UpdateEvent = observer(() => {
                 .locale("vi", vi)
                 .toISOString(),
             start_time: rest["start_time"].toISOString(),
-            file_ids: oldFile,
+            file_ids: [...fileStore.files,...oldFile] ,
             end_time: rest["end_time"] && rest["end_time"].toISOString(),
             assign_person_update: assign_person_update,
         };

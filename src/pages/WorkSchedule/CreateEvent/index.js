@@ -28,7 +28,8 @@ import { AuthContext } from "../../../context";
 import Item from "antd/lib/list/Item";
 
 const CreateEvent = observer(() => {
-    const { eventStore, workSchedulesStore } = useContext(AuthContext);
+    const { eventStore, workSchedulesStore, fileStore } =
+        useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState("");
     let navigate = useNavigate();
     const [form] = Form.useForm();
@@ -42,7 +43,7 @@ const CreateEvent = observer(() => {
     const onFinish = async (fieldsValue) => {
         await Promise.all(
             fieldsValue?.file_ids?.fileList.map((item) =>
-                eventStore.uploadFile(item)
+                fileStore.uploadFile(item)
             )
         );
         // for (const item of fieldsValue?.file_ids?.fileList) {
@@ -75,6 +76,7 @@ const CreateEvent = observer(() => {
                       };
                   })
                 : [],
+            file_ids: fileStore.files,
         };
         console.log("value", values);
 

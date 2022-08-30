@@ -1,12 +1,11 @@
-import axios from 'axios';
-import { makeAutoObservable, runInAction } from 'mobx';
+import axios from "axios";
+import { makeAutoObservable, runInAction } from "mobx";
 
-class GeneralNotifStore  {
+class GeneralNotifStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
-    news=[];
-
+    news = [];
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this);
         this.getGeneralNotif();
     }
     async getGeneralNotif() {
@@ -18,11 +17,27 @@ class GeneralNotifStore  {
                 },
             }
         );
-        runInAction(()=>{
-            this.news= response.data.data
-        })
+        runInAction(() => {
+            this.news = response.data.data;
+        });
     }
-};
+
+    async createNews(data) {
+        await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/news`,
+            {
+                subject: data.subject,
+                content: data.content,
+                author: data.author,
+                attachments_request: data.attachments_request,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
+}
 
 export default GeneralNotifStore;
-
