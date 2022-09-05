@@ -39,8 +39,8 @@ const CreateNews = observer(() => {
             author:{name_lowercase: authStore.user.name_lowercase,user_name:authStore.user.username}
         };
         console.log("value", values);
-
         await generalNotifStore.createNews(values);
+        fileStore.files=[]
         navigate(-1);
     };
 

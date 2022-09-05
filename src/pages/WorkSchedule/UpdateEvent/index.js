@@ -100,6 +100,7 @@ const UpdateEvent = observer(() => {
         };
         console.log("value", values);
         await eventStore.UpdateEvent(values, schedule_code);
+        fileStore.files=[];
         await workSchedulesStore.getschedules(moment());
         navigate(-1);
     };

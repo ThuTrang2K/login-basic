@@ -50,6 +50,7 @@ class FileStore  {
             link.click();
         });
     }
+     
 };
 
 export default FileStore;

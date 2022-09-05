@@ -9,6 +9,9 @@
 //     img {
 //         width: 100%;
 //     }
+header.ant-layout-header.header {
+  z-index: 1000 !important;
+}
 
 .logo {
   float: left;

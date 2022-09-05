@@ -81,6 +81,7 @@ const CreateEvent = observer(() => {
         console.log("value", values);
 
         await eventStore.createEvent(values);
+        fileStore.files=[]
         await workSchedulesStore.getschedules(moment());
         navigate(-1);
     };

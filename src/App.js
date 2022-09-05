@@ -40,7 +40,7 @@ function App() {
                     element={<DetailNews />}
                 />
                 <Route
-                    path="/utility/general-notifications/update/68"
+                    path="/utility/general-notifications/update/:news_id"
                     element={<UpdateNews />}
                 />
                 <Route
