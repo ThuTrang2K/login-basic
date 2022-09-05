@@ -6,6 +6,7 @@ class GeneralNotifStore {
     news = [];
     newsDetail={};
     hasMore = false;
+    loading=false
     constructor() {
         makeAutoObservable(this);
     }
@@ -14,9 +15,8 @@ class GeneralNotifStore {
             `${process.env.REACT_APP_BASE_URL}/api/v1/news?page=${page}&size=10`,
             {
                 headers: {
-                    Authorization: `Bearer ${this.access_token}`,
-                },
-            }
+                   Authorization: `Bearer ${this.access_token}`,
+                },            }
         );
         runInAction(() => {
             this.news = [...this.news,...response.data.data];
@@ -38,7 +38,8 @@ class GeneralNotifStore {
     }
 
     async createNews(data) {
-        return await axios.post(
+        this.loading=true
+        await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/v1/news`,
             {
                 subject: data.subject,
@@ -52,7 +53,7 @@ class GeneralNotifStore {
                 },
             }
         );
-         
+        this.loading=false
     }
 
     async deleteNews(id) {

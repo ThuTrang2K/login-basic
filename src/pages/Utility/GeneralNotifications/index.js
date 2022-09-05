@@ -82,7 +82,7 @@ const GeneralNotifications = observer(() => {
             title: "Bạn có chắc chắn muốn xóa?",
             onOk: async () => {
                 await generalNotifStore.deleteNews(id);
-                await generalNotifStore.getGeneralNotif();
+                await generalNotifStore.getGeneralNotif(page);
             },
         });
     };
