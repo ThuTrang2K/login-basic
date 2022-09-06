@@ -35,7 +35,7 @@ const CreateNews = observer(() => {
             "fieldsValue?.attachments_request",
             fieldsValue?.attachments_request
         );
-        await Promise.all(
+        fieldsValue?.attachments_request?.fileList && await Promise.all(
             fieldsValue?.attachments_request?.fileList.map((item) =>
                 fileStore.uploadFile(item)
             )
@@ -43,7 +43,7 @@ const CreateNews = observer(() => {
         const values = {
             ...fieldsValue,
             content: content,
-            attachments_request: { new_items: fileStore.files },
+            attachments_request: { new_items: fileStore.files? fileStore.files:[] },
             author: {
                 name_lowercase: authStore.user.name_lowercase,
                 user_name: authStore.user.username,
