@@ -15,18 +15,20 @@ const UpdateNews = observer(() => {
     const navigate = useNavigate();
     const { news_id } = useParams();
     const { authStore, fileStore, generalNotifStore } = useContext(AuthContext);
-    const [fileList, setFileList] = useState([]);        
+    const [fileList, setFileList] = useState([]);
     useEffect(() => {
         async function fetchData() {
             await generalNotifStore.getNewsById(news_id);
-            setFileList(generalNotifStore.newsDetail?.attachments
-                && generalNotifStore.newsDetail?.attachments.map((item) => ({
-                      uid: item.file_id,
-                      name: item.file_name,
-                      status: "done",
-                  })))
-      }
-      fetchData();
+            setFileList(
+                generalNotifStore.newsDetail?.attachments &&
+                    generalNotifStore.newsDetail?.attachments.map((item) => ({
+                        uid: item.file_id,
+                        name: item.file_name,
+                        status: "done",
+                    }))
+            );
+        }
+        fetchData();
     }, [news_id]);
     const [form] = Form.useForm();
     const [content, setContent] = useState(
@@ -42,19 +44,23 @@ const UpdateNews = observer(() => {
                   (file) => file.file_id
               )
             : [];
-        const fileList = fieldsValue?.attachments_request?.fileList;
-        const newFiles = fileList
-            ? fileList.filter((file) => file.status !== "done")
+        const fileListNew = fieldsValue?.attachments_request?.fileList;
+        const newFiles = fileListNew
+            ? fileListNew.filter((file) => file.status !== "done")
             : [];
-        const oldFiles = fileList
-            ? fileList
+        const oldFiles = fileListNew
+            ? fileListNew
                   .filter((file) => file.status === "done")
                   .map((file) => file.uid)
             : [];
-        await Promise.all(newFiles.map((item) => fileStore.uploadFile(item)));
+        console.log(allFiles, oldFiles);
+        newFiles &&
+            (await Promise.all(
+                newFiles.map((item) => fileStore.uploadFile(item))
+            ));
         const attachments_request = {
             new_items: fileStore.files ? fileStore.files : [],
-            remove_items: oldFiles.length >0
+            remove_items: oldFiles
                 ? allFiles.filter((file) => !oldFiles.includes(file))
                 : [],
         };
@@ -71,7 +77,7 @@ const UpdateNews = observer(() => {
         console.log("value", values);
 
         await generalNotifStore.UpdateNews(values);
-         fileStore.files = [];
+        fileStore.files = [];
         navigate(-1);
     };
 
@@ -83,8 +89,8 @@ const UpdateNews = observer(() => {
         multiple: true,
         beforeUpload: (file) => {
             return false;
-        }, 
-        fileList:fileList,
+        },
+        fileList: fileList,
         // fileList:generalNotifStore.newsDetail?.attachments
         // && generalNotifStore.newsDetail?.attachments.map((item) => ({
         //       uid: item.file_id,
@@ -92,9 +98,8 @@ const UpdateNews = observer(() => {
         //       status: "done",
         //   })),
         onChange({ file, fileList }) {
-            setFileList(fileList)
-          }
-        
+            setFileList(fileList);
+        },
     };
     if (!generalNotifStore.newsDetail) return null;
     return (
