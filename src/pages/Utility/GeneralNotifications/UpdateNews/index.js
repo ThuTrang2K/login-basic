@@ -12,7 +12,7 @@ import { AuthContext } from "../../../../context";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const UpdateNews = observer(() => {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const { news_id } = useParams();
     const { authStore, fileStore, generalNotifStore } = useContext(AuthContext);
     const [fileList, setFileList] = useState([]);        

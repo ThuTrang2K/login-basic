@@ -5,12 +5,19 @@
         align-items: center;
     }
 
-    .notif-body {
-        columns: 2;
-        gap: 16px;
-    }
+    // .notif-body {
+    //     columns: 2;
+    //     flex-direction: row;
+    //     gap: 16px;
+    // }
 }
-
+.photo-list {
+    list-style-type: none;
+    margin-top: 10px;
+}
+.photo-item {
+    width: calc(50% - 60px);
+}
 .notif-item {
     -webkit-column-break-inside: avoid;
     /* Chrome, Safari, Opera */
@@ -18,7 +25,7 @@
     /* Firefox */
     break-inside: avoid;
     /* IE 10+ */
-
+    display: inline-block;
     background-color: #fff;
     margin-bottom: 24px;
     padding: 24px;

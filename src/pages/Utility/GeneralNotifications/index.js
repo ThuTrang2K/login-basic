@@ -14,27 +14,32 @@ import React, {
     useState,
 } from "react";
 import "./style.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context";
 import { observer } from "mobx-react-lite";
 import FileAttached from "../../../components/FileAttached";
+import Masony from "react-masonry-component";
 
 const GeneralNotifications = observer(() => {
+    const navigate = useNavigate();
     const { generalNotifStore } = useContext(AuthContext);
     const [page, setPage] = useState(0);
     const observe = useRef();
-    const lastBookElementRef = useCallback((node) => {
-        if(observe.current) observe.current.disconnect();
-        observe.current= new IntersectionObserver(entries=>{
-            if(entries[0].isIntersecting && generalNotifStore.hasMore){
-                setPage(prePage=>prePage+1)
-            }
-        })
-        if(node) observe.current.observe(node)
-        console.log(node);
-    },[generalNotifStore.hasMore]);
+    const lastBookElementRef = useCallback(
+        (node) => {
+            if (observe.current) observe.current.disconnect();
+            observe.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && generalNotifStore.hasMore) {
+                    setPage((prePage) => prePage + 1);
+                }
+            });
+            if (node) observe.current.observe(node);
+            console.log(node);
+        },
+        [generalNotifStore.hasMore]
+    );
     useEffect(() => {
-        generalNotifStore.news=[];
+        generalNotifStore.news = [];
     }, []);
     useEffect(() => {
         generalNotifStore.getGeneralNotif(page);
@@ -82,9 +87,14 @@ const GeneralNotifications = observer(() => {
             title: "Bạn có chắc chắn muốn xóa?",
             onOk: async () => {
                 await generalNotifStore.deleteNews(id);
-                await generalNotifStore.getGeneralNotif(page);
+                setTimeout(() => navigate(0), 500);
             },
         });
+    };
+
+    const masonryOptions = {
+        gutter: 30,
+        itemSelector: ".photo-item",
     };
     return (
         <div className="general-notif-container">
@@ -114,103 +124,126 @@ const GeneralNotifications = observer(() => {
                     </Link>
                 </Button>
             </div>
-            <div className="notif-body">
+
+            <Masony
+                className={"photo-list"}
+                elementType={"ul"}
+                options={masonryOptions}
+                disableImagesLoaded={false}
+                updateOnEachImageLoad={false}
+            >
                 {generalNotifStore?.news.map((item, index) => {
                     if (generalNotifStore?.news.length === index + 1) {
                         return (
-                            <div ref={lastBookElementRef} className="notif-item" key={item.id}>
-                                <div className="notif-item-header">
-                                    <div className="notif-item-title">
-                                        {item.subject}
+                            <li
+                                className="photo-item "
+                                ref={lastBookElementRef}
+                                key={item.id}
+                            >
+                                {" "}
+                                <div className="notif-item">
+                                    <div className="notif-item-header">
+                                        <div className="notif-item-title">
+                                            {item.subject}
+                                        </div>
+                                        <Dropdown
+                                            overlay={menu(item.id)}
+                                            trigger={["click"]}
+                                        >
+                                            <a
+                                                onClick={(e) =>
+                                                    e.preventDefault()
+                                                }
+                                            >
+                                                <div className="notif-item-more">
+                                                    <MoreOutlined />
+                                                </div>
+                                            </a>
+                                        </Dropdown>
                                     </div>
-                                    <Dropdown
-                                        overlay={menu(item.id)}
-                                        trigger={["click"]}
-                                    >
-                                        <a onClick={(e) => e.preventDefault()}>
-                                            <div className="notif-item-more">
-                                                <MoreOutlined />
+                                    <Divider />
+                                    <div className="notif-item-content">
+                                        {item.content ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.content,
+                                                }}
+                                                className="editor"
+                                            ></div>
+                                        ) : (
+                                            <div className="no-infor">
+                                                Không có nội dung sự kiện.
                                             </div>
-                                        </a>
-                                    </Dropdown>
-                                    {/* <div className="notif-item-more"><MoreOutlined /></div> */}
-                                </div>
-                                <Divider />
-                                <div className="notif-item-content">
-                                    {item.content ? (
-                                        <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: item.content,
-                                            }}
-                                            className="editor"
-                                        ></div>
-                                    ) : (
-                                        <div className="no-infor">
-                                            Không có nội dung sự kiện.
+                                        )}
+                                        <div className="notif-item-file">
+                                            <div className="file-title">
+                                                Tài liệu đính kèm: &nbsp;
+                                            </div>
+                                            <FileAttached
+                                                files={item?.attachments}
+                                                fileName="file_name"
+                                                fileId="file_id"
+                                            />
                                         </div>
-                                    )}
-                                    <div className="notif-item-file">
-                                        <div className="file-title">
-                                            Tài liệu đính kèm: &nbsp;
-                                        </div>
-                                        <FileAttached
-                                            files={item?.attachments}
-                                            fileName="file_name"
-                                            fileId="file_id"
-                                        />
                                     </div>
                                 </div>
-                            </div>
+                            </li>
                         );
                     } else {
                         return (
-                            <div  className="notif-item" key={item.id}>
-                                <div className="notif-item-header">
-                                    <div className="notif-item-title">
-                                        {item.subject}
+                            <li className="photo-item " key={item.id}>
+                                {" "}
+                                <div className="notif-item">
+                                    <div className="notif-item-header">
+                                        <div className="notif-item-title">
+                                            {item.subject}
+                                        </div>
+                                        <Dropdown
+                                            overlay={menu(item.id)}
+                                            trigger={["click"]}
+                                        >
+                                            <a
+                                                onClick={(e) =>
+                                                    e.preventDefault()
+                                                }
+                                            >
+                                                <div className="notif-item-more">
+                                                    <MoreOutlined />
+                                                </div>
+                                            </a>
+                                        </Dropdown>
                                     </div>
-                                    <Dropdown
-                                        overlay={menu(item.id)}
-                                        trigger={["click"]}
-                                    >
-                                        <a onClick={(e) => e.preventDefault()}>
-                                            <div className="notif-item-more">
-                                                <MoreOutlined />
+                                    <Divider />
+                                    <div className="notif-item-content">
+                                        {item.content ? (
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.content,
+                                                }}
+                                                className="editor"
+                                            ></div>
+                                        ) : (
+                                            <div className="no-infor">
+                                                Không có nội dung sự kiện.
                                             </div>
-                                        </a>
-                                    </Dropdown>
-                                    {/* <div className="notif-item-more"><MoreOutlined /></div> */}
-                                </div>
-                                <Divider />
-                                <div className="notif-item-content">
-                                    {item.content ? (
-                                        <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: item.content,
-                                            }}
-                                            className="editor"
-                                        ></div>
-                                    ) : (
-                                        <div className="no-infor">
-                                            Không có nội dung sự kiện.
+                                        )}
+                                        <div className="notif-item-file">
+                                            <div className="file-title">
+                                                Tài liệu đính kèm: &nbsp;
+                                            </div>
+                                            <FileAttached
+                                                files={item?.attachments}
+                                                fileName="file_name"
+                                                fileId="file_id"
+                                            />
                                         </div>
-                                    )}
-                                    <div className="notif-item-file">
-                                        <div className="file-title">
-                                            Tài liệu đính kèm: &nbsp;
-                                        </div>
-                                        <FileAttached
-                                            files={item?.attachments}
-                                            fileName="file_name"
-                                            fileId="file_id"
-                                        />
                                     </div>
                                 </div>
-                            </div>
+                            </li>
                         );
                     }
                 })}
-            </div>
+            </Masony>
         </div>
     );
 });
