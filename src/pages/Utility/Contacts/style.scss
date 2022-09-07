@@ -12,7 +12,10 @@
     .ant-tabs-ink-bar {
         background: #2c65ac;
     }
-
+    //users
+    .contacts-table-wrapper {
+        min-height: 750px;
+    }
     .ant-btn.ant-btn-primary.ant-input-search-button {
         height: 29px;
         background: #2c65ac;
@@ -62,5 +65,18 @@
 
     .ant-table-tbody>tr.ant-table-row:hover>td {
         background: inherit !important;
+    }
+    //pagination
+    .ant-table-pagination.ant-pagination {
+        margin: 16px 0;
+        display: none;
+    }
+    .contacts-users-pagination {
+        margin-top: 16px;
+        // margin-left: auto;
+        text-align: right;
+    }
+    .ant-pagination-options {
+        display: none;
     }
 }

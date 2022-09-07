@@ -4,6 +4,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 class UsersStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
     users = [];
+    total_count=0
     loading=false
     constructor() {
         makeAutoObservable(this);
@@ -18,7 +19,7 @@ class UsersStore {
         );
         runInAction(() => {
             this.users = response.data.data; 
-
+            this.total_count=response.data.total_count
         });
     }
 //     async getNewsById(id) {
