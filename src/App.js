@@ -5,6 +5,7 @@ import Home from "./components/Layout/Home";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
+import Contacts from "./pages/Utility/Contacts";
 import GeneralNotifications from "./pages/Utility/GeneralNotifications";
 import CreateNews from "./pages/Utility/GeneralNotifications/CreateNews";
 import DetailNews from "./pages/Utility/GeneralNotifications/DetailNews";
@@ -46,6 +47,10 @@ function App() {
                 <Route
                     path="/utility/general-notifications/create"
                     element={<CreateNews />}
+                />
+                <Route
+                    path="/utility/contacts"
+                    element={<Contacts/>}
                 />
             </Route>
             <Route path="/login" element={<Login />} />

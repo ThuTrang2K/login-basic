@@ -1,0 +1,66 @@
+.contacts-tab {
+
+    // color: #2c65ac !important;
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+        color: #2c65ac;
+    }
+
+    .ant-tabs-tab:hover {
+        color: #2c65ac;
+    }
+
+    .ant-tabs-ink-bar {
+        background: #2c65ac;
+    }
+
+    .ant-btn.ant-btn-primary.ant-input-search-button {
+        height: 29px;
+        background: #2c65ac;
+        border: none;
+    }
+
+    .ant-input-search .ant-input:focus {
+        border-color: #2c65ac;
+    }
+
+    //
+    span.ant-avatar.ant-avatar-circle {
+        background-color: rgb(24, 144, 255);
+        display: flex;
+        flex-shrink: 0;
+    }
+
+    .contacts-flex {
+        display: flex;
+        align-items: center;
+    }
+
+    .contacts-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: black;
+        margin-left: 16px;
+    }
+
+    .contacts-search .ant-input{
+        width: 450px;
+    }
+  
+    .ant-table {
+        tr:nth-child(even) {
+            background: #e9f0fd;
+        }
+    }
+    tr:nth-child(even):hover {
+        background: #e9f0fd !important;
+    }
+    table:hover,
+    tr:hover,
+    thead:hover {
+        background: inherit !important;
+    }
+
+    .ant-table-tbody>tr.ant-table-row:hover>td {
+        background: inherit !important;
+    }
+}
