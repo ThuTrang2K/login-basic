@@ -3,6 +3,7 @@ import { Breadcrumb, Tabs } from "antd";
 import React from "react";
 import "./style.scss";
 import Users from "./Users";
+import UsresByDepartment from "./UsresByDepartment";
 
 const Contacts = () => {
     return (
@@ -22,10 +23,10 @@ const Contacts = () => {
             <div className="main-container">
                 <Tabs defaultActiveKey="1" className="contacts-tab">
                     <Tabs.TabPane tab="Nhân viên" key="1">
-                    <Users/>
+                        <Users />
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="Phòng ban" key="2">
-                        Content of Tab Pane 2
+                        <UsresByDepartment />
                     </Tabs.TabPane>
                 </Tabs>
             </div>

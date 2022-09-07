@@ -12,10 +12,13 @@
     .ant-tabs-ink-bar {
         background: #2c65ac;
     }
+
     //users
     .contacts-table-wrapper {
         min-height: 750px;
+        min-width: 1200px;
     }
+
     .ant-btn.ant-btn-primary.ant-input-search-button {
         height: 29px;
         background: #2c65ac;
@@ -45,18 +48,20 @@
         margin-left: 16px;
     }
 
-    .contacts-search .ant-input{
+    .contacts-search .ant-input {
         width: 450px;
     }
-  
+
     .ant-table {
         tr:nth-child(even) {
             background: #e9f0fd;
         }
     }
+
     tr:nth-child(even):hover {
         background: #e9f0fd !important;
     }
+
     table:hover,
     tr:hover,
     thead:hover {
@@ -66,17 +71,49 @@
     .ant-table-tbody>tr.ant-table-row:hover>td {
         background: inherit !important;
     }
+
     //pagination
     .ant-table-pagination.ant-pagination {
         margin: 16px 0;
         display: none;
     }
+
     .contacts-users-pagination {
-        margin-top: 16px;
+        margin: 16px;
         // margin-left: auto;
         text-align: right;
     }
+
     .ant-pagination-options {
         display: none;
     }
+
+    //layout usersByDepartment
+    .ant-layout.site-layout-background {
+        height: 100%;
+    }
+
+    .ant-layout {
+        flex-direction: row
+    }
+
+    .ant-layout,
+    .site-layout-background {
+        background: #fff !important;
+    }
+
+    .contact-sidebar::-webkit-scrollbar {
+        display: none
+    }
+
+    .contact-content {
+        .ant-space.ant-space-vertical {
+            display: none;
+        }
+
+        .ant-table-wrapper {
+            margin: 0;
+        }
+    }
+
 }
