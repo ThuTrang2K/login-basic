@@ -5,10 +5,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context";
 import { observer } from "mobx-react-lite";
 import Users from "./Users";
+import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
+import ListUsers from "../../../components/ListUsers";
 
 const UsresByDepartment = observer(() => {
-    const { usersStore, eventStore } = useContext(AuthContext);
+    const { usersStore, eventStore,authStore } = useContext(AuthContext);
     const [department_code, setDepartment_code] = useState("");
+    const [name, setName] = useState("");
+    const [curentPage, setCurentPage] = useState(0);
     useEffect(() => {
         async function fetchDepartments() {
             await eventStore.getListDepartmentsUsers();
@@ -16,6 +20,17 @@ const UsresByDepartment = observer(() => {
         }
         fetchDepartments();
     }, []);
+    useEffect(() => {
+      usersStore.getListUsersByDepartment(curentPage,name,department_code,authStore.user.company.code);
+  }, [curentPage,department_code]);
+  const usersList =
+        usersStore?.usersbyDepartment &&
+        usersStore?.usersbyDepartment.map((user) => ({
+            ...user,
+            position: user.position.name,
+            department: user.department.name,
+            name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
+        }));
     function getItem(label, key, icon, children) {
         return {
             key,
@@ -60,10 +75,7 @@ const UsresByDepartment = observer(() => {
                 }}
                 className="contact-content"
             >
-                <Users
-                    style={{ width: "1210px" }}
-                    department_code={department_code}
-                />
+                <ListUsers curentPage={curentPage} dataSource={usersList} total={usersStore?.total_count_Department} setCurentPage={setCurentPage}/>
             </Content>
         </Layout>
     );

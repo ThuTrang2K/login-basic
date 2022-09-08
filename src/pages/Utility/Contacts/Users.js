@@ -6,23 +6,20 @@ import { AuthContext } from "../../../context";
 import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 import ListUsers from "../../../components/ListUsers";
 
-const Users = observer(({department_code=''}) => {
+const Users = observer(() => {
     const { usersStore ,authStore} = useContext(AuthContext);
     const [name, setName] = useState("");
     const [curentPage, setCurentPage] = useState(0);
     useEffect(() => {
         usersStore.getListUsers(curentPage,name,authStore.user.company.code);
     }, [curentPage,name]);
-
     const usersList =
-        usersStore?.users &&
-        usersStore?.users.map((user) => ({
+        usersStore?.users && usersStore?.users.length>0 && usersStore?.users?.map((user) => ({
             ...user,
             position: user.position.name,
             department: user.department.name,
             name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
         }));
-    console.log(usersStore?.users);
     const { Search } = Input;
     const onSearch = (value) => setName(value);
     return (
@@ -35,7 +32,7 @@ const Users = observer(({department_code=''}) => {
                     enterButton
                 />
             </Space>
-            <ListUsers curentPage={curentPage} dataSource={usersList} total={usersStore.total_count} setCurentPage={setCurentPage}/>
+            <ListUsers curentPage={curentPage} dataSource={usersList} total={usersStore?.total_count} setCurentPage={setCurentPage}/>
             
         </>
     );
