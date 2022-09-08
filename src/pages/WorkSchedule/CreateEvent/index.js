@@ -28,13 +28,13 @@ import { AuthContext } from "../../../context";
 import Item from "antd/lib/list/Item";
 
 const CreateEvent = observer(() => {
-    const { eventStore, workSchedulesStore, fileStore } =
+    const { eventStore, workSchedulesStore, fileStore,departmentsStore } =
         useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState("");
     let navigate = useNavigate();
     const [form] = Form.useForm();
     useEffect(() => {
-        eventStore.getListDepartmentsUsers();
+        departmentsStore.getListDepartmentsUsers();
 
         form.setFieldsValue({
             start_at: moment(),
@@ -89,7 +89,7 @@ const CreateEvent = observer(() => {
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
-    const treeData = eventStore.departments;
+    const treeData = departmentsStore.departments;
     const tProps = {
         treeData,
         treeCheckable: true,

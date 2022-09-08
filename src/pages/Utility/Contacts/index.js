@@ -1,11 +1,11 @@
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Tabs } from "antd";
 import React from "react";
+import ListUsersPage from "./ListUsersPage";
 import "./style.scss";
-import Users from "./Users";
-import UsresByDepartment from "./UsresByDepartment";
+import UsresByDepartmentPage from "./UsresByDepartmentPage";
 
-const Contacts = () => {
+const ContactsPage = () => {
     return (
         <div>
             <Breadcrumb
@@ -23,10 +23,10 @@ const Contacts = () => {
             <div className="main-container">
                 <Tabs defaultActiveKey="1" className="contacts-tab">
                     <Tabs.TabPane tab="Nhân viên" key="1" >
-                        <Users/>
+                        <ListUsersPage/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="Phòng ban" key="2">
-                        <UsresByDepartment />
+                        <UsresByDepartmentPage />
                     </Tabs.TabPane>
                 </Tabs>
             </div>
@@ -34,4 +34,4 @@ const Contacts = () => {
     );
 };
 
-export default Contacts;
+export default ContactsPage;

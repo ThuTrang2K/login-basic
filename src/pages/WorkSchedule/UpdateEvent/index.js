@@ -22,14 +22,14 @@ import { AuthContext } from "../../../context";
 import { StarOutlined, UploadOutlined } from "@ant-design/icons";
 
 const UpdateEvent = observer(() => {
-    const { eventStore, workSchedulesStore,fileStore } = useContext(AuthContext);
+    const { eventStore, workSchedulesStore,fileStore,departmentsStore } = useContext(AuthContext);
     const [eventNotice, setEventNotice] = useState(
         eventStore?.event?.event_notice
     );
     let navigate = useNavigate();
     const { schedule_code } = useParams();
     useEffect(() => {
-        eventStore.getListDepartmentsUsers();
+        departmentsStore.getListDepartmentsUsers();
         eventStore.getEventById(schedule_code);
         
     }, []);
@@ -107,7 +107,7 @@ const UpdateEvent = observer(() => {
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
-    const treeData = eventStore.departments;
+    const treeData = departmentsStore.departments;
     const tProps = {
         treeData,
         // value,

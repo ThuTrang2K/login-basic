@@ -4,26 +4,38 @@ import Sider from "antd/lib/layout/Sider";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context";
 import { observer } from "mobx-react-lite";
-import Users from "./Users";
 import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 import ListUsers from "../../../components/ListUsers";
 
-const UsresByDepartment = observer(() => {
-    const { usersStore, eventStore,authStore } = useContext(AuthContext);
+function getItem(label, key, icon, children) {
+    return {
+        key,
+        icon,
+        children,
+        label,
+    };
+}
+const UsresByDepartmentPage = observer(() => {
+    const { usersStore, departmentsStore, authStore } = useContext(AuthContext);
     const [department_code, setDepartment_code] = useState("");
     const [name, setName] = useState("");
     const [curentPage, setCurentPage] = useState(0);
     useEffect(() => {
         async function fetchDepartments() {
-            await eventStore.getListDepartmentsUsers();
-            setDepartment_code(eventStore?.departments[0].code);
+            await departmentsStore.getListDepartmentsUsers();
+            setDepartment_code(departmentsStore?.departments[0].code);
         }
         fetchDepartments();
     }, []);
     useEffect(() => {
-      usersStore.getListUsersByDepartment(curentPage,name,department_code,authStore.user.company.code);
-  }, [curentPage,department_code]);
-  const usersList =
+        usersStore.getListUsersByDepartment(
+            curentPage,
+            name,
+            department_code,
+            authStore.user.company.code
+        );
+    }, [curentPage, department_code]);
+    const usersList =
         usersStore?.usersbyDepartment &&
         usersStore?.usersbyDepartment.map((user) => ({
             ...user,
@@ -31,14 +43,6 @@ const UsresByDepartment = observer(() => {
             department: user.department.name,
             name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
         }));
-    function getItem(label, key, icon, children) {
-        return {
-            key,
-            icon,
-            children,
-            label,
-        };
-    }
     return (
         <Layout className="site-layout-background" style={{}}>
             <Sider
@@ -55,12 +59,12 @@ const UsresByDepartment = observer(() => {
                     }}
                     onClick={(item, key) => {
                         setDepartment_code(
-                            eventStore?.departments[Number(item.key)].code
+                            departmentsStore?.departments[Number(item.key)].code
                         );
                     }}
                     items={
-                        eventStore?.departments.length > 0 &&
-                        eventStore?.departments.map((department, index) =>
+                        departmentsStore?.departments.length > 0 &&
+                        departmentsStore?.departments.map((department, index) =>
                             getItem(department.title, `${index}`)
                         )
                     }
@@ -75,10 +79,15 @@ const UsresByDepartment = observer(() => {
                 }}
                 className="contact-content"
             >
-                <ListUsers curentPage={curentPage} dataSource={usersList} total={usersStore?.total_count_Department} setCurentPage={setCurentPage}/>
+                <ListUsers
+                    curentPage={curentPage}
+                    dataSource={usersList}
+                    total={usersStore?.total_count_Department}
+                    setCurentPage={setCurentPage}
+                />
             </Content>
         </Layout>
     );
 });
 
-export default UsresByDepartment;
+export default UsresByDepartmentPage;

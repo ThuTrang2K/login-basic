@@ -1,5 +1,6 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext } from 'react';
 import AuthStore from '../store/AuthStore';
+import DepartmentsStore from '../store/DepartmentsStore';
 import EventStore from '../store/EventStore';
 import FileStore from '../store/FileStore';
 import GeneralNotifStore from '../store/GeneralNotifStore';
@@ -15,7 +16,8 @@ function AuthProvider(props){
     const generalNotifStore = new GeneralNotifStore()
     const fileStore= new FileStore();
     const usersStore = new UsersStore();
-    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore}
+    const departmentsStore = new DepartmentsStore();
+    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore}
     return <AuthContext.Provider {...props} value={value}></AuthContext.Provider>
 }
 export {AuthContext,AuthProvider}

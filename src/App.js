@@ -3,9 +3,9 @@ import "./App.css";
 
 import Home from "./components/Layout/Home";
 import HomePage from "./pages/HomePage";
-import Login from "./pages/Login";
+import Login from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import Contacts from "./pages/Utility/Contacts";
+import ContactsPage from "./pages/Utility/Contacts";
 import GeneralNotifications from "./pages/Utility/GeneralNotifications";
 import CreateNews from "./pages/Utility/GeneralNotifications/CreateNews";
 import DetailNews from "./pages/Utility/GeneralNotifications/DetailNews";
@@ -50,7 +50,7 @@ function App() {
                 />
                 <Route
                     path="/utility/contacts"
-                    element={<Contacts/>}
+                    element={<ContactsPage/>}
                 />
             </Route>
             <Route path="/login" element={<Login />} />
