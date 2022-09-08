@@ -102,6 +102,7 @@ class EventStore {
                 return {
                     title: item.name,
                     value: item.name,
+                    code: item.code,
                     children: item.users.map((user) => {
                         return {
                             title: user.name_uppercase,

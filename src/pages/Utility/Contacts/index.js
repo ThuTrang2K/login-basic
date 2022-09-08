@@ -22,8 +22,8 @@ const Contacts = () => {
             </Breadcrumb>
             <div className="main-container">
                 <Tabs defaultActiveKey="1" className="contacts-tab">
-                    <Tabs.TabPane tab="Nhân viên" key="1">
-                        <Users />
+                    <Tabs.TabPane tab="Nhân viên" key="1" >
+                        <Users/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="Phòng ban" key="2">
                         <UsresByDepartment />

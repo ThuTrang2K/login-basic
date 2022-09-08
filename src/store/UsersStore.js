@@ -9,9 +9,9 @@ class UsersStore {
     constructor() {
         makeAutoObservable(this);
     }
-    async getListUsers(page=0) {
+    async getListUsers(page=0,name="",company_code='') {
         const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=&status=`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&status=true&sort=&company_code=${company_code}`,
             {
                 headers: {
                    Authorization: `Bearer ${this.access_token}`,
@@ -22,68 +22,19 @@ class UsersStore {
             this.total_count=response.data.total_count
         });
     }
-//     async getNewsById(id) {
-//         const response = await axios.get(
-//             `${process.env.REACT_APP_BASE_URL}/api/v1/news/${id}`,
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${this.access_token}`,
-//                 },
-//             }
-//         );
-//         runInAction(() => {
-//             this.newsDetail = response.data;
-//         });
-//     }
-// 
-//     async createNews(data) {
-//         this.loading=true
-//         await axios.post(
-//             `${process.env.REACT_APP_BASE_URL}/api/v1/news`,
-//             {
-//                 subject: data.subject,
-//                 content: data.content,
-//                 author: data.author,
-//                 attachments_request: data.attachments_request,
-//             },
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${this.access_token}`,
-//                 },
-//             }
-//         );
-//         this.loading=false
-//     }
-// 
-//     async deleteNews(id) {
-//         return await axios.delete(
-//             `${process.env.REACT_APP_BASE_URL}/api/v1/news/${id}`,
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${this.access_token}`,
-//                 },
-//             }
-//         );
-//     }
-// 
-//     async UpdateNews(data, id) {
-//         await axios.patch(
-//            `${process.env.REACT_APP_BASE_URL}/api/v1/news`,
-//            {
-//                 id:data.id,
-//                 subject: data.subject,
-//                 content: data.content,
-//                 author: data.author,
-//                 attachments_request: data.attachments_request,
-//            },
-//            {
-//                headers: {
-//                    Authorization: `Bearer ${this.access_token}`,
-//                },
-//            }
-//        );
-//        this.files = [];
-//    }
+    // async getListUsers(page=0,name="",department_code='',company_code='') {
+    //     const response = await axios.get(
+    //         `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&department_code=${department_code}&status=true&sort=&company_code=${company_code}`,
+    //         {
+    //             headers: {
+    //                Authorization: `Bearer ${this.access_token}`,
+    //             },            }
+    //     );
+    //     runInAction(() => {
+    //         this.users = response.data.data; 
+    //         this.total_count=response.data.total_count
+    //     });
+    // }
 }
 
 export default UsersStore;
