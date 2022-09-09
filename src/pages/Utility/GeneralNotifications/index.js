@@ -98,31 +98,31 @@ const GeneralNotifications = observer(() => {
     };
     return (
         <div className="general-notif-container">
-            <div className="notif-header">
-                <Breadcrumb
-                    style={{
-                        margin: "16px 0",
-                        fontWeight: 500,
-                        fontSize: 12,
-                    }}
-                >
-                    <Breadcrumb.Item>
-                        <HomeOutlined />
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>Thông báo chung</Breadcrumb.Item>
-                </Breadcrumb>
-                <Button
-                    type="primary"
-                    style={{ backgroundColor: "#2c65ac", border: "none" }}
-                >
-                    {" "}
-                    <Link
-                        style={{ color: "white" }}
-                        to={`/utility/general-notifications/create`}
+            <div className="general-flex-header">
+                    <Breadcrumb
+                        style={{
+                            margin: "16px 0",
+                            fontWeight: 500,
+                            fontSize: 12,
+                        }}
                     >
-                        Đăng thông báo
-                    </Link>
-                </Button>
+                        <Breadcrumb.Item>
+                            <HomeOutlined />
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>Thông báo chung</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Button
+                        type="primary"
+                        style={{ backgroundColor: "#2c65ac", border: "none" }}
+                    >
+                        {" "}
+                        <Link
+                            style={{ color: "white" }}
+                            to={`/utility/general-notifications/create`}
+                        >
+                            Đăng thông báo
+                        </Link>
+                    </Button>
             </div>
 
             <Masony

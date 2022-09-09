@@ -28,7 +28,7 @@ const ListUsersPage = observer(() => {
         <>
             <Space direction="vertical">
                 <Search
-                    className="contacts-search"
+                    className="general-search"
                     placeholder="Tìm người dùng theo tên..."
                     onSearch={onSearch}
                     enterButton

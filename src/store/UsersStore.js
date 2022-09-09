@@ -13,11 +13,11 @@ class UsersStore {
     }
     async getListUsers(page=0,name="",company_code='') {
         const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&status=true&sort=&company_code=${company_code}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&status=true&sort=departmentCode,desc,HDQT,BDH,BTCNS,BTCKT,BTKTH,BKTKTNB,BVTB,BCB%2526DVHH,BTTKH,BPC%2526QTRR,BTGTT,VPCQTCT,BCNTT,CDTCT&company_code=${company_code}`,
             {
                 headers: {
                    Authorization: `Bearer ${this.access_token}`,
-                },            }
+                },}
         );
         runInAction(() => {
             this.users = response.data.data; 

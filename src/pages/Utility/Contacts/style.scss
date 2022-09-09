@@ -1,32 +1,8 @@
 .contacts-tab {
-
-    // color: #2c65ac !important;
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-        color: #2c65ac;
-    }
-
-    .ant-tabs-tab:hover {
-        color: #2c65ac;
-    }
-
-    .ant-tabs-ink-bar {
-        background: #2c65ac;
-    }
-
     //users
     .contacts-table-wrapper {
         min-height: 750px;
         min-width: 1200px;
-    }
-
-    .ant-btn.ant-btn-primary.ant-input-search-button {
-        height: 29px;
-        background: #2c65ac;
-        border: none;
-    }
-
-    .ant-input-search .ant-input:focus {
-        border-color: #2c65ac;
     }
 
     //
@@ -46,10 +22,6 @@
         font-weight: 500;
         color: black;
         margin-left: 16px;
-    }
-
-    .contacts-search .ant-input {
-        width: 450px;
     }
 
     .ant-table {

@@ -17,5 +17,38 @@ code {
   padding: 1rem;
   width: 100%;
   border-radius: 6px;
-  overflow-x:hidden;
+  overflow-x: hidden;
+}
+
+.general-flex-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.general-tab {
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #2c65ac;
+}
+
+.ant-tabs-tab:hover {
+    color: #2c65ac;
+}
+
+.ant-tabs-ink-bar {
+    background: #2c65ac;
+}
+}
+
+.general-search .ant-input {
+  width: 450px !important;
+}
+.ant-btn.ant-btn-primary.ant-input-search-button {
+  height: 29px;
+  background: #2c65ac;
+  border: none;
+}
+.ant-input-search .ant-input:focus {
+  border-color: #2c65ac !important;
 }

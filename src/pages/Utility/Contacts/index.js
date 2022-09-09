@@ -21,7 +21,8 @@ const ContactsPage = () => {
                 <Breadcrumb.Item>Danh bạ</Breadcrumb.Item>
             </Breadcrumb>
             <div className="main-container">
-                <Tabs defaultActiveKey="1" className="contacts-tab">
+                <div className="contacts-tab">
+                <Tabs defaultActiveKey="1" className="general-tab">
                     <Tabs.TabPane tab="Nhân viên" key="1" >
                         <ListUsersPage/>
                     </Tabs.TabPane>
@@ -29,6 +30,7 @@ const ContactsPage = () => {
                         <UsresByDepartmentPage />
                     </Tabs.TabPane>
                 </Tabs>
+                </div>
             </div>
         </div>
     );
