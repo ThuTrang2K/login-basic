@@ -36,7 +36,7 @@ const UserAccountsPage = () => {
                 </Button>
             </div>
             <div className="main-container">
-                <div className="accounts-tab">
+                <div className="general-tab">
                     <Tabs
                         defaultActiveKey="1"
                         className="general-tab"

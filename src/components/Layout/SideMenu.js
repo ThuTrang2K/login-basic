@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import {
+    ApartmentOutlined,
     CalendarOutlined,
     FileOutlined,
     HomeOutlined,
@@ -52,7 +53,7 @@ const SideMenu = () => {
                     <Menu.Item key={"/utility/contacts"}><Link to='/utility/contacts'>Danh bạ</Link></Menu.Item>
                     <Menu.Item key={"/utility/general-notifications"}><Link to='/utility/general-notifications'>Thông báo chung</Link></Menu.Item>
                 </Menu.SubMenu>
-                <Menu.SubMenu key="/management" title="Quản trị" icon={<SolutionOutlined />}>
+                <Menu.SubMenu key="/management" title="Quản trị" icon={<ApartmentOutlined />}>
                     
                     <Menu.Item key={"/admin/user-account-management"}><Link to='/admin/user-account-management'>Tài khoản</Link></Menu.Item>
                 </Menu.SubMenu>

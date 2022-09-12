@@ -76,7 +76,7 @@ const ListUsers = ({curentPage,dataSource,total,setCurentPage}) => {
     
     return (
         <>
-            <div className="contacts-table-wrapper">
+            <div className="general-table-wrapper ">
             <Table
                 columns={columns}
                 rowKey={(record) => record.code}

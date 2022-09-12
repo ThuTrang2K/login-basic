@@ -189,22 +189,6 @@ const WorkSchedule = observer(() => {
                 dataSource={workSchedulesStore?.schedules}
                 pagination={false}
             />
-            {/* {workSchedulesStore?.eventByDate.map((item=>( <Table
-            className="hire-tr"
-                bordered
-                style={{fontSize:"12px !important"}}
-                rowKey={record => record.schedule_code}
-                onRow={(record, rowIndex) => {
-                    return {
-                        onClick: (event) => {
-                            navigate(`view/${record.schedule_code}`)
-                        }, // click row
-                    };
-                }}
-                columns={columns}
-                dataSource={item}
-                pagination={false}
-            />)))} */}
         </>
     );
 });
