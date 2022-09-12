@@ -1,18 +1,39 @@
-import { Avatar, Button, Input, Pagination, Space, Switch, Table } from "antd";
+import {
+    Avatar,
+    Button,
+    Form,
+    Input,
+    Pagination,
+    Select,
+    Space,
+    Switch,
+    Table,
+} from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { AuthContext } from "../../../../context";
 import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLetter";
-import { EditOutlined, FilterOutlined } from "@ant-design/icons";
+import {
+    CloseCircleOutlined,
+    EditOutlined,
+    FilterOutlined,
+} from "@ant-design/icons";
 
 const { Search } = Input;
+const { Option } = Select;
 const ListAcounts = observer(() => {
-    const { usersStore, authStore } = useContext(AuthContext);
-    const [name, setName] = useState("");
+    const { usersStore, authStore, departmentsStore } = useContext(AuthContext);
+    const [openSelectList, setOpenSelectList] = useState(false);
+    const [statusCheck,setStatusCheck]=useState(false);
+    const [selects, setSelects] = useState({keyword:'',department_code:"",status:"",direction:"",sort_by:"",})
     const [curentPage, setCurentPage] = useState(0);
     useEffect(() => {
-        usersStore.getListUsers(curentPage, name, authStore.user.company.code);
-    }, [curentPage, name]);
+        departmentsStore.getListDepartmentsUsers();
+        console.log(departmentsStore.departments);
+    }, []);
+    useEffect(() => {
+        usersStore.getListUsers(curentPage, selects, authStore.user.company.code);
+    }, [curentPage,selects.keyword, selects.department_code, selects.status,selects.direction, selects.sort_by,statusCheck]);
     const usersList =
         usersStore?.users &&
         usersStore?.users.length > 0 &&
@@ -74,13 +95,16 @@ const ListAcounts = observer(() => {
         },
         {
             title: "Trạng thái",
-            dataIndex: "",
-            key: "",
-            render: (text) => (
+            dataIndex: "status",
+            key: "status",
+            render: (text,record) => (
                 <Switch
-                    defaultChecked
-                    onChange={(checked) => {
+                    checked={text}
+                     
+                    onChange={async(checked) => {
                         console.log(`switch to ${checked}`);
+                        await usersStore.UpdateUserById(checked,record.code)
+                        await setStatusCheck(!statusCheck);
                     }}
                 />
             ),
@@ -98,42 +122,127 @@ const ListAcounts = observer(() => {
             dataIndex: "department",
             key: "department",
             width: 120,
-            fixed: 'right',
+            fixed: "right",
             render: (text) => (
                 <Button
                     type="primary"
-                    style={{ backgroundColor: "#2c65ac", border: "none" ,margin:"0 auto"}}
+                    style={{
+                        backgroundColor: "#2c65ac",
+                        border: "none",
+                        margin: "0 auto",
+                    }}
                 >
                     <EditOutlined /> Chỉnh sửa
                 </Button>
             ),
         },
     ];
-    const onSearch = (value) => {};
+    const handleChangeSelect = (value) => {
+        console.log(`selected ${value}`);
+    };
     return (
-        <>  
+        <>
             <div className="general-flex-header">
-            <Space direction="vertical">
-                <Search
-                    className="general-search"
-                    placeholder="Tìm kiếm theo tên hoặc username"
-                    onSearch={onSearch}
-                    enterButton
-                />
-            </Space>
-            <Button><FilterOutlined />Tìm kiếm nâng cao</Button>
+                <Space direction="vertical">
+                    <Search
+                        className="general-search"
+                        placeholder="Tìm kiếm theo tên hoặc username"
+                        onSearch={(value)=>{setSelects({...selects,keyword: value})}}
+                        enterButton
+                    />
+                </Space>
+                <Button
+                    onClick={() => {
+                        setOpenSelectList(!openSelectList);
+                        setSelects({});
+                    }}
+                >
+                    {!openSelectList ? (
+                        <>
+                            <FilterOutlined /> &nbsp; Tìm kiếm nâng cao
+                        </>
+                    ) : (
+                        <>
+                            <CloseCircleOutlined />
+                            &nbsp; Tắt tìm kiếm nâng cao
+                        </>
+                    )}
+                </Button>
             </div>
+            {openSelectList && (
+                <div className="select-list">
+                    <div className="select-item">
+                        <p>Sắp xếp theo</p>
+                        <Select
+                            placeholder="Sắp xếp theo"
+                            style={{
+                                width: "100%",
+                            }}
+                            onChange={(value)=>{setSelects({...selects,sort_by: value})}}
+                        >
+                            <Option value="nameUppercase">Họ tên</Option>
+                            <Option value="username">Tên đăng nhập</Option>
+                        </Select>
+                    </div>
+                    <div className="select-item">
+                        <p>Thứ tự</p>
+                        <Select
+                            placeholder="Lựa chọn"
+                            style={{
+                                width: "100%",
+                            }}
+                            onChange={(value)=>{setSelects({...selects,direction: value})}}
+                        >
+                            <Option value="ASC">Tăng dần</Option>
+                            <Option value="DESC">Giảm dần</Option>
+                        </Select>
+                    </div>
+                    <div className="select-item">
+                        <p>Trạng thái</p>
+                        <Select
+                            placeholder="Trạng thái"
+                            style={{
+                                width: "100%",
+                            }}
+                            onChange={(value)=>{setSelects({...selects,status: value})}}
+                        >
+                            <Option value="true">Active</Option>
+                            <Option value="false">Inactive</Option>
+                        </Select>
+                    </div>
+                    <div className="select-item">
+                        <p>Phòng ban</p>
+                        <Select
+                            placeholder="Phòng ban"
+                            style={{
+                                width: "100%",
+                            }}
+                            onChange={(value)=>{setSelects({...selects,department_code: value})}}
+                        >
+                            {departmentsStore?.departments.length > 0 &&
+                                departmentsStore?.departments.map(
+                                    (department) => (
+                                        <Option value={department.code}>
+                                            {department.title}
+                                        </Option>
+                                    )
+                                )}
+                        </Select>
+                    </div>
+                </div>
+            )}
+
             {/* <div className="general-table-wrapper "> */}
-                <Table
-                    columns={columns}
-                    rowKey={(record) => record.code}
-                    dataSource={usersList}
-                    scroll={{
-      x: 1100,
-    }}
-                />
+            <Table
+                columns={columns}
+                rowKey={(record) => record.code}
+                dataSource={usersList}
+                scroll={{
+                    x: 1100,
+                }}
+            />
             {/* </div> */}
-           
+
             <Pagination
                 className="contacts-users-pagination"
                 defaultCurrent={curentPage + 1}

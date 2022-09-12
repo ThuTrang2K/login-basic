@@ -1,0 +1,13 @@
+.select-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.select-item {
+    width: 100%;
+}
+
+.ant-select-item-option-content {
+    font-size: 12px;}
