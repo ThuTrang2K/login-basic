@@ -6,7 +6,7 @@ import { AuthContext } from "../../../../context";
 
 const { Option } = Select;
 const UpdateAccount = observer(
-    ({ account, positions, roles, handleCancel, departments }) => {
+    ({ account, positions, roles, handleCancel, departments,setupDateUser ,updateUser}) => {
         const { usersStore } = useContext(AuthContext);
         const navigate = useNavigate();
         const [form] = Form.useForm();
@@ -38,13 +38,15 @@ const UpdateAccount = observer(
                 phone: fieldsValue.phone,
                 position_code: fieldsValue.position,
                 username: fieldsValue.username,
+                ma_nv:fieldsValue.ma_nv
             };
             console.log("value", values);
             await Promise.all([
                 usersStore.updateUserRoles(fieldsValue.roles, account.code),
                 usersStore.updateUserById(values, account.code),
             ]);
-            navigate(0);
+            setupDateUser(!updateUser);
+            handleCancel();
         };
         return (
             <div className="create-event-container">

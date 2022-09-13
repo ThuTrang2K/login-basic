@@ -25,6 +25,7 @@ const CreateAccount = observer(
                 phone: fieldsValue.phone,
                 position_code: fieldsValue.position,
                 username: fieldsValue.username,
+                ma_nv:fieldsValue.ma_nv
             };
             console.log("value", values);
             await usersStore.createUser(values);

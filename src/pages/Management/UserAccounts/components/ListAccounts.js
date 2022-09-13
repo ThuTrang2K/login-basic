@@ -38,6 +38,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
     });
     const [curentPage, setCurentPage] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [updateUser, setupDateUser] = useState(false);
     useEffect(() => {
         departmentsStore.getListDepartmentsUsers();
         positionsStore.getListPosition();
@@ -58,6 +59,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
         selects.direction,
         selects.sort_by,
         statusCheck,
+        updateUser
     ]);
     const usersList =
         usersStore?.users &&
@@ -328,7 +330,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
                 okButtonProps={{ style: { display: "none" } }}
                 cancelButtonProps={{ style: { display: "none" } }}
             >
-                <UpdateAccount account={account} departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel}/>
+                <UpdateAccount account={account} departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel} updateUser={updateUser} setupDateUser={setupDateUser}/>
             </Modal>
         </>
     );
