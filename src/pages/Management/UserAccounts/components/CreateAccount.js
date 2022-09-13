@@ -5,34 +5,21 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../context";
 
 const { Option } = Select;
-const UpdateAccount = observer(
-    ({ account, positions, roles, handleCancel, departments }) => {
-        const { usersStore } = useContext(AuthContext);
+const CreateAccount = observer(
+    ({ departments, positions, roles, handleCancel }) => {
+        const { usersStore, authStore } = useContext(AuthContext);
         const navigate = useNavigate();
-        const [form] = Form.useForm();
-        console.log("departments", departments);
-        console.log("account", account);
-        account &&
-            form.setFieldsValue({
-                username: account.username,
-                department: account.department_code,
-                name_lowercase: account.name_lowercase,
-                ma_nv: account.ma_nv,
-                email: account.email,
-                gender: account.gender.toString(),
-                phone: account.phone,
-                home_phone: account.home_phone,
-                roles: account.roles,
-                position: account.position_code,
-            });
+
         const onFinish = async (fieldsValue) => {
             console.log("fieldsValue", fieldsValue);
             const values = {
-                company_code: account.company_code,
+                company_code: authStore.user.company.code,
                 department_code: fieldsValue.department,
                 email: fieldsValue.email,
                 gender: fieldsValue.gender,
-                home_phone: fieldsValue.home_phone,
+                home_phone: !fieldsValue.home_phone
+                    ? ""
+                    : fieldsValue.home_phone,
                 name: fieldsValue.name_lowercase,
                 password: !fieldsValue.password ? "" : fieldsValue.password,
                 phone: fieldsValue.phone,
@@ -40,10 +27,7 @@ const UpdateAccount = observer(
                 username: fieldsValue.username,
             };
             console.log("value", values);
-            await Promise.all([
-                usersStore.updateUserRoles(fieldsValue.roles, account.code),
-                usersStore.updateUserById(values, account.code),
-            ]);
+            await usersStore.createUser(values);
             navigate(0);
         };
         return (
@@ -54,7 +38,6 @@ const UpdateAccount = observer(
                 >
                     <div className="">
                         <Form
-                            form={form}
                             className=""
                             name="basic"
                             initialValues={{
@@ -80,10 +63,7 @@ const UpdateAccount = observer(
                                         },
                                     ]}
                                 >
-                                    <Input
-                                        disabled
-                                        placeholder="Tên đăng nhập"
-                                    />
+                                    <Input placeholder="Tên đăng nhập" />
                                 </Form.Item>
                                 <Form.Item
                                     style={{ width: "100%" }}
@@ -159,7 +139,7 @@ const UpdateAccount = observer(
                                     <Option value="1" key="nam">
                                         Nam
                                     </Option>
-                                    <Option value="2" key="nam">
+                                    <Option value="2" key="khac">
                                         Khác
                                     </Option>
                                 </Select>
@@ -190,43 +170,13 @@ const UpdateAccount = observer(
                                     },
                                 ]}
                             >
-                                <Select
-                                    placeholder="Chức danh"
-                                    defaultValue={account.position_code}
-                                >
+                                <Select placeholder="Chức danh">
                                     {positions.map((position) => (
                                         <Option
                                             value={position.code}
-                                            key={position.code}
+                                            key={position.name}
                                         >
                                             {position.name}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Chức năng"
-                                name="roles"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Bắt buộc!",
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    placeholder="Chức năng"
-                                    defaultValue={account.roles}
-                                    mode="multiple"
-                                    allowClear
-                                >
-                                    {roles.map((role) => (
-                                        <Option
-                                            value={role.name}
-                                            key={role.explain}
-                                        >
-                                            {role.explain}
                                         </Option>
                                     ))}
                                 </Select>
@@ -253,7 +203,7 @@ const UpdateAccount = observer(
                                         border: "none",
                                     }}
                                 >
-                                    Lưu thông tin
+                                    Tạo mới
                                 </Button>
                             </Form.Item>
                         </Form>
@@ -264,4 +214,4 @@ const UpdateAccount = observer(
     }
 );
 
-export default UpdateAccount;
+export default CreateAccount;

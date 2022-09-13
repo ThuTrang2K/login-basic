@@ -20,10 +20,11 @@ import {
     FilterOutlined,
 } from "@ant-design/icons";
 import UpdateAccount from "./UpdateAccount";
+import CreateAccount from "./CreateAccount";
 
 const { Search } = Input;
 const { Option } = Select;
-const ListAccounts = observer(() => {
+const ListAccounts = observer(({createAccount,setCreateAccount}) => {
     const { usersStore, authStore, departmentsStore,positionsStore,rolesStore } = useContext(AuthContext);
     const [openSelectList, setOpenSelectList] = useState(false);
     const [statusCheck, setStatusCheck] = useState(false);
@@ -77,9 +78,11 @@ const ListAccounts = observer(() => {
 
     const handleOk = () => {
         setIsModalOpen(false);
+        setCreateAccount(false)
     };
     const handleCancel = () => {
         setIsModalOpen(false);
+        setCreateAccount(false)
     };
     const columns = [
         {
@@ -139,7 +142,7 @@ const ListAccounts = observer(() => {
                     checked={text}
                     onChange={async (checked) => {
                         console.log(`switch to ${checked}`);
-                        await usersStore.UpdateUserStatus(checked, record.code);
+                        await usersStore.updateUserStatus(checked, record.code);
                         await setStatusCheck(!statusCheck);
                     }}
                 />
@@ -307,6 +310,16 @@ const ListAccounts = observer(() => {
                     setCurentPage(page - 1);
                 }}
             />
+            {createAccount && <Modal
+                title="Thêm mới người dùng"
+                visible={true}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okButtonProps={{ style: { display: "none" } }}
+                cancelButtonProps={{ style: { display: "none" } }}
+            >
+                <CreateAccount departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel}/>
+            </Modal>}
             <Modal
                 title="Sửa thông tin người dùng"
                 visible={isModalOpen}
