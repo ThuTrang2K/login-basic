@@ -75,7 +75,20 @@ class UsersStore {
             this.total_count_Department = response.data.total_count;
         });
     }
-    async UpdateUserById(status, id) {
+    async UpdateUserById(data, id) {
+        await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users/${id}`,
+            {
+                ...data
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
+    async UpdateUserStatus(status, id) {
         await axios.patch(
             `${process.env.REACT_APP_BASE_URL}/api/v1/users/${id}`,
             {
@@ -87,7 +100,19 @@ class UsersStore {
                 },
             }
         );
-        this.files = [];
+    }
+    async UpdateUserRoles(data, id) {
+        await axios.patch(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users/${id}/roles`,
+            {
+                role_name: data,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
     }
 }
 

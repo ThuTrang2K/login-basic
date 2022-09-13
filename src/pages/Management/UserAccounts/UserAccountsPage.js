@@ -2,7 +2,8 @@ import { HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Space, Tabs } from "antd";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ListAcounts from "./components/ListAcounts";
+import Listaccounts from "./components/ListAccounts";
+import ListCommandaccounts from "./components/ListCommandAccounts";
 import './style.scss'
 
 const UserAccountsPage = () => {
@@ -48,9 +49,11 @@ const UserAccountsPage = () => {
                         }}
                     >
                         <Tabs.TabPane tab="Tài khoản" key="1">
-                            <ListAcounts />
+                            <Listaccounts />
                         </Tabs.TabPane>
-                        <Tabs.TabPane tab="Phần mềm" key="2"></Tabs.TabPane>
+                        <Tabs.TabPane tab="Phần mềm" key="2">
+                        <ListCommandaccounts></ListCommandaccounts>
+                        </Tabs.TabPane>
                     </Tabs>
                 </div>
             </div>

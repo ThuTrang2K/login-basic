@@ -148,3 +148,16 @@ code {
 .ant-switch-checked {
   background-color: #2c65ac !important;
 }
+
+//
+.secondary-button{
+  color: black;
+  border-color:  black;}
+  .ant-btn.ant-btn-default.secondary-button:hover {
+    color: #2c65ac;
+  border-color:  #2c65ac;
+  }
+  .ant-btn.ant-btn-default.secondary-button:focus {
+    color: #2c65ac;
+  border-color:  #2c65ac;
+  }

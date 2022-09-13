@@ -3,6 +3,7 @@ import {
     Button,
     Form,
     Input,
+    Modal,
     Pagination,
     Select,
     Space,
@@ -18,32 +19,68 @@ import {
     EditOutlined,
     FilterOutlined,
 } from "@ant-design/icons";
+import UpdateAccount from "./UpdateAccount";
 
 const { Search } = Input;
 const { Option } = Select;
-const ListAcounts = observer(() => {
-    const { usersStore, authStore, departmentsStore } = useContext(AuthContext);
+const ListAccounts = observer(() => {
+    const { usersStore, authStore, departmentsStore,positionsStore,rolesStore } = useContext(AuthContext);
     const [openSelectList, setOpenSelectList] = useState(false);
-    const [statusCheck,setStatusCheck]=useState(false);
-    const [selects, setSelects] = useState({keyword:'',department_code:"",status:"",direction:"",sort_by:"",})
+    const [statusCheck, setStatusCheck] = useState(false);
+    const [account, setAccount] = useState("");
+    const [selects, setSelects] = useState({
+        keyword: "",
+        department_code: "",
+        status: "",
+        direction: "",
+        sort_by: "",
+    });
     const [curentPage, setCurentPage] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         departmentsStore.getListDepartmentsUsers();
+        positionsStore.getListPosition();
+        rolesStore.getListRoles();
         console.log(departmentsStore.departments);
     }, []);
     useEffect(() => {
-        usersStore.getListUsers(curentPage, selects, authStore.user.company.code);
-    }, [curentPage,selects.keyword, selects.department_code, selects.status,selects.direction, selects.sort_by,statusCheck]);
+        usersStore.getListUsers(
+            curentPage,
+            selects,
+            authStore.user.company.code
+        );
+    }, [
+        curentPage,
+        selects.keyword,
+        selects.department_code,
+        selects.status,
+        selects.direction,
+        selects.sort_by,
+        statusCheck,
+    ]);
     const usersList =
         usersStore?.users &&
         usersStore?.users.length > 0 &&
         usersStore?.users?.map((user) => ({
             ...user,
             company: user.company.name,
+            company_code: user.company.code,
             position: user.position.name,
+            position_code: user.position.code,
             department: user.department.name,
+            department_code:user.department.code,
             name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
         }));
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     const columns = [
         {
             title: "Thông tin",
@@ -97,13 +134,12 @@ const ListAcounts = observer(() => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (text,record) => (
-                <Switch
+            render: (text, record) => (
+                <Switch 
                     checked={text}
-                     
-                    onChange={async(checked) => {
+                    onChange={async (checked) => {
                         console.log(`switch to ${checked}`);
-                        await usersStore.UpdateUserById(checked,record.code)
+                        await usersStore.UpdateUserStatus(checked, record.code);
                         await setStatusCheck(!statusCheck);
                     }}
                 />
@@ -119,27 +155,31 @@ const ListAcounts = observer(() => {
         },
         {
             title: "Tác vụ",
-            dataIndex: "department",
-            key: "department",
+            dataIndex: "",
+            key: "",
             width: 120,
             fixed: "right",
-            render: (text) => (
-                <Button
-                    type="primary"
-                    style={{
-                        backgroundColor: "#2c65ac",
-                        border: "none",
-                        margin: "0 auto",
-                    }}
-                >
-                    <EditOutlined /> Chỉnh sửa
-                </Button>
+            render: (text, record) => (
+                <>
+                    <Button
+                        onClick={() => {
+                            setAccount(record);
+                            showModal();
+                        }}
+                        type="primary"
+                        style={{
+                            backgroundColor: "#2c65ac",
+                            border: "none",
+                            margin: "0 auto",
+                        }}
+                    >
+                        <EditOutlined /> Chỉnh sửa
+                    </Button>
+                </>
             ),
         },
     ];
-    const handleChangeSelect = (value) => {
-        console.log(`selected ${value}`);
-    };
+
     return (
         <>
             <div className="general-flex-header">
@@ -147,7 +187,9 @@ const ListAcounts = observer(() => {
                     <Search
                         className="general-search"
                         placeholder="Tìm kiếm theo tên hoặc username"
-                        onSearch={(value)=>{setSelects({...selects,keyword: value})}}
+                        onSearch={(value) => {
+                            setSelects({ ...selects, keyword: value });
+                        }}
                         enterButton
                     />
                 </Space>
@@ -178,7 +220,9 @@ const ListAcounts = observer(() => {
                             style={{
                                 width: "100%",
                             }}
-                            onChange={(value)=>{setSelects({...selects,sort_by: value})}}
+                            onChange={(value) => {
+                                setSelects({ ...selects, sort_by: value });
+                            }}
                         >
                             <Option value="nameUppercase">Họ tên</Option>
                             <Option value="username">Tên đăng nhập</Option>
@@ -191,7 +235,9 @@ const ListAcounts = observer(() => {
                             style={{
                                 width: "100%",
                             }}
-                            onChange={(value)=>{setSelects({...selects,direction: value})}}
+                            onChange={(value) => {
+                                setSelects({ ...selects, direction: value });
+                            }}
                         >
                             <Option value="ASC">Tăng dần</Option>
                             <Option value="DESC">Giảm dần</Option>
@@ -204,7 +250,9 @@ const ListAcounts = observer(() => {
                             style={{
                                 width: "100%",
                             }}
-                            onChange={(value)=>{setSelects({...selects,status: value})}}
+                            onChange={(value) => {
+                                setSelects({ ...selects, status: value });
+                            }}
                         >
                             <Option value="true">Active</Option>
                             <Option value="false">Inactive</Option>
@@ -217,7 +265,12 @@ const ListAcounts = observer(() => {
                             style={{
                                 width: "100%",
                             }}
-                            onChange={(value)=>{setSelects({...selects,department_code: value})}}
+                            onChange={(value) => {
+                                setSelects({
+                                    ...selects,
+                                    department_code: value,
+                                });
+                            }}
                         >
                             {departmentsStore?.departments.length > 0 &&
                                 departmentsStore?.departments.map(
@@ -241,6 +294,7 @@ const ListAcounts = observer(() => {
                     x: 1100,
                 }}
             />
+
             {/* </div> */}
 
             <Pagination
@@ -253,8 +307,18 @@ const ListAcounts = observer(() => {
                     setCurentPage(page - 1);
                 }}
             />
+            <Modal
+                title="Sửa thông tin người dùng"
+                visible={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okButtonProps={{ style: { display: "none" } }}
+                cancelButtonProps={{ style: { display: "none" } }}
+            >
+                <UpdateAccount account={account} departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel}/>
+            </Modal>
         </>
     );
 });
 
-export default ListAcounts;
+export default ListAccounts;
