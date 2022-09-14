@@ -1,33 +1,22 @@
-import {
-    Avatar,
-    Button,
-    Form,
-    Input,
-    Modal,
-    Pagination,
-    Select,
-    Space,
-    Switch,
-    Table,
-} from "antd";
-import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { AuthContext } from "../../../../context";
-import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLetter";
-import {
-    CloseCircleOutlined,
-    EditOutlined,
-    FilterOutlined,
-} from "@ant-design/icons";
-import UpdateAccount from "./UpdateAccount";
-import CreateAccount from "./CreateAccount";
+import { EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Avatar, Breadcrumb, Button, Input, Modal, Pagination, Switch, Table, Tabs } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context";
+import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
+import AdvancedSearch from "./components/AdvancedSearch";
+import CreateAccount from "./components/CreateAccount";
+import UpdateAccount from "./components/UpdateAccount";
+import './style.scss'
 
-const { Search } = Input;
-const { Option } = Select;
-const ListAccounts = observer(({createAccount,setCreateAccount}) => {
+
+const ListAccountsPage = observer(() => {
+    const navigate = useNavigate();
     const { usersStore, authStore, departmentsStore,positionsStore,rolesStore } = useContext(AuthContext);
     const [openSelectList, setOpenSelectList] = useState(false);
     const [statusCheck, setStatusCheck] = useState(false);
+    const [createAccount, setCreateAccount] = useState(false);
     const [account, setAccount] = useState("");
     const [selects, setSelects] = useState({
         keyword: "",
@@ -59,7 +48,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
         selects.direction,
         selects.sort_by,
         statusCheck,
-        updateUser
+        updateUser,
     ]);
     const usersList =
         usersStore?.users &&
@@ -72,6 +61,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
             position_code: user.position.code,
             department: user.department.name,
             department_code:user.department.code,
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
         }));
     const showModal = () => {
@@ -97,13 +87,13 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
                     <span className="contacts-name">{text}</span>
                 </div>
             ),
-            // width: "25%",
+            width: "20%",
         },
         {
             title: "ID",
             dataIndex: "username",
             key: "username",
-            // width: "5%",
+            width: "8%",
         },
         {
             title: "Mã nhân viên",
@@ -117,7 +107,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
             title: "Email",
             dataIndex: "email",
             key: "email",
-            // width: "10%",
+            width: "12%",
         },
         {
             title: "Điện thoại",
@@ -156,7 +146,7 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
             dataIndex: "company",
             key: "company",
             // render: (text) =><div className="general-ellipsis">{text}</div>,
-            // width: "15%",
+            width: "12%",
         },
         {
             title: "Tác vụ",
@@ -184,112 +174,45 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
             ),
         },
     ];
-
+    const props={setSelects,selects,setOpenSelectList,openSelectList,departmentsStore,setCurentPage}
     return (
         <>
-            <div className="general-flex-header">
-                <Space direction="vertical">
-                    <Search
-                        className="general-search"
-                        placeholder="Tìm kiếm theo tên hoặc username"
-                        onSearch={(value) => {
-                            setSelects({ ...selects, keyword: value });
-                        }}
-                        enterButton
-                    />
-                </Space>
-                <Button
-                    onClick={() => {
-                        setOpenSelectList(!openSelectList);
-                        setSelects({});
+             <div className="general-flex-header">
+                <Breadcrumb
+                    style={{
+                        margin: "16px 0",
+                        fontWeight: 500,
+                        fontSize: 12,
                     }}
                 >
-                    {!openSelectList ? (
-                        <>
-                            <FilterOutlined /> &nbsp; Tìm kiếm nâng cao
-                        </>
-                    ) : (
-                        <>
-                            <CloseCircleOutlined />
-                            &nbsp; Tắt tìm kiếm nâng cao
-                        </>
-                    )}
+                    <Breadcrumb.Item>
+                        <HomeOutlined />
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>Quản lý tài khoản</Breadcrumb.Item>
+                </Breadcrumb>
+                <Button
+                    type="primary"
+                    style={{ backgroundColor: "#2c65ac", border: "none" }}
+                    onClick={()=>setCreateAccount(!createAccount)}
+                >                    
+                        <PlusCircleOutlined />
+                        &nbsp; Thêm mới người dùng
                 </Button>
             </div>
-            {openSelectList && (
-                <div className="select-list">
-                    <div className="select-item">
-                        <p>Sắp xếp theo</p>
-                        <Select
-                            placeholder="Sắp xếp theo"
-                            style={{
-                                width: "100%",
-                            }}
-                            onChange={(value) => {
-                                setSelects({ ...selects, sort_by: value });
-                            }}
-                        >
-                            <Option value="nameUppercase">Họ tên</Option>
-                            <Option value="username">Tên đăng nhập</Option>
-                        </Select>
-                    </div>
-                    <div className="select-item">
-                        <p>Thứ tự</p>
-                        <Select
-                            placeholder="Lựa chọn"
-                            style={{
-                                width: "100%",
-                            }}
-                            onChange={(value) => {
-                                setSelects({ ...selects, direction: value });
-                            }}
-                        >
-                            <Option value="ASC">Tăng dần</Option>
-                            <Option value="DESC">Giảm dần</Option>
-                        </Select>
-                    </div>
-                    <div className="select-item">
-                        <p>Trạng thái</p>
-                        <Select
-                            placeholder="Trạng thái"
-                            style={{
-                                width: "100%",
-                            }}
-                            onChange={(value) => {
-                                setSelects({ ...selects, status: value });
-                            }}
-                        >
-                            <Option value="true">Active</Option>
-                            <Option value="false">Inactive</Option>
-                        </Select>
-                    </div>
-                    <div className="select-item">
-                        <p>Phòng ban</p>
-                        <Select
-                            placeholder="Phòng ban"
-                            style={{
-                                width: "100%",
-                            }}
-                            onChange={(value) => {
-                                setSelects({
-                                    ...selects,
-                                    department_code: value,
-                                });
-                            }}
-                        >
-                            {departmentsStore?.departments.length > 0 &&
-                                departmentsStore?.departments.map(
-                                    (department) => (
-                                        <Option value={department.code}>
-                                            {department.title}
-                                        </Option>
-                                    )
-                                )}
-                        </Select>
-                    </div>
-                </div>
-            )}
-
+            
+            <div className="main-container">
+                <div className="general-tab">
+                    <Tabs
+                        defaultActiveKey="1"
+                        className="general-tab"
+                        onTabClick={(key) => {
+                            if (key === "1")
+                                navigate("/admin/user-account-management");
+                            else navigate("/admin/user-app-management");
+                        }}
+                    >
+                        <Tabs.TabPane tab="Tài khoản" key="1" >
+                        <AdvancedSearch props={props}/>
             {/* <div className="general-table-wrapper "> */}
             <Table
                 columns={columns}
@@ -332,8 +255,14 @@ const ListAccounts = observer(({createAccount,setCreateAccount}) => {
             >
                 <UpdateAccount account={account} departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel} updateUser={updateUser} setupDateUser={setupDateUser}/>
             </Modal>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Phần mềm" key="2"  >
+                        </Tabs.TabPane>
+                    </Tabs>
+                </div>
+            </div>
         </>
     );
 });
 
-export default ListAccounts;
+export default ListAccountsPage;

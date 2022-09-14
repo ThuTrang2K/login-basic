@@ -4,7 +4,8 @@ import "./App.css";
 import Home from "./components/Layout/Home";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/LoginPage";
-import UserAccountsPage from "./pages/Management/UserAccounts/UserAccountsPage";
+import ListAccountsPage from "./pages/Management/UserAccounts/ListAccountsPage";
+import ListCommandAccountsPage from "./pages/Management/UserAccounts/ListCommandAccountsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ContactsPage from "./pages/Utility/Contacts";
 import GeneralNotifications from "./pages/Utility/GeneralNotifications";
@@ -54,9 +55,17 @@ function App() {
                     element={<ContactsPage/>}
                 />
                 <Route
+                    path="/admin/user-account-management"
+                    element={<ListAccountsPage/>}
+                />
+                <Route
+                    path="/admin/user-app-management"
+                    element={<ListCommandAccountsPage/>}
+                />
+                {/* <Route
                     path="/admin/*"
                     element={<UserAccountsPage/>}
-                />
+                /> */}
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFoundPage />} />
