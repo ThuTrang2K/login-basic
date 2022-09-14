@@ -5,6 +5,7 @@ class UsersStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
     users = [];
     user = {};
+    commands=[];
     usersbyDepartment = [];
     total_count = 0;
     total_count_Department = 0;
@@ -41,6 +42,32 @@ class UsersStore {
         runInAction(() => {
             this.users = response.data.data;
             this.total_count = response.data.total_count;
+        });
+    }
+    async getUserByUser_code(user_code) {
+        const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts?user_code=${user_code}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+        runInAction(() => {
+            this.user = response.data[0];
+        });
+    }
+    async getUserCommands() {
+        const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/commands`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+        runInAction(() => {
+            this.commands = response.data;
         });
     }
     // async getListUsers(page=0,name="",company_code='') {
@@ -93,6 +120,19 @@ class UsersStore {
             `${process.env.REACT_APP_BASE_URL}/api/v1/users/${id}`,
             {
                 ...data
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
+    async updateUserCommands(data, user_code) {
+        await axios.patch(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users/${user_code}/commands`,
+            {
+                commands : data
             },
             {
                 headers: {

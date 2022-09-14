@@ -11,3 +11,24 @@
 
 .ant-select-item-option-content {
     font-size: 12px;}
+
+.command-item {
+    display: inline-block;
+    font-size: 12px;
+    border: 1px solid rgb(145, 213, 255);
+    border-radius: 4px;
+    padding: 2px 10px;
+    max-width: 145px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    color: rgb(24, 144, 255);
+    background: rgb(230, 247, 255);
+}
+
+.ant-drawer-body {
+    font-size: 12px;
+}

@@ -1,6 +1,20 @@
 import { observer } from "mobx-react-lite";
-import { EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Avatar, Breadcrumb, Button, Input, Modal, Pagination, Switch, Table, Tabs } from "antd";
+import {
+    EditOutlined,
+    HomeOutlined,
+    PlusCircleOutlined,
+} from "@ant-design/icons";
+import {
+    Avatar,
+    Breadcrumb,
+    Button,
+    Input,
+    Modal,
+    Pagination,
+    Switch,
+    Table,
+    Tabs,
+} from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context";
@@ -8,12 +22,17 @@ import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter"
 import AdvancedSearch from "./components/AdvancedSearch";
 import CreateAccount from "./components/CreateAccount";
 import UpdateAccount from "./components/UpdateAccount";
-import './style.scss'
-
+import "./style.scss";
 
 const ListAccountsPage = observer(() => {
     const navigate = useNavigate();
-    const { usersStore, authStore, departmentsStore,positionsStore,rolesStore } = useContext(AuthContext);
+    const {
+        usersStore,
+        authStore,
+        departmentsStore,
+        positionsStore,
+        rolesStore,
+    } = useContext(AuthContext);
     const [openSelectList, setOpenSelectList] = useState(false);
     const [statusCheck, setStatusCheck] = useState(false);
     const [createAccount, setCreateAccount] = useState(false);
@@ -60,7 +79,7 @@ const ListAccountsPage = observer(() => {
             position: user.position.name,
             position_code: user.position.code,
             department: user.department.name,
-            department_code:user.department.code,
+            department_code: user.department.code,
             // eslint-disable-next-line react-hooks/rules-of-hooks
             name_capitalized: useCapitalizeTheFirstLetter(user.name_uppercase),
         }));
@@ -70,11 +89,11 @@ const ListAccountsPage = observer(() => {
 
     const handleOk = () => {
         setIsModalOpen(false);
-        setCreateAccount(false)
+        setCreateAccount(false);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
-        setCreateAccount(false)
+        setCreateAccount(false);
     };
     const columns = [
         {
@@ -130,12 +149,12 @@ const ListAccountsPage = observer(() => {
             dataIndex: "status",
             key: "status",
             render: (text, record) => (
-                <Switch 
+                <Switch
                     checked={text}
                     onChange={async (checked) => {
                         console.log(`switch to ${checked}`);
                         await usersStore.updateUserStatus(checked, record.code);
-                        await setStatusCheck(!statusCheck);
+                        setStatusCheck(!statusCheck);
                     }}
                 />
             ),
@@ -174,10 +193,17 @@ const ListAccountsPage = observer(() => {
             ),
         },
     ];
-    const props={setSelects,selects,setOpenSelectList,openSelectList,departmentsStore,setCurentPage}
+    const props = {
+        setSelects,
+        selects,
+        setOpenSelectList,
+        openSelectList,
+        departmentsStore,
+        setCurentPage,
+    };
     return (
         <>
-             <div className="general-flex-header">
+            <div className="general-flex-header">
                 <Breadcrumb
                     style={{
                         margin: "16px 0",
@@ -193,13 +219,13 @@ const ListAccountsPage = observer(() => {
                 <Button
                     type="primary"
                     style={{ backgroundColor: "#2c65ac", border: "none" }}
-                    onClick={()=>setCreateAccount(!createAccount)}
-                >                    
-                        <PlusCircleOutlined />
-                        &nbsp; Thêm mới người dùng
+                    onClick={() => setCreateAccount(!createAccount)}
+                >
+                    <PlusCircleOutlined />
+                    &nbsp; Thêm mới người dùng
                 </Button>
             </div>
-            
+
             <div className="main-container">
                 <div className="general-tab">
                     <Tabs
@@ -211,53 +237,63 @@ const ListAccountsPage = observer(() => {
                             else navigate("/admin/user-app-management");
                         }}
                     >
-                        <Tabs.TabPane tab="Tài khoản" key="1" >
-                        <AdvancedSearch props={props}/>
-            {/* <div className="general-table-wrapper "> */}
-            <Table
-                columns={columns}
-                rowKey={(record) => record.code}
-                dataSource={usersList}
-                scroll={{
-                    x: 1100,
-                }}
-            />
-
-            {/* </div> */}
-
-            <Pagination
-                className="contacts-users-pagination"
-                defaultCurrent={curentPage + 1}
-                current={curentPage + 1}
-                pageSize={10}
-                total={usersStore?.total_count}
-                onChange={(page) => {
-                    setCurentPage(page - 1);
-                }}
-            />
-            {createAccount && <Modal
-                title="Thêm mới người dùng"
-                visible={true}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                okButtonProps={{ style: { display: "none" } }}
-                cancelButtonProps={{ style: { display: "none" } }}
-            >
-                <CreateAccount departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel}/>
-            </Modal>}
-            <Modal
-                title="Sửa thông tin người dùng"
-                visible={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                okButtonProps={{ style: { display: "none" } }}
-                cancelButtonProps={{ style: { display: "none" } }}
-            >
-                <UpdateAccount account={account} departments={departmentsStore.departments}  positions={positionsStore.positions} roles={rolesStore.roles} handleCancel={handleCancel} updateUser={updateUser} setupDateUser={setupDateUser}/>
-            </Modal>
+                        <Tabs.TabPane tab="Tài khoản" key="1">
+                            <AdvancedSearch props={props} />
+                            <Table
+                                columns={columns}
+                                rowKey={(record) => record.code}
+                                dataSource={usersList}
+                                scroll={{
+                                    x: 1100,
+                                }}
+                            />
+                            <Pagination
+                                className="contacts-users-pagination"
+                                defaultCurrent={curentPage + 1}
+                                current={curentPage + 1}
+                                pageSize={10}
+                                total={usersStore?.total_count}
+                                onChange={(page) => {
+                                    setCurentPage(page - 1);
+                                }}
+                            />
+                            {createAccount && (
+                                <Modal
+                                    title="Thêm mới người dùng"
+                                    visible={true}
+                                    onOk={handleOk}
+                                    onCancel={handleCancel}
+                                    footer={false}
+                                >
+                                    <CreateAccount
+                                        departments={
+                                            departmentsStore.departments
+                                        }
+                                        positions={positionsStore.positions}
+                                        roles={rolesStore.roles}
+                                        handleCancel={handleCancel}
+                                    />
+                                </Modal>
+                            )}
+                            <Modal
+                                title="Sửa thông tin người dùng"
+                                visible={isModalOpen}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                footer={false}
+                            >
+                                <UpdateAccount
+                                    account={account}
+                                    departments={departmentsStore.departments}
+                                    positions={positionsStore.positions}
+                                    roles={rolesStore.roles}
+                                    handleCancel={handleCancel}
+                                    updateUser={updateUser}
+                                    setupDateUser={setupDateUser}
+                                />
+                            </Modal>
                         </Tabs.TabPane>
-                        <Tabs.TabPane tab="Phần mềm" key="2"  >
-                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Phần mềm" key="2"></Tabs.TabPane>
                     </Tabs>
                 </div>
             </div>
