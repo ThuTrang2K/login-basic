@@ -1,12 +1,12 @@
 import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
-const  qs = require('qs');
+const qs = require("qs");
 
 class UsersStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
     users = [];
     accounts = [];
-    commands=[];
+    commands = [];
     usersbyDepartment = [];
     total_count = 0;
     total_count_Department = 0;
@@ -22,7 +22,7 @@ class UsersStore {
             status = "",
             direction = "",
             sort_by = "",
-            has_admin=false
+            has_admin = false,
         },
         company_code = ""
     ) {
@@ -46,55 +46,6 @@ class UsersStore {
             this.total_count = response.data.total_count;
         });
     }
-    async getAccountsByUser_code(user_code) {
-        const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts?user_code=${user_code}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${this.access_token}`,
-                },
-            }
-        );
-        runInAction(() => {
-            this.accounts = response.data;
-        });
-    }
-    async createAccount(data) {
-        await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts`,{...data},
-            {
-                headers: {
-                    Authorization: `Bearer ${this.access_token}`,
-                },
-            }
-        );
-    }
-    async getUserCommands() {
-        const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/commands`,
-            {
-                headers: {
-                    Authorization: `Bearer ${this.access_token}`,
-                },
-            }
-        );
-        runInAction(() => {
-            this.commands = response.data;
-        });
-    }
-    // async getListUsers(page=0,name="",company_code='') {
-    //     const response = await axios.get(
-    //         `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&status=true&sort=departmentCode,desc,HDQT,BDH,BTCNS,BTCKT,BTKTH,BKTKTNB,BVTB,BCB%2526DVHH,BTTKH,BPC%2526QTRR,BTGTT,VPCQTCT,BCNTT,CDTCT&company_code=${company_code}`,
-    //         {
-    //             headers: {
-    //                Authorization: `Bearer ${this.access_token}`,
-    //             },}
-    //     );
-    //     runInAction(() => {
-    //         this.users = response.data.data;
-    //         this.total_count=response.data.total_count
-    //     });
-    // }
     async getListUsersByDepartment(
         page = 0,
         name = "",
@@ -118,7 +69,7 @@ class UsersStore {
         await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/v1/users`,
             {
-                ...data
+                ...data,
             },
             {
                 headers: {
@@ -131,7 +82,7 @@ class UsersStore {
         await axios.put(
             `${process.env.REACT_APP_BASE_URL}/api/v1/users/${id}`,
             {
-                ...data
+                ...data,
             },
             {
                 headers: {
@@ -144,7 +95,7 @@ class UsersStore {
         await axios.patch(
             `${process.env.REACT_APP_BASE_URL}/api/v1/users/${user_code}/commands`,
             {
-                commands : data
+                commands: data,
             },
             {
                 headers: {
@@ -179,16 +130,53 @@ class UsersStore {
             }
         );
     }
+    async getAccountsByUser_code(user_code) {
+        const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts?user_code=${user_code}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+        runInAction(() => {
+            this.accounts = response.data;
+        });
+    }
+    async createAccount(data) {
+        await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts`,
+            { ...data },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
+    async getUserCommands() {
+        const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/commands`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+        runInAction(() => {
+            this.commands = response.data;
+        });
+    }
+
     async createCommandAccount(data) {
         await axios.post(
             `https://stg.truc-vimc.fafu.com.vn/api/oauth/token`,
-            
-                 qs.stringify(data)
-            ,
+
+            qs.stringify(data),
             {
                 headers: {
-                    'Authorization': 'Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=',
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    Authorization: "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=",
+                    "Content-Type": "application/x-www-form-urlencoded",
                 },
             }
         );
@@ -204,5 +192,18 @@ class UsersStore {
         );
     }
 }
+// async getListUsers(page=0,name="",company_code='') {
+//     const response = await axios.get(
+//         `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${name}&status=true&sort=departmentCode,desc,HDQT,BDH,BTCNS,BTCKT,BTKTH,BKTKTNB,BVTB,BCB%2526DVHH,BTTKH,BPC%2526QTRR,BTGTT,VPCQTCT,BCNTT,CDTCT&company_code=${company_code}`,
+//         {
+//             headers: {
+//                Authorization: `Bearer ${this.access_token}`,
+//             },}
+//     );
+//     runInAction(() => {
+//         this.users = response.data.data;
+//         this.total_count=response.data.total_count
+//     });
+// }
 
 export default UsersStore;

@@ -43,7 +43,7 @@ const ListAccountsPage = observer(() => {
         status: "",
         direction: "",
         sort_by: "",
-        has_admin: authStore.user.is_admin
+        has_admin: authStore.user.is_admin,
     });
     const [curentPage, setCurentPage] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);

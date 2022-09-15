@@ -186,7 +186,7 @@ const ListCommandAccountsPage = observer(() => {
                             });
                             setCommand(record);
                             setopenCommandManage(true);
-                            console.log("commandAccount",commandAccount);
+                            console.log("commandAccount", commandAccount);
                         }}
                     >
                         Quản lý
@@ -278,8 +278,7 @@ const ListCommandAccountsPage = observer(() => {
                                                 marginTop: 16,
                                             }}
                                         >
-                                            {user?.username &&
-                                                user?.username}
+                                            {user?.username && user?.username}
                                         </div>
                                     </div>
                                     <div>
@@ -336,16 +335,16 @@ const ListCommandAccountsPage = observer(() => {
                                         <div className="">
                                             {openCreateAccount ? (
                                                 <CreateCommandAccount
-                                                    setCommandAccount={setCommandAccount}
+                                                    setCommandAccount={
+                                                        setCommandAccount
+                                                    }
                                                     setOpenCreateAccount={
                                                         setOpenCreateAccount
                                                     }
                                                     setopenCommandManage={
                                                         setopenCommandManage
                                                     }
-                                                    command={
-                                                        command
-                                                    }
+                                                    command={command}
                                                     user={user}
                                                 />
                                             ) : !commandAccount ? (
