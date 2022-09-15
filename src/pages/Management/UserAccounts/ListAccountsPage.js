@@ -43,6 +43,7 @@ const ListAccountsPage = observer(() => {
         status: "",
         direction: "",
         sort_by: "",
+        has_admin: authStore.user.is_admin
     });
     const [curentPage, setCurentPage] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,7 +52,6 @@ const ListAccountsPage = observer(() => {
         departmentsStore.getListDepartmentsUsers();
         positionsStore.getListPosition();
         rolesStore.getListRoles();
-        console.log(departmentsStore.departments);
     }, []);
     useEffect(() => {
         usersStore.getListUsers(

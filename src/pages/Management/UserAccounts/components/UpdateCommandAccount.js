@@ -1,18 +1,36 @@
-import { Button, Form, Input } from "antd";
-import React from "react";
+import { Button, Form, Input, Modal } from "antd";
+import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
+import { AuthContext } from "../../../../context";
 
-
-const UpdateCommandAccount = observer(({commandAccount}) => {
+//vt.pmu
+//123456a@
+const UpdateCommandAccount = observer(({commandAccount,setCommandAccount,setopenCommandManage}) => {
+    const { usersStore } = useContext(AuthContext);
     const [form] = Form.useForm();
     commandAccount &&
             form.setFieldsValue({
                 account_name: commandAccount.account_name,
                 password:commandAccount.password
             });
-    const onFinish =(fieldsValue) => {
-        
+    const handleDelete = (id) => {
+        Modal.confirm({
+            title: "Bạn có chắc chắn muốn xóa?",
+            onOk: async() => {
+                await usersStore.deleteCommandAccount(commandAccount.id);
+                setCommandAccount();
+                setopenCommandManage(false);
+            },
+        });
     };
+    const onFinish = (fieldsValue) => {
+        console.log("fieldsValue", fieldsValue);
+        const values = {
+            ...fieldsValue,
+            grant_type: "password"
+        };
+            usersStore.updateCommandAccount(values)
+    }
     return (
         <>
             <Form
@@ -59,7 +77,7 @@ const UpdateCommandAccount = observer(({commandAccount}) => {
                         style={{
                             width: "100%",
                         }}
-                        // onClick={() => handleCancel()}
+                        onClick={() => handleDelete()}
                     >
                         Xóa tài khoản
                     </Button>

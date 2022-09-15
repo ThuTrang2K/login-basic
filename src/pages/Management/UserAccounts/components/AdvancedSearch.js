@@ -51,8 +51,8 @@ const AdvancedSearch = ({props}) => {
                                 props.setSelects({ ...props.selects, sort_by: value });
                             }}
                         >
-                            <Option value="nameUppercase">Họ tên</Option>
-                            <Option value="username">Tên đăng nhập</Option>
+                            <Option value="nameUppercase" key={"Họ tên"}>Họ tên</Option>
+                            <Option value="username" key={"Tên đăng nhập"}>Tên đăng nhập</Option>
                         </Select>
                     </div>
                     <div className="select-item">
@@ -105,7 +105,7 @@ const AdvancedSearch = ({props}) => {
                             {props.departmentsStore?.departments.length > 0 &&
                                 props.departmentsStore?.departments.map(
                                     (department) => (
-                                        <Option value={department.code}>
+                                        <Option value={department.code} key={department.title}>
                                             {department.title}
                                         </Option>
                                     )

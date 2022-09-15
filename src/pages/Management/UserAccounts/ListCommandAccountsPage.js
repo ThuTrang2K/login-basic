@@ -4,11 +4,8 @@ import {
     Breadcrumb,
     Button,
     Drawer,
-    Form,
-    Input,
-    Modal,
+    Empty,
     Pagination,
-    Space,
     Switch,
     Table,
     Tabs,
@@ -20,6 +17,7 @@ import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter"
 import { AuthContext } from "../../../context";
 import "./style.scss";
 import UpdateCommandAccount from "./components/UpdateCommandAccount";
+import CreateCommandAccount from "./components/CreateCommandAccount";
 
 const ListCommandAccountsPage = observer(() => {
     const { usersStore, authStore, departmentsStore } = useContext(AuthContext);
@@ -29,10 +27,11 @@ const ListCommandAccountsPage = observer(() => {
     const [openCommandAccess, setOpenCommandAccess] = useState(false);
     const [openCommandManage, setopenCommandManage] = useState(false);
     const [account_code, setAccount_code] = useState("");
-    const [account, setAccount] = useState({});
-    const [statusCheck, setStatusCheck] = useState(false);
-    const [titleCommand, setTitleCommand] = useState("");
+    const [user, setUser] = useState({});
+    const [statusChange, setStatusChange] = useState(false);
+    const [command, setCommand] = useState("");
     const [commandAccount, setCommandAccount] = useState();
+    const [openCreateAccount, setOpenCreateAccount] = useState(false);
     const [selects, setSelects] = useState({
         keyword: "",
         department_code: "",
@@ -51,7 +50,7 @@ const ListCommandAccountsPage = observer(() => {
                 authStore.user.company.code
             );
             usersStore?.users?.forEach((user) => {
-                user.code === account_code && setAccount(user);
+                user.code === account_code && setUser(user);
             });
         }
         fetchData();
@@ -62,14 +61,14 @@ const ListCommandAccountsPage = observer(() => {
         selects.status,
         selects.direction,
         selects.sort_by,
-        statusCheck,
+        statusChange,
     ]);
     useEffect(() => {
         usersStore?.users?.forEach((user) => {
-            user.code === account_code && setAccount(user);
+            user.code === account_code && setUser(user);
         });
         usersStore.getAccountsByUser_code(account_code);
-    }, [account_code]);
+    }, [account_code, commandAccount]);
     const columns = [
         {
             title: "Họ tên",
@@ -92,7 +91,9 @@ const ListCommandAccountsPage = observer(() => {
             render: (text, record) =>
                 text.length > 0 ? (
                     text.map((text) => (
-                        <span className="command-item">{text.name}</span>
+                        <span className="command-item" key={text.code}>
+                            {text.name}
+                        </span>
                     ))
                 ) : (
                     <div className="no-infor">Không có.</div>
@@ -107,7 +108,7 @@ const ListCommandAccountsPage = observer(() => {
             render: (text, record) => (
                 <>
                     <Button
-                        onClick={async() => {
+                        onClick={async () => {
                             setAccount_code(record.code);
                             setOpenCommandAccess(true);
                         }}
@@ -137,10 +138,10 @@ const ListCommandAccountsPage = observer(() => {
             dataIndex: "age",
             key: "age",
             render: (text, record) => {
-                const check = account?.commands?.some(
+                const check = user?.commands?.some(
                     (command) => command.code === record.code
                 );
-                let newCommands = account?.commands?.map(
+                let newCommands = user?.commands?.map(
                     (command) => command.code
                 );
                 return (
@@ -157,9 +158,9 @@ const ListCommandAccountsPage = observer(() => {
                             console.log(`newCommands`, newCommands);
                             await usersStore.updateUserCommands(
                                 newCommands,
-                                account.code
+                                user.code
                             );
-                            setStatusCheck(!statusCheck);
+                            setStatusChange(!statusChange);
                         }}
                     />
                 );
@@ -171,7 +172,7 @@ const ListCommandAccountsPage = observer(() => {
             dataIndex: "action",
             key: "action",
             render: (text, record) => {
-                const check = account?.commands?.some(
+                const check = user?.commands?.some(
                     (command) => command.code === record.code
                 );
                 return (
@@ -179,11 +180,13 @@ const ListCommandAccountsPage = observer(() => {
                         className="secondary-button"
                         disabled={!check}
                         onClick={() => {
-                            usersStore?.accounts.forEach(account=>{
-                                account.command.code===record.code && setCommandAccount(account)
-                            })
-                            setTitleCommand(record.name);
+                            usersStore?.accounts.forEach((account) => {
+                                account.command.code === record.code &&
+                                    setCommandAccount(account);
+                            });
+                            setCommand(record);
                             setopenCommandManage(true);
+                            console.log("commandAccount",commandAccount);
                         }}
                     >
                         Quản lý
@@ -275,8 +278,8 @@ const ListCommandAccountsPage = observer(() => {
                                                 marginTop: 16,
                                             }}
                                         >
-                                            {account?.username &&
-                                                account?.username}
+                                            {user?.username &&
+                                                user?.username}
                                         </div>
                                     </div>
                                     <div>
@@ -287,9 +290,9 @@ const ListCommandAccountsPage = observer(() => {
                                                 marginTop: 16,
                                             }}
                                         >
-                                            {account?.name_uppercase &&
+                                            {user?.name_uppercase &&
                                                 useCapitalizeTheFirstLetter(
-                                                    account?.name_uppercase
+                                                    user?.name_uppercase
                                                 )}
                                         </div>
                                     </div>
@@ -311,9 +314,17 @@ const ListCommandAccountsPage = observer(() => {
                                 </Button>
                             </Drawer>
                             <Drawer
-                                title={`Thông tin tài khoản "${titleCommand}"`}
+                                title={
+                                    openCreateAccount
+                                        ? `Thêm tài khoản "${command.name}"`
+                                        : `Thông tin tài khoản "${command.name}"`
+                                }
                                 placement="left"
-                                onClose={() => {setCommandAccount(); setopenCommandManage(false)}}
+                                onClose={() => {
+                                    setCommandAccount();
+                                    setopenCommandManage(false);
+                                    setOpenCreateAccount(false);
+                                }}
                                 visible={openCommandManage}
                                 width={420}
                             >
@@ -323,7 +334,58 @@ const ListCommandAccountsPage = observer(() => {
                                         className="create-form"
                                     >
                                         <div className="">
-                                        {!commandAccount ? "Chưa có tài khoản" : <UpdateCommandAccount commandAccount={commandAccount}/> }                                            
+                                            {openCreateAccount ? (
+                                                <CreateCommandAccount
+                                                    setCommandAccount={setCommandAccount}
+                                                    setOpenCreateAccount={
+                                                        setOpenCreateAccount
+                                                    }
+                                                    setopenCommandManage={
+                                                        setopenCommandManage
+                                                    }
+                                                    command={
+                                                        command
+                                                    }
+                                                    user={user}
+                                                />
+                                            ) : !commandAccount ? (
+                                                <div>
+                                                    <Empty
+                                                        style={{ fontSize: 12 }}
+                                                        description="Chưa có tài khoản"
+                                                    />
+                                                    <Button
+                                                        onClick={() => {
+                                                            setOpenCreateAccount(
+                                                                true
+                                                            );
+                                                        }}
+                                                        type="primary"
+                                                        style={{
+                                                            fontSize: 12,
+                                                            backgroundColor:
+                                                                "#2c65ac",
+                                                            border: "none",
+                                                            width: "100%",
+                                                            marginTop: 16,
+                                                        }}
+                                                    >
+                                                        Tạo tài khoản
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <UpdateCommandAccount
+                                                    setCommandAccount={
+                                                        setCommandAccount
+                                                    }
+                                                    setopenCommandManage={
+                                                        setopenCommandManage
+                                                    }
+                                                    commandAccount={
+                                                        commandAccount
+                                                    }
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>

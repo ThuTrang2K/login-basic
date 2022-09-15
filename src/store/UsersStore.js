@@ -1,5 +1,6 @@
 import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
+const  qs = require('qs');
 
 class UsersStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
@@ -21,6 +22,7 @@ class UsersStore {
             status = "",
             direction = "",
             sort_by = "",
+            has_admin=false
         },
         company_code = ""
     ) {
@@ -32,7 +34,7 @@ class UsersStore {
         sort_by = sort_by ? `&sort_by=${sort_by}` : "";
 
         const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${keyword}${department_code}${status}${direction}${sort_by}&has_admin=true&sort=departmentCode,desc,HDQT,BDH,BTCNS,BTCKT,BTKTH,BKTKTNB,BVTB,BCB%2526DVHH,BTTKH,BPC%2526QTRR,BTGTT,VPCQTCT,BCNTT,CDTCT&company_code=${company_code}`,
+            `${process.env.REACT_APP_BASE_URL}/api/v1/users?page=${page}&size=10&keyword=${keyword}${department_code}${status}${direction}${sort_by}&has_admin=${has_admin}&sort=departmentCode,desc,HDQT,BDH,BTCNS,BTCKT,BTKTH,BKTKTNB,BVTB,BCB%2526DVHH,BTTKH,BPC%2526QTRR,BTGTT,VPCQTCT,BCNTT,CDTCT&company_code=${company_code}`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
@@ -56,6 +58,16 @@ class UsersStore {
         runInAction(() => {
             this.accounts = response.data;
         });
+    }
+    async createAccount(data) {
+        await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts`,{...data},
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
     }
     async getUserCommands() {
         const response = await axios.get(
@@ -160,6 +172,30 @@ class UsersStore {
             {
                 role_name: data,
             },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
+    async createCommandAccount(data) {
+        await axios.post(
+            `https://stg.truc-vimc.fafu.com.vn/api/oauth/token`,
+            
+                 qs.stringify(data)
+            ,
+            {
+                headers: {
+                    'Authorization': 'Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            }
+        );
+    }
+    async deleteCommandAccount(id) {
+        await axios.delete(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${this.access_token}`,
