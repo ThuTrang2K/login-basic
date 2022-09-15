@@ -4,6 +4,8 @@ import {
     Breadcrumb,
     Button,
     Drawer,
+    Form,
+    Input,
     Modal,
     Pagination,
     Space,
@@ -17,15 +19,20 @@ import AdvancedSearch from "./components/AdvancedSearch";
 import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 import { AuthContext } from "../../../context";
 import "./style.scss";
+import UpdateCommandAccount from "./components/UpdateCommandAccount";
 
 const ListCommandAccountsPage = observer(() => {
     const { usersStore, authStore, departmentsStore } = useContext(AuthContext);
     const navigate = useNavigate();
     const [openSelectList, setOpenSelectList] = useState(false);
     const [curentPage, setCurentPage] = useState(0);
-    const [open, setOpen] = useState(false);
-    const [account, setAccount] = useState("");
+    const [openCommandAccess, setOpenCommandAccess] = useState(false);
+    const [openCommandManage, setopenCommandManage] = useState(false);
+    const [account_code, setAccount_code] = useState("");
+    const [account, setAccount] = useState({});
     const [statusCheck, setStatusCheck] = useState(false);
+    const [titleCommand, setTitleCommand] = useState("");
+    const [commandAccount, setCommandAccount] = useState();
     const [selects, setSelects] = useState({
         keyword: "",
         department_code: "",
@@ -37,11 +44,17 @@ const ListCommandAccountsPage = observer(() => {
         usersStore.getUserCommands();
     }, []);
     useEffect(() => {
-        usersStore.getListUsers(
-            curentPage,
-            selects,
-            authStore.user.company.code
-        );
+        async function fetchData() {
+            await usersStore.getListUsers(
+                curentPage,
+                selects,
+                authStore.user.company.code
+            );
+            usersStore?.users?.forEach((user) => {
+                user.code === account_code && setAccount(user);
+            });
+        }
+        fetchData();
     }, [
         curentPage,
         selects.keyword,
@@ -49,20 +62,14 @@ const ListCommandAccountsPage = observer(() => {
         selects.status,
         selects.direction,
         selects.sort_by,
-        statusCheck
+        statusCheck,
     ]);
     useEffect(() => {
-        usersStore.getUserByUser_code(account.code);
-    }, [account]);
-
-    const showDrawer = () => {
-        setOpen(true);
-    };
-
-    const onClose = () => {
-        setOpen(false);
-    };
-
+        usersStore?.users?.forEach((user) => {
+            user.code === account_code && setAccount(user);
+        });
+        usersStore.getAccountsByUser_code(account_code);
+    }, [account_code]);
     const columns = [
         {
             title: "Họ tên",
@@ -100,9 +107,9 @@ const ListCommandAccountsPage = observer(() => {
             render: (text, record) => (
                 <>
                     <Button
-                        onClick={() => {
-                            setAccount(record);
-                            showDrawer();
+                        onClick={async() => {
+                            setAccount_code(record.code);
+                            setOpenCommandAccess(true);
                         }}
                         type="primary"
                         style={{
@@ -130,21 +137,32 @@ const ListCommandAccountsPage = observer(() => {
             dataIndex: "age",
             key: "age",
             render: (text, record) => {
-                const check = account.commands.some(command=>command.code=== record.code)
-                let newCommands= account.commands.map(command=>command.code)
-                return <Switch
-                    checked={check}
-                    
-                    onChange={async (checked) => {
-                        console.log(`record.code`,record.code)
-                        console.log(`switch to ${checked}`);
-                        checked? newCommands.push(record.code):newCommands= newCommands.filter(command=>command!==record.code);
-                        console.log(`newCommands`,newCommands)
-                        await usersStore.updateUserCommands(newCommands,account.code)
-                        setStatusCheck(!statusCheck); 
-                        showDrawer();                     
-                    }}
-                />
+                const check = account?.commands?.some(
+                    (command) => command.code === record.code
+                );
+                let newCommands = account?.commands?.map(
+                    (command) => command.code
+                );
+                return (
+                    <Switch
+                        checked={check}
+                        onChange={async (checked) => {
+                            console.log(`record.code`, record.code);
+                            console.log(`switch to ${checked}`);
+                            checked
+                                ? newCommands.push(record.code)
+                                : (newCommands = newCommands.filter(
+                                      (command) => command !== record.code
+                                  ));
+                            console.log(`newCommands`, newCommands);
+                            await usersStore.updateUserCommands(
+                                newCommands,
+                                account.code
+                            );
+                            setStatusCheck(!statusCheck);
+                        }}
+                    />
+                );
             },
             width: "30%",
         },
@@ -152,19 +170,26 @@ const ListCommandAccountsPage = observer(() => {
             title: "Tác vụ",
             dataIndex: "action",
             key: "action",
-            render: (text, record) => (
-                <>
+            render: (text, record) => {
+                const check = account?.commands?.some(
+                    (command) => command.code === record.code
+                );
+                return (
                     <Button
                         className="secondary-button"
+                        disabled={!check}
                         onClick={() => {
-                            // setAccount(record);
-                            // showModal();
+                            usersStore?.accounts.forEach(account=>{
+                                account.command.code===record.code && setCommandAccount(account)
+                            })
+                            setTitleCommand(record.name);
+                            setopenCommandManage(true);
                         }}
                     >
                         Quản lý
                     </Button>
-                </>
-            ),
+                );
+            },
             width: "30%",
         },
     ];
@@ -226,10 +251,16 @@ const ListCommandAccountsPage = observer(() => {
                                 }}
                             />
                             <Drawer
+                                style={
+                                    openCommandManage && {
+                                        transform: "translateX(200px)",
+                                        transition: "all .25s linear ",
+                                    }
+                                }
                                 title="Phân quyền truy cập"
                                 placement="left"
-                                onClose={onClose}
-                                visible={open}
+                                onClose={() => setOpenCommandAccess(false)}
+                                visible={openCommandAccess}
                                 width={420}
                             >
                                 <div
@@ -274,10 +305,28 @@ const ListCommandAccountsPage = observer(() => {
                                         display: "block",
                                     }}
                                     className="secondary-button"
-                                    onClick={onClose}
+                                    onClick={() => setOpenCommandAccess(false)}
                                 >
                                     Đóng cửa sổ
                                 </Button>
+                            </Drawer>
+                            <Drawer
+                                title={`Thông tin tài khoản "${titleCommand}"`}
+                                placement="left"
+                                onClose={() => {setCommandAccount(); setopenCommandManage(false)}}
+                                visible={openCommandManage}
+                                width={420}
+                            >
+                                <div className="create-event-container">
+                                    <div
+                                        style={{ marginTop: 0, padding: 0 }}
+                                        className="create-form"
+                                    >
+                                        <div className="">
+                                        {!commandAccount ? "Chưa có tài khoản" : <UpdateCommandAccount commandAccount={commandAccount}/> }                                            
+                                        </div>
+                                    </div>
+                                </div>
                             </Drawer>
                         </Tabs.TabPane>
                     </Tabs>

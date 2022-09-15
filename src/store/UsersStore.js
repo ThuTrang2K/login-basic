@@ -4,7 +4,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 class UsersStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));
     users = [];
-    user = {};
+    accounts = [];
     commands=[];
     usersbyDepartment = [];
     total_count = 0;
@@ -44,7 +44,7 @@ class UsersStore {
             this.total_count = response.data.total_count;
         });
     }
-    async getUserByUser_code(user_code) {
+    async getAccountsByUser_code(user_code) {
         const response = await axios.get(
             `${process.env.REACT_APP_BASE_URL}/api/v1/accounts?user_code=${user_code}`,
             {
@@ -54,7 +54,7 @@ class UsersStore {
             }
         );
         runInAction(() => {
-            this.user = response.data[0];
+            this.accounts = response.data;
         });
     }
     async getUserCommands() {

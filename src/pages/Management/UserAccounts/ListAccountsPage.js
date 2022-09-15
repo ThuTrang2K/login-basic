@@ -20,8 +20,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context";
 import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 import AdvancedSearch from "./components/AdvancedSearch";
-import CreateAccount from "./components/CreateAccount";
-import UpdateAccount from "./components/UpdateAccount";
+import CreateUser from "./components/CreateUser";
+import UpdateUser from "./components/UpdateUser";
 import "./style.scss";
 
 const ListAccountsPage = observer(() => {
@@ -35,7 +35,7 @@ const ListAccountsPage = observer(() => {
     } = useContext(AuthContext);
     const [openSelectList, setOpenSelectList] = useState(false);
     const [statusCheck, setStatusCheck] = useState(false);
-    const [createAccount, setCreateAccount] = useState(false);
+    const [createUser, setCreateUser] = useState(false);
     const [account, setAccount] = useState("");
     const [selects, setSelects] = useState({
         keyword: "",
@@ -89,11 +89,11 @@ const ListAccountsPage = observer(() => {
 
     const handleOk = () => {
         setIsModalOpen(false);
-        setCreateAccount(false);
+        setCreateUser(false);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
-        setCreateAccount(false);
+        setCreateUser(false);
     };
     const columns = [
         {
@@ -219,7 +219,7 @@ const ListAccountsPage = observer(() => {
                 <Button
                     type="primary"
                     style={{ backgroundColor: "#2c65ac", border: "none" }}
-                    onClick={() => setCreateAccount(!createAccount)}
+                    onClick={() => setCreateUser(!createUser)}
                 >
                     <PlusCircleOutlined />
                     &nbsp; Thêm mới người dùng
@@ -257,7 +257,7 @@ const ListAccountsPage = observer(() => {
                                     setCurentPage(page - 1);
                                 }}
                             />
-                            {createAccount && (
+                            {createUser && (
                                 <Modal
                                     title="Thêm mới người dùng"
                                     visible={true}
@@ -265,7 +265,7 @@ const ListAccountsPage = observer(() => {
                                     onCancel={handleCancel}
                                     footer={false}
                                 >
-                                    <CreateAccount
+                                    <CreateUser
                                         departments={
                                             departmentsStore.departments
                                         }
@@ -282,7 +282,7 @@ const ListAccountsPage = observer(() => {
                                 onCancel={handleCancel}
                                 footer={false}
                             >
-                                <UpdateAccount
+                                <UpdateUser
                                     account={account}
                                     departments={departmentsStore.departments}
                                     positions={positionsStore.positions}
