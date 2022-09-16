@@ -11,6 +11,7 @@ import {
     Input,
     Modal,
     Pagination,
+    Spin,
     Switch,
     Table,
     Tabs,
@@ -92,6 +93,7 @@ const ListAccountsPage = observer(() => {
         setCreateUser(false);
     };
     const handleCancel = () => {
+        usersStore.error = "";
         setIsModalOpen(false);
         setCreateUser(false);
     };
@@ -149,7 +151,6 @@ const ListAccountsPage = observer(() => {
                 <Switch
                     checked={text}
                     onChange={async (checked) => {
-                        console.log(`switch to ${checked}`);
                         await usersStore.updateUserStatus(checked, record.code);
                         setStatusCheck(!statusCheck);
                     }}
@@ -235,24 +236,26 @@ const ListAccountsPage = observer(() => {
                     >
                         <Tabs.TabPane tab="Tài khoản" key="1">
                             <AdvancedSearch props={props} />
-                            <Table
-                                columns={columns}
-                                rowKey={(record) => record.code}
-                                dataSource={usersList}
-                                scroll={{
-                                    x: 1100,
-                                }}
-                            />
-                            <Pagination
-                                className="contacts-users-pagination"
-                                defaultCurrent={curentPage + 1}
-                                current={curentPage + 1}
-                                pageSize={10}
-                                total={usersStore?.total_count}
-                                onChange={(page) => {
-                                    setCurentPage(page - 1);
-                                }}
-                            />
+                            <Spin spinning={usersStore.loading}>
+                                <Table
+                                    columns={columns}
+                                    rowKey={(record) => record.code}
+                                    dataSource={usersList}
+                                    scroll={{
+                                        x: 1100,
+                                    }}
+                                />
+                                <Pagination
+                                    className="contacts-users-pagination"
+                                    defaultCurrent={curentPage + 1}
+                                    current={curentPage + 1}
+                                    pageSize={10}
+                                    total={usersStore?.total_count}
+                                    onChange={(page) => {
+                                        setCurentPage(page - 1);
+                                    }}
+                                />
+                            </Spin>
                             {createUser && (
                                 <Modal
                                     title="Thêm mới người dùng"

@@ -6,7 +6,15 @@ import { AuthContext } from "../../../../context";
 
 const { Option } = Select;
 const UpdateUser = observer(
-    ({ account, positions, roles, handleCancel, departments,setupDateUser ,updateUser}) => {
+    ({
+        account,
+        positions,
+        roles,
+        handleCancel,
+        departments,
+        setupDateUser,
+        updateUser,
+    }) => {
         const { usersStore } = useContext(AuthContext);
         const navigate = useNavigate();
         const [form] = Form.useForm();
@@ -35,7 +43,7 @@ const UpdateUser = observer(
                 phone: fieldsValue.phone,
                 position_code: fieldsValue.position,
                 username: fieldsValue.username,
-                ma_nv:fieldsValue.ma_nv
+                ma_nv: fieldsValue.ma_nv,
             };
             await Promise.all([
                 usersStore.updateUserRoles(fieldsValue.roles, account.code),

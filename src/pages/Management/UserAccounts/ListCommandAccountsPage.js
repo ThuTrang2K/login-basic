@@ -6,6 +6,7 @@ import {
     Drawer,
     Empty,
     Pagination,
+    Spin,
     Switch,
     Table,
     Tabs,
@@ -37,6 +38,7 @@ const ListCommandAccountsPage = observer(() => {
         department_code: "",
         direction: "",
         sort_by: "",
+        has_admin: authStore.user.is_admin,
     });
     useEffect(() => {
         departmentsStore.getListDepartmentsUsers();
@@ -177,10 +179,19 @@ const ListCommandAccountsPage = observer(() => {
                         className="secondary-button"
                         disabled={!check}
                         onClick={() => {
-                            usersStore?.accounts.forEach((account) => {
-                                account.command.code === record.code &&
-                                    setCommandAccount(account);
-                            });
+                            usersStore?.accounts.find(
+                                (account) =>
+                                    account.command.code === record.code
+                            )
+                                ? setCommandAccount(
+                                      usersStore?.accounts.find(
+                                          (account) =>
+                                              account.command.code ===
+                                              record.code
+                                      )
+                                  )
+                                : setCommandAccount();
+
                             setCommand(record);
                             setopenCommandManage(true);
                         }}
@@ -230,6 +241,7 @@ const ListCommandAccountsPage = observer(() => {
                         <Tabs.TabPane tab="Tài khoản" key="1"></Tabs.TabPane>
                         <Tabs.TabPane tab="Phần mềm" key="2">
                             <AdvancedSearch props={props} />
+
                             <Table
                                 // style={{overflowX:"scroll"}}
                                 columns={columns}

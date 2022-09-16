@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import AuthStore from '../store/AuthStore';
 import DepartmentsStore from '../store/DepartmentsStore';
 import EventStore from '../store/EventStore';
@@ -12,6 +12,7 @@ import WorkSchedulesStore from '../store/WorkSchedulesStore';
 const AuthContext = createContext();
 
 function AuthProvider(props){
+    const [loading, setLoading]=useState(false)
     const authStore = new AuthStore();
     const workSchedulesStore = new WorkSchedulesStore();
     const eventStore = new EventStore()
@@ -21,7 +22,7 @@ function AuthProvider(props){
     const departmentsStore = new DepartmentsStore();
     const positionsStore = new PositionsStore()
     const rolesStore = new RolesStore();
-    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore}
+    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore,loading, setLoading}
     return <AuthContext.Provider {...props} value={value}></AuthContext.Provider>
 }
 export {AuthContext,AuthProvider}

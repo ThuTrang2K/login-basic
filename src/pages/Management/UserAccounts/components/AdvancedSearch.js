@@ -1,10 +1,10 @@
-import { CloseCircleOutlined, FilterOutlined } from '@ant-design/icons';
-import { Button, Select, Space,Input } from 'antd';
-import React from 'react';
+import { CloseCircleOutlined, FilterOutlined } from "@ant-design/icons";
+import { Button, Select, Space, Input } from "antd";
+import React from "react";
 
 const { Search } = Input;
 const { Option } = Select;
-const AdvancedSearch = ({props}) => {
+const AdvancedSearch = ({ props }) => {
     return (
         <>
             <div className="general-flex-header">
@@ -13,8 +13,11 @@ const AdvancedSearch = ({props}) => {
                         className="general-search"
                         placeholder="Tìm kiếm theo tên hoặc username"
                         onSearch={(value) => {
-                            props.setCurentPage(0)
-                            props.setSelects({ ...props.selects, keyword: value });
+                            props.setCurentPage(0);
+                            props.setSelects({
+                                ...props.selects,
+                                keyword: value,
+                            });
                         }}
                         enterButton
                     />
@@ -41,18 +44,25 @@ const AdvancedSearch = ({props}) => {
                 <div className="select-list">
                     <div className="select-item">
                         <p>Sắp xếp theo</p>
-                        <Select 
+                        <Select
                             placeholder="Sắp xếp theo"
                             style={{
                                 width: "100%",
                             }}
                             onChange={(value) => {
-                                props.setCurentPage(0)
-                                props.setSelects({ ...props.selects, sort_by: value });
+                                props.setCurentPage(0);
+                                props.setSelects({
+                                    ...props.selects,
+                                    sort_by: value,
+                                });
                             }}
                         >
-                            <Option value="nameUppercase" key={"Họ tên"}>Họ tên</Option>
-                            <Option value="username" key={"Tên đăng nhập"}>Tên đăng nhập</Option>
+                            <Option value="nameUppercase" key={"Họ tên"}>
+                                Họ tên
+                            </Option>
+                            <Option value="username" key={"Tên đăng nhập"}>
+                                Tên đăng nhập
+                            </Option>
                         </Select>
                     </div>
                     <div className="select-item">
@@ -63,8 +73,11 @@ const AdvancedSearch = ({props}) => {
                                 width: "100%",
                             }}
                             onChange={(value) => {
-                                props.setCurentPage(0)
-                                props.setSelects({ ...props.selects, direction: value });
+                                props.setCurentPage(0);
+                                props.setSelects({
+                                    ...props.selects,
+                                    direction: value,
+                                });
                             }}
                         >
                             <Option value="ASC">Tăng dần</Option>
@@ -79,8 +92,11 @@ const AdvancedSearch = ({props}) => {
                                 width: "100%",
                             }}
                             onChange={(value) => {
-                                props.setCurentPage(0)
-                                props.setSelects({ ...props.selects, status: value });
+                                props.setCurentPage(0);
+                                props.setSelects({
+                                    ...props.selects,
+                                    status: value,
+                                });
                             }}
                         >
                             <Option value="true">Active</Option>
@@ -95,7 +111,7 @@ const AdvancedSearch = ({props}) => {
                                 width: "100%",
                             }}
                             onChange={(value) => {
-                                props.setCurentPage(0)
+                                props.setCurentPage(0);
                                 props.setSelects({
                                     ...props.selects,
                                     department_code: value,
@@ -105,7 +121,10 @@ const AdvancedSearch = ({props}) => {
                             {props.departmentsStore?.departments.length > 0 &&
                                 props.departmentsStore?.departments.map(
                                     (department) => (
-                                        <Option value={department.code} key={department.title}>
+                                        <Option
+                                            value={department.code}
+                                            key={department.title}
+                                        >
                                             {department.title}
                                         </Option>
                                     )

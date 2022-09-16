@@ -62,10 +62,6 @@ function App() {
                     path="/admin/user-app-management"
                     element={<ListCommandAccountsPage/>}
                 />
-                {/* <Route
-                    path="/admin/*"
-                    element={<UserAccountsPage/>}
-                /> */}
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFoundPage />} />
