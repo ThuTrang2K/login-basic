@@ -316,7 +316,6 @@ const ListCommandAccountsPage = observer(() => {
                                 }
                                 placement="left"
                                 onClose={() => {
-                                    setCommandAccount();
                                     setopenCommandManage(false);
                                     setOpenCreateAccount(false);
                                 }}
