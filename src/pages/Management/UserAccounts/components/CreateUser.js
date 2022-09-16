@@ -11,7 +11,6 @@ const CreateUser = observer(
         const navigate = useNavigate();
 
         const onFinish = async (fieldsValue) => {
-            console.log("fieldsValue", fieldsValue);
             const values = {
                 company_code: authStore.user.company.code,
                 department_code: fieldsValue.department,
@@ -27,7 +26,6 @@ const CreateUser = observer(
                 username: fieldsValue.username,
                 ma_nv:fieldsValue.ma_nv
             };
-            console.log("value", values);
             await usersStore.createUser(values);
             navigate(0);
         };

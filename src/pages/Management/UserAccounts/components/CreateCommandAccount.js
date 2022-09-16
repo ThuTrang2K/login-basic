@@ -7,14 +7,12 @@ import { Button, Form, Input } from 'antd';
 const CreateCommandAccount = observer(({setOpenCreateAccount,setCommandAccount,command,user,setopenCommandManage}) => {
     const { usersStore } = useContext(AuthContext);
     const onFinish = async(fieldsValue) => {
-        console.log("fieldsValue", command);
         const values = {
             account_name:fieldsValue.account_name,
             password:fieldsValue.password,
             command_code:command.code,
             user_code:user.code
         };
-        console.log(values,values);
             await usersStore.createCommandAccount({
                 username:fieldsValue.account_name,
                 password:fieldsValue.password,

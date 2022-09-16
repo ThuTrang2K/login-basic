@@ -120,7 +120,6 @@ const ListAccountsPage = observer(() => {
             key: "ma_nv",
             render: (text) =>
                 text ? text : <div className="no-infor">Chưa rõ.</div>,
-            // width: "10%",
         },
         {
             title: "Email",
@@ -134,7 +133,6 @@ const ListAccountsPage = observer(() => {
             key: "phone",
             render: (text) =>
                 text ? <b>{text}</b> : <div className="no-infor">Chưa rõ.</div>,
-            // width: "5%",
         },
         {
             title: "Số máy nội bộ",
@@ -142,7 +140,6 @@ const ListAccountsPage = observer(() => {
             key: "home_phone",
             render: (text) =>
                 text ? <b>{text}</b> : <div className="no-infor">Chưa rõ.</div>,
-            // width: "10%",
         },
         {
             title: "Trạng thái",
@@ -158,7 +155,6 @@ const ListAccountsPage = observer(() => {
                     }}
                 />
             ),
-            // width: "10%",
         },
         {
             title: "Công ty",

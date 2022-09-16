@@ -24,7 +24,6 @@ const UpdateCommandAccount = observer(({commandAccount,setCommandAccount,setopen
         });
     };
     const onFinish = (fieldsValue) => {
-        console.log("fieldsValue", fieldsValue);
         const values = {
             ...fieldsValue,
             grant_type: "password"

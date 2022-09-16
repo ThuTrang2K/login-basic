@@ -32,3 +32,14 @@
 .ant-drawer-body {
     font-size: 12px;
 }
+//table
+.general-tab .ant-table tr:nth-child(even) {
+    .ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first{
+        background: #e9f0fd 
+    }
+}
+.general-tab .ant-table tr:not(:first-child):nth-child(odd) {
+    .ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first{
+        background: #fff !important
+    }
+}

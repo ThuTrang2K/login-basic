@@ -148,14 +148,11 @@ const ListCommandAccountsPage = observer(() => {
                     <Switch
                         checked={check}
                         onChange={async (checked) => {
-                            console.log(`record.code`, record.code);
-                            console.log(`switch to ${checked}`);
                             checked
                                 ? newCommands.push(record.code)
                                 : (newCommands = newCommands.filter(
                                       (command) => command !== record.code
                                   ));
-                            console.log(`newCommands`, newCommands);
                             await usersStore.updateUserCommands(
                                 newCommands,
                                 user.code
@@ -186,7 +183,6 @@ const ListCommandAccountsPage = observer(() => {
                             });
                             setCommand(record);
                             setopenCommandManage(true);
-                            console.log("commandAccount", commandAccount);
                         }}
                     >
                         Quản lý

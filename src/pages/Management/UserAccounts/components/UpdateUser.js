@@ -10,8 +10,6 @@ const UpdateUser = observer(
         const { usersStore } = useContext(AuthContext);
         const navigate = useNavigate();
         const [form] = Form.useForm();
-        console.log("departments", departments);
-        console.log("account", account);
         account &&
             form.setFieldsValue({
                 username: account.username,
@@ -26,7 +24,6 @@ const UpdateUser = observer(
                 position: account.position_code,
             });
         const onFinish = async (fieldsValue) => {
-            console.log("fieldsValue", fieldsValue);
             const values = {
                 company_code: account.company_code,
                 department_code: fieldsValue.department,
@@ -40,7 +37,6 @@ const UpdateUser = observer(
                 username: fieldsValue.username,
                 ma_nv:fieldsValue.ma_nv
             };
-            console.log("value", values);
             await Promise.all([
                 usersStore.updateUserRoles(fieldsValue.roles, account.code),
                 usersStore.updateUserById(values, account.code),
