@@ -23,12 +23,15 @@ const UpdateCommandAccount = observer(({commandAccount,setCommandAccount,setopen
             },
         });
     };
-    const onFinish = (fieldsValue) => {
+    const onFinish = async(fieldsValue) => {
+        console.log(commandAccount);
         const values = {
-            ...fieldsValue,
-            grant_type: "password"
+            account_name:fieldsValue.account_name ,
+            password: fieldsValue.password
         };
-            usersStore.updateCommandAccount(values)
+        await usersStore.updateCommandAccount(values,commandAccount.id)
+        setCommandAccount(values);
+        setopenCommandManage(false);
     }
     return (
         <>

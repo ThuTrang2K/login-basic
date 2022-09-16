@@ -181,6 +181,19 @@ class UsersStore {
             }
         );
     }
+    async updateCommandAccount(data,id) {
+        await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/accounts/${id}`,
+            {
+                ...data
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
+    }
     async deleteCommandAccount(id) {
         await axios.delete(
             `${process.env.REACT_APP_BASE_URL}/api/v1/accounts/${id}`,
