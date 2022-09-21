@@ -1,0 +1,119 @@
+//select
+.select-list-wrap {
+    display: flex;
+    margin-left: -7.5px;
+    margin-right: -7.5px;
+    flex-wrap: wrap;
+
+    .select-item {
+        margin-top: 12px;
+        padding-left: 7.5px;
+        padding-right: 7.5px;
+        display: block;
+        flex: 0 0 33.33333333%;
+        max-width: 33.33333333%;
+
+        .ant-btn.ant-btn-default.ant-btn-icon-only.ant-input-search-button {
+            height: 29px
+        }
+    }
+
+    .ant-picker.ant-picker-range {
+        width: 100%;
+
+        &>* {
+            font-size: 12px !important;
+        }
+    }
+
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        height: 29px;
+    }
+}
+.box-shadow {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 2px 8px;
+    padding:24px 16px ;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.button-icon {
+    margin: 4px;
+}
+.button-user *{
+    color: rgb(44, 101, 172);
+}
+.button-group *{
+    color: #fa8c16
+}
+.ant-tooltip-content *{
+    font-size:12px ;
+}
+.incoming-textarea {
+    width:100%;
+    border-color: #d9d9d9;
+}
+.incoming-textarea:focus-visible{
+    outline: none;
+    border-color:rgb(44, 101, 172)
+}
+.ant-modal {
+    width: 800px !important;
+    .ant-modal-body {
+        padding: 0 0 20px 20px;
+    }
+    .ant-input-group *{
+        font-size: 12px;
+    }
+    .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button:not(.ant-btn-primary) {
+        height: 28px;}
+}
+
+.ant-modal * {
+    font-size: 12px;
+}
+.selected-list {    
+    width: 250px;
+    border-left: 1px solid #dddd;
+
+    max-height: calc(100vh - 180px);overflow-x: none; overflow-y: auto; max-width: 250px; background-color: rgb(255, 255, 255);  border-left: 1px solid rgb(240, 240, 240); padding: 15px 10px;
+    &-title{
+        margin: -15px -10px 10px -10px;
+        padding: 15px;
+    border-bottom: 1px solid rgb(240, 240, 240);
+    font-weight: 500;
+    background-color: rgb(233, 247, 255);
+    }
+}
+.collapse-wrapper {
+    overflow-y: auto;
+    margin-top: 16px;
+    height: calc(100vh - 180px);
+    .ant-collapse-header-text {
+        font-weight: 600;
+        padding-left: 20px;
+    }
+}
+
+//scroll
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(161, 159, 159, 0.664); 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(148, 147, 147); 
+    border-radius: 10px;
+  }
+  .list_container {
+      overflow:auto;
+      height: 50px;
+      width: 40px;
+    }
+

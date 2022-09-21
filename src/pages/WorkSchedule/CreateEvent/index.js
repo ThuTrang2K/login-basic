@@ -25,7 +25,6 @@ import moment from "moment";
 import vi from "moment/locale/vi";
 import locale from "antd/es/date-picker/locale/vi_VN";
 import { AuthContext } from "../../../context";
-import Item from "antd/lib/list/Item";
 
 const CreateEvent = observer(() => {
     const { eventStore, workSchedulesStore, fileStore,departmentsStore } =

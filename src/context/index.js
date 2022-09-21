@@ -4,6 +4,7 @@ import DepartmentsStore from '../store/DepartmentsStore';
 import EventStore from '../store/EventStore';
 import FileStore from '../store/FileStore';
 import GeneralNotifStore from '../store/GeneralNotifStore';
+import InternalDocsStore from '../store/InternalDocsStore';
 import PositionsStore from '../store/PositionsStore';
 import RolesStore from '../store/RolesStore';
 import UsersStore from '../store/UsersStore';
@@ -12,7 +13,6 @@ import WorkSchedulesStore from '../store/WorkSchedulesStore';
 const AuthContext = createContext();
 
 function AuthProvider(props){
-    const [loading, setLoading]=useState(false)
     const authStore = new AuthStore();
     const workSchedulesStore = new WorkSchedulesStore();
     const eventStore = new EventStore()
@@ -22,7 +22,8 @@ function AuthProvider(props){
     const departmentsStore = new DepartmentsStore();
     const positionsStore = new PositionsStore()
     const rolesStore = new RolesStore();
-    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore,loading, setLoading}
+    const internalDocsStore = new InternalDocsStore();
+    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore,internalDocsStore}
     return <AuthContext.Provider {...props} value={value}></AuthContext.Provider>
 }
 export {AuthContext,AuthProvider}

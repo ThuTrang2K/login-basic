@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import {
     ApartmentOutlined,
     CalendarOutlined,
+    FileTextOutlined,
     HomeOutlined,
     SolutionOutlined,
 } from "@ant-design/icons";
@@ -52,6 +53,15 @@ const SideMenu = () => {
                     <span>Lịch cơ quan</span>
                     <Link to="/company-work-schedule"></Link>
                 </Menu.Item>
+                <Menu.SubMenu
+                    key="/document"
+                    title="Văn bản"
+                    icon={<FileTextOutlined />}
+                >
+                    <Menu.Item key={"/internal-document/incoming-document"}>
+                        <Link to="/internal-document/incoming-document">Văn bản VIMC</Link>
+                    </Menu.Item>
+                </Menu.SubMenu>
                 <Menu.SubMenu
                     key="/item"
                     title="Tiện ích"

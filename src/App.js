@@ -2,6 +2,10 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Home from "./components/Layout/Home";
+import IncomingCreatePage from "./pages/Documents/InternalDocuments/IncomingCreatePage";
+import IncomingDocPage from "./pages/Documents/InternalDocuments/IncomingDocPage";
+import OutgoingDocPage from "./pages/Documents/InternalDocuments/OutgoingDocPage";
+import SignDocPage from "./pages/Documents/InternalDocuments/SignDocPage";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/LoginPage";
 import ListAccountsPage from "./pages/Management/UserAccounts/ListAccountsPage";
@@ -61,6 +65,22 @@ function App() {
                 <Route
                     path="/admin/user-app-management"
                     element={<ListCommandAccountsPage/>}
+                />
+                <Route
+                    path="/internal-document/incoming-document"
+                    element={<IncomingDocPage/>}
+                />
+                <Route
+                    path="/internal-document/outgoing-document"
+                    element={<OutgoingDocPage/>}
+                />
+                <Route
+                    path="/internal-document/sign-document"
+                    element={<SignDocPage/>}
+                />
+                <Route
+                    path="/internal-document/incoming-document/create"
+                    element={<IncomingCreatePage/>}
                 />
             </Route>
             <Route path="/login" element={<Login />} />
