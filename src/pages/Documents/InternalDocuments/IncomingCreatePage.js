@@ -1,5 +1,7 @@
 import {
+    Avatar,
     Button,
+    Checkbox,
     Collapse,
     DatePicker,
     Form,
@@ -18,13 +20,15 @@ import { AuthContext } from "../../../context";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./style.scss";
-import { CaretDownOutlined, CaretRightOutlined, TeamOutlined, UploadOutlined, UserOutlined } from "@ant-design/icons";
+import {
+    TeamOutlined,
+    UploadOutlined,
+    UserOutlined,
+} from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
+import ListUsersModel from "./components/ListUsersModel";
 
-const { Search } = Input;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { Panel } = Collapse;
 const IncomingCreatePage = observer(() => {
     const { internalDocsStore } = useContext(AuthContext);
     let navigate = useNavigate();
@@ -34,11 +38,14 @@ const IncomingCreatePage = observer(() => {
     );
     const [bookId, setBookId] = useState(internalDocsStore?.books[0]?.id);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectUsers, setSelectUsers] = useState({
+        leader: "",
+    });
     useEffect(() => {
         internalDocsStore.getListBookGroups("DEN");
         internalDocsStore.getListUsers();
         internalDocsStore.getListCompanies();
-        internalDocsStore.getListAuthorityIssueds('INCOMING');
+        internalDocsStore.getListAuthorityIssueds("INCOMING");
     }, []);
     useEffect(() => {
         internalDocsStore.getListBooks(bookGroupId);
@@ -50,13 +57,7 @@ const IncomingCreatePage = observer(() => {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+    
     const onFinish = async (fieldsValue) => {
         const values = {
             // ...fieldsValue,
@@ -296,26 +297,18 @@ const IncomingCreatePage = observer(() => {
                                         width: "100%",
                                     }}
                                 >
-                                    
-                                        <Option
-                                            value={"001"}
-                                            key={"Khẩn"}
-                                        >
-                                            Khẩn
-                                        </Option>
-                                        <Option
-                                            value={"002"}
-                                            key={"Hỏa tốc"}
-                                        >
-                                            Hỏa tốc
-                                        </Option>
-                                        <Option
-                                            value={"003"}
-                                            key={"Hỏa tốc hẹn giờ"}
-                                        >
-                                            Hỏa tốc hẹn giờ
-                                        </Option>
-                                   
+                                    <Option value={"001"} key={"Khẩn"}>
+                                        Khẩn
+                                    </Option>
+                                    <Option value={"002"} key={"Hỏa tốc"}>
+                                        Hỏa tốc
+                                    </Option>
+                                    <Option
+                                        value={"003"}
+                                        key={"Hỏa tốc hẹn giờ"}
+                                    >
+                                        Hỏa tốc hẹn giờ
+                                    </Option>
                                 </Select>
                             </Form.Item>
                         </div>
@@ -353,17 +346,18 @@ const IncomingCreatePage = observer(() => {
                                         flex: 1,
                                     }}
                                 >
-                                    {internalDocsStore?.authorityIssueds?.length > 0 &&
+                                    {internalDocsStore?.authorityIssueds
+                                        ?.length > 0 &&
                                         internalDocsStore?.authorityIssueds?.map(
-                                    (authorityIssued) => (
-                                        <Option
-                                            value={authorityIssued.id}
-                                            key={authorityIssued.name}
-                                        >
-                                            {authorityIssued.name}
-                                        </Option>
-                                    )
-                                )}
+                                            (authorityIssued) => (
+                                                <Option
+                                                    value={authorityIssued.id}
+                                                    key={authorityIssued.name}
+                                                >
+                                                    {authorityIssued.name}
+                                                </Option>
+                                            )
+                                        )}
                                 </Select>
                                 <Button
                                     style={{ width: 80 }}
@@ -383,7 +377,7 @@ const IncomingCreatePage = observer(() => {
                                     <Tooltip
                                         title="Chọn người dùng"
                                         color="rgb(44, 101, 172)"
-                                        key="rgb(44, 101, 172)"
+                                        key="rgb(44, 101, 173)"
                                     >
                                         <Button
                                             className="button-icon button-user secondary-button"
@@ -398,7 +392,7 @@ const IncomingCreatePage = observer(() => {
                                     <Tooltip
                                         title="Chọn người dùng"
                                         color="rgb(44, 101, 172)"
-                                        key="rgb(44, 101, 172)"
+                                        key="rgb(44, 101, 173)"
                                     >
                                         <Button
                                             className="button-icon button-user secondary-button"
@@ -410,7 +404,7 @@ const IncomingCreatePage = observer(() => {
                                     <Tooltip
                                         title="Chọn nhóm"
                                         color="rgb(255, 192, 105)"
-                                        key="rgb(44, 101, 172)"
+                                        key="rgb(44, 101, 174)"
                                     >
                                         <Button className="button-icon secondary-button button-group">
                                             <TeamOutlined />
@@ -422,7 +416,7 @@ const IncomingCreatePage = observer(() => {
                                     <Tooltip
                                         title="Chọn người dùng"
                                         color="rgb(44, 101, 172)"
-                                        key="rgb(44, 101, 172)"
+                                        key="rgb(44, 101, 175)"
                                     >
                                         <Button
                                             className="button-icon button-user secondary-button"
@@ -476,7 +470,6 @@ const IncomingCreatePage = observer(() => {
                                 className="secondary-button"
                                 style={{
                                     marginTop: "16px",
-                                    backgroundColor: "#fff",
                                     marginRight: 8,
                                 }}
                                 // onClick={() => handleCancel()}
@@ -495,93 +488,7 @@ const IncomingCreatePage = observer(() => {
                                 Tạo văn bản
                             </Button>
                         </Form.Item>
-                        <Modal
-                            title={<div className="general-flex-header"><Select
-                                    placeholder="--Chọn cơ quan ban hành--"
-                                    
-                                    defaultValue={internalDocsStore?.companies[0]?.name}
-                                >
-                                    {internalDocsStore?.companies?.length > 0 &&
-                                        internalDocsStore?.companies?.map(
-                                    (company) => (
-                                        <Option
-                                            value={company.code}
-                                            key={company.name}
-                                        >
-                                            {company.name}
-                                        </Option>
-                                    )
-                                )}
-                                </Select>
-                                <div className="general-flex-header" >
-                                <Button
-                                className="secondary-button"
-                                style={{
-                                    marginTop: "16px",
-                                    backgroundColor: "#fff",
-                                    marginRight: 8,
-                                }}
-                                onClick={() => handleCancel()}
-                            >
-                                Hủy bỏ
-                            </Button>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                style={{
-                                    marginTop: "16px",
-                                    marginRight:"16px",
-                                    backgroundColor: "#2c65ac",
-                                    border: "none",
-                                }}
-                            >
-                                Tạo văn bản
-                            </Button>
-                                </div>
-                                </div>}
-                            visible={isModalOpen}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={false}
-                        >
-                            <div className="flex-column" >
-                                <div style={{flex:1}}>
-                                <div className="select-item">
-                                        <Search
-                                            allowClear
-                                            placeholder="Tìm theo tên người dùng hoặc phòng ban"
-                                            // onSearch={(value) => {
-                                            //     setCurentPage(0);
-                                            //     setSelects({
-                                            //         ...selects,
-                                            //         signer: value,
-                                            //     });
-                                            // }}
-                                        />
-                                        <div className="collapse-wrapper">
-                                        <Collapse defaultActiveKey={['1']} 
-                                        // onChange={onChange}
-                                        expandIcon={({ isActive }) => isActive ? <CaretRightOutlined /> : <CaretDownOutlined />}
-                                        >
-                                        {internalDocsStore?.users?.length > 0 &&
-                                        internalDocsStore?.users?.map(
-                                    (item) => {
-                                        console.log(item)
-                                        return <Panel header={item?.name} key={item?.code}>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum quam possimus illo, similique qui vel voluptas at dolorem, voluptatem reiciendis quibusdam velit quisquam doloremque. Corporis, autem ex. Sint, nobis obcaecati.
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis earum sapiente aut qui modi? Unde a laborum eos eaque, tenetur consequatur debitis laboriosam eligendi, dignissimos ipsa magnam ipsum dolor eius?</p>
-      </Panel>
-    }
-                                )}
-    </Collapse>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="selected-list">
-                                    <div className="selected-list-title">Danh sách đã chọn</div>
-                                </div>
-                            </div>
-                        </Modal>
+                        <ListUsersModel setIsModalOpen={setIsModalOpen} companies={internalDocsStore?.companies} isModalOpen={isModalOpen} users={internalDocsStore?.users} selectUsers={selectUsers} setSelectUsers={setSelectUsers}/>
                     </Form>
                 </div>
             </div>
