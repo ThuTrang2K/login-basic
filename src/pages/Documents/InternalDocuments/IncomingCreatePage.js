@@ -21,12 +21,14 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./style.scss";
 import {
+    CloseOutlined,
     TeamOutlined,
     UploadOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import ListUsersModel from "./components/ListUsersModel";
+import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
 
 const { Option } = Select;
 const IncomingCreatePage = observer(() => {
@@ -85,6 +87,13 @@ const IncomingCreatePage = observer(() => {
 
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
+    };
+    const handleDelete = () => {
+        setSelectUsers({
+            ...selectUsers,
+            leader: "",
+        });
+        setIsModalOpen(false);
     };
     const breadcrumb = [
         {
@@ -386,6 +395,27 @@ const IncomingCreatePage = observer(() => {
                                             <UserOutlined />
                                         </Button>
                                     </Tooltip>
+                                    {!selectUsers.leader ?"": (
+                                <div className="tag-selected">
+                                    <Avatar className="user-item-avatar">
+                                        {selectUsers.leader.name_uppercase.at(
+                                            0
+                                        )}
+                                    </Avatar>
+                                    {useCapitalizeTheFirstLetter(
+                                        selectUsers.leader.name_uppercase
+                                    )}
+                                    <CloseOutlined
+                                        style={{ color: "red", marginLeft: 8 }}
+                                        onClick={() =>
+                                            setSelectUsers({
+                                                ...selectUsers,
+                                                leader: "",
+                                            })
+                                        }
+                                    />
+                                </div>
+                            )}
                                 </div>
                                 <div>
                                     <span>Người sử lý:</span>
@@ -488,7 +518,7 @@ const IncomingCreatePage = observer(() => {
                                 Tạo văn bản
                             </Button>
                         </Form.Item>
-                        <ListUsersModel setIsModalOpen={setIsModalOpen} companies={internalDocsStore?.companies} isModalOpen={isModalOpen} users={internalDocsStore?.users} selectUsers={selectUsers} setSelectUsers={setSelectUsers}/>
+                        <ListUsersModel setIsModalOpen={setIsModalOpen} companies={internalDocsStore?.companies} isModalOpen={isModalOpen} users={internalDocsStore?.users} selectUsers={selectUsers} setSelectUsers={setSelectUsers} handleDelete={handleDelete}/>
                     </Form>
                 </div>
             </div>

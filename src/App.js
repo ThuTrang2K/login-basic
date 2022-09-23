@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Home from "./components/Layout/Home";
+import DetailIncomingPage from "./pages/Documents/InternalDocuments/DetailIncomingPage";
 import IncomingCreatePage from "./pages/Documents/InternalDocuments/IncomingCreatePage";
 import IncomingDocPage from "./pages/Documents/InternalDocuments/IncomingDocPage";
 import OutgoingDocPage from "./pages/Documents/InternalDocuments/OutgoingDocPage";
@@ -81,6 +82,10 @@ function App() {
                 <Route
                     path="/internal-document/incoming-document/create"
                     element={<IncomingCreatePage/>}
+                />
+                <Route
+                    path="/internal-document/incoming-document/view/:id"
+                    element={<DetailIncomingPage/>}
                 />
             </Route>
             <Route path="/login" element={<Login />} />

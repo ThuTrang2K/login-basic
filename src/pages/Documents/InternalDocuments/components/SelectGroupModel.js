@@ -21,7 +21,7 @@ import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLett
 const { Panel } = Collapse;
 const { Option } = Select;
 const { Search } = Input;
-const ListUsersModel = observer(
+const SelectGroupModel = observer(
     ({
         setIsModalOpen,
         companies,
@@ -41,8 +41,8 @@ const ListUsersModel = observer(
 
         console.log(selectUsers);
         return (
-            <>
-                <Modal className="user-modal"
+            <div className="user-modal">
+                <Modal
                     title={
                         <div className="general-flex-header">
                             <Select
@@ -226,10 +226,11 @@ const ListUsersModel = observer(
                         </div>
                     </div>
                 </Modal>
-                
-            </>
+            </div>
         );
     }
 );
 
-export default ListUsersModel;
+export default SelectGroupModel;
+
+

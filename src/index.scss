@@ -122,7 +122,7 @@ code {
   }
 
   .ant-layout,
-  .site-layout-background {
+  .site-layout-background { 
     background: #fff !important;
   }
 
@@ -177,7 +177,7 @@ code {
 .ant-layout,
 .ant-layout *:not(.ant-spin-nested-loading *) {
   box-sizing: border-box;
-  font-size: 12px !important;
+  font-size: 12px ;
 }
 
 //breadcrumb
@@ -224,23 +224,25 @@ li:last-child .ant-breadcrumb-link a {
 
 //incomming
 .inprogress {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  padding: 2px;
+  padding: 2px 8px;
   border: 1px solid;
   border-radius: 10px;
   margin: 0px;
-  color: #096dd9;
+  color: #096dd9 !important;
   background: #e6f7ff;
   border-color: #91d5ff;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .pending {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
+  padding: 2px 8px;
   border: 1px solid;
   border-radius: 10px;
   margin: 0px;
@@ -248,4 +250,6 @@ li:last-child .ant-breadcrumb-link a {
   background: #fff7e6;
   border-color: #ffd591;
   cursor: pointer;
+  font-weight: 600;
 }
+

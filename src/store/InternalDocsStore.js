@@ -15,6 +15,7 @@ class InternalDocsStore {
     incoming_number = 0;
     users = [];
     companies=[];
+    detailIncoming={}
     loading = false;
     error = "";
     constructor() {
@@ -190,6 +191,39 @@ class InternalDocsStore {
         runInAction(() => {
             this.companies = response.data;
         });
+    }
+    async getDetailIncoming(id) {
+        this.loading = true;
+        this.error = "";
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_BASE_URL}/api/v1/internal-documents/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.access_token}`,
+                    },
+                }
+            );
+            runInAction(() => {
+                this.detailIncoming = response.data;
+                this.loading = false;
+                this.error = "";
+            });
+        } catch (e) {
+            console.log("e", e);
+            this.error = "Có Lỗi xảy ra";
+            this.loading = false;
+        }
+    }
+    async deleteIncoming(id) {
+        await axios.delete(
+            `${process.env.REACT_APP_BASE_URL}/api/v1/internal-documents/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.access_token}`,
+                },
+            }
+        );
     }
 }
 

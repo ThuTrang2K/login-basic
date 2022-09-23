@@ -39,14 +39,15 @@ const IncomingDocPage = observer(() => {
     const [openSelectList, setOpenSelectList] = useState(false);
     const [selects, setSelects] = useState({
         title: "",
-        incoming_date:'',
-        date_issued:'',
-        signer:'',authority_name:''
+        incoming_date: "",
+        date_issued: "",
+        signer: "",
+        authority_name: "",
     });
     const [searchCount, setSearchCount] = useState(0);
-    useEffect(()=>{
+    useEffect(() => {
         internalDocsStore.getListAuthorityIssueds("INCOMING");
-    },[])
+    }, []);
     useEffect(() => {
         console.log("hello");
         internalDocsStore.getListIncoming(curentPage, selects);
@@ -213,7 +214,9 @@ const IncomingDocPage = observer(() => {
                                                 setOpenSelectList(
                                                     !openSelectList
                                                 );
-                                                setSelects({title: selects.title});
+                                                setSelects({
+                                                    title: selects.title,
+                                                });
                                             }}
                                         >
                                             {!openSelectList ? (
@@ -268,13 +271,13 @@ const IncomingDocPage = observer(() => {
                                                 );
                                             }}
                                             allowClear
-                                            onChange={(date)=>{
+                                            onChange={(date) => {
                                                 setCurentPage(0);
                                                 setSelects({
                                                     ...selects,
-                                                    incoming_date: date
-                                                }); 
-                                                }}
+                                                    incoming_date: date,
+                                                });
+                                            }}
                                         />
                                     </div>
                                     <div className="select-item">
@@ -287,13 +290,13 @@ const IncomingDocPage = observer(() => {
                                                 );
                                             }}
                                             allowClear
-                                            onChange={(date)=>{
+                                            onChange={(date) => {
                                                 setCurentPage(0);
                                                 setSelects({
                                                     ...selects,
-                                                    date_issued: date
-                                                }); 
-                                                }}
+                                                    date_issued: date,
+                                                });
+                                            }}
                                         />
                                     </div>
                                     <div className="select-item">
@@ -327,17 +330,24 @@ const IncomingDocPage = observer(() => {
                                                 });
                                             }}
                                         >
-                                            {internalDocsStore?.authorityIssueds?.length > 0 &&
+                                            {internalDocsStore?.authorityIssueds
+                                                ?.length > 0 &&
                                                 internalDocsStore?.authorityIssueds.map(
-                                    (authorityIssued) => (
-                                        <Option
-                                            value={authorityIssued.name}
-                                            key={authorityIssued.id}
-                                        >
-                                            {authorityIssued.name}
-                                        </Option>
-                                    )
-                                )}
+                                                    (authorityIssued) => (
+                                                        <Option
+                                                            value={
+                                                                authorityIssued.name
+                                                            }
+                                                            key={
+                                                                authorityIssued.id
+                                                            }
+                                                        >
+                                                            {
+                                                                authorityIssued.name
+                                                            }
+                                                        </Option>
+                                                    )
+                                                )}
                                         </Select>
                                     </div>
                                 </div>
@@ -348,10 +358,19 @@ const IncomingDocPage = observer(() => {
                                 tip="Đang tải văn bản..."
                             >
                                 <Table
-                                    // style={{overflowX:"scroll"}}
+                                    style={{cursor:"pointer"}}
                                     columns={columns}
                                     rowKey={(record) => record.code}
                                     dataSource={internalDocsStore?.incoming}
+                                    onRow={(record, rowIndex) => {
+                                        return {
+                                            onClick: (event) => {
+                                                navigate(
+                                                    `view/${record.code}`
+                                                );
+                                            }, // click row
+                                        };
+                                    }}
                                     scroll={{
                                         x: 1200,
                                     }}
