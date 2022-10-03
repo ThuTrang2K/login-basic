@@ -37,6 +37,7 @@ import SelectGroupsModal from "./components/SelectGroupsModal";
 import SelectUsersModal from "./components/SelectUsersModal";
 import ListGroups from "./components/ListGroups";
 import ListUsers from "./components/ListUsers";
+import RenameFileModal from "./components/RenameFileModal";
 
 const { Option } = Select;
 const IncomingCreatePage = observer(() => {
@@ -50,6 +51,8 @@ const IncomingCreatePage = observer(() => {
     const [createAuthIssuedModel, setCreateAuthIssuedModel] = useState(false);
     const [companyCode, setCompanyCode] = useState("");
     const [incomingFileList, setIncomingFileList] = useState();
+    const [renameFileModal, setRenameFileModal] = useState(false);
+    const [fileIndex, setFileIndex] = useState();
     const [selects, setSelects] = useState({
         leader: "",
         handleUsers: [],
@@ -135,6 +138,11 @@ const IncomingCreatePage = observer(() => {
     // }
     const handleUploadFile = (value) => {
         setIncomingFileList(value.fileList);
+    };
+    const handleRenameFile = (index) => {
+        console.log(index);
+        setFileIndex(index + 1);
+        setRenameFileModal(true);
     };
     console.log("value", incomingFileList);
     const onFinish = async (fieldsValue) => {
@@ -465,33 +473,57 @@ const IncomingCreatePage = observer(() => {
                         >
                             <Upload
                                 {...props}
-                                data={(file) => (file.name = "foo")}
+                                fileList={incomingFileList}
                                 className="incoming-file"
                                 onChange={handleUploadFile}
                             >
                                 <Button icon={<UploadOutlined />}>
                                     Chọn tài liệu đính kèm
                                 </Button>
-                                
                             </Upload>
-                            <div className="file-list">
-                            {incomingFileList?.length > 0 &&
-                                    incomingFileList.map((file) => (
-                                        <div className="file-row">
-                                            <div><FileTextOutlined />
-                                            <span style={{marginLeft:16}}>{file.name}</span></div>
-                                            <div><span style={{marginRight:16}} className="digital-signature">
-                                                    Kí số
-                                                </span>
-                                                <span style={{marginRight:16}} className="rename">
-                                                    Đổi tên
-                                                </span>
-                                                <DeleteOutlined className="delete-file" /></div>
-                                        </div>
-                                    ))}
-                            </div>
-                           
                         </Form.Item>
+                        <div className="file-list">
+                            {incomingFileList?.length > 0 &&
+                                incomingFileList.map((file, index) => (
+                                    <div className="file-row">
+                                        <div>
+                                            <FileTextOutlined />
+                                            <span style={{ marginLeft: 8 }}>
+                                                {file.name}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span
+                                                style={{ marginRight: 16 }}
+                                                className="digital-signature"
+                                            >
+                                                Kí số
+                                            </span>
+                                            <span
+                                                style={{ marginRight: 16 }}
+                                                className="rename"
+                                                onClick={() =>
+                                                    handleRenameFile(index)
+                                                }
+                                            >
+                                                Đổi tên
+                                            </span>
+                                            <DeleteOutlined
+                                                className="delete-file"
+                                                onClick={() => {
+                                                    incomingFileList.splice(
+                                                        index,
+                                                        1
+                                                    );
+                                                    setIncomingFileList([
+                                                        ...incomingFileList,
+                                                    ]);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
                         <div
                             className="flex-column"
                             style={{ position: "relative" }}
@@ -752,6 +784,18 @@ const IncomingCreatePage = observer(() => {
                             open={createAuthIssuedModel}
                             setOpen={setCreateAuthIssuedModel}
                         />
+                        {fileIndex && (
+                            <RenameFileModal
+                                file={incomingFileList[fileIndex - 1]}
+                                files={incomingFileList}
+                                fileIndex={fileIndex}
+                                open={renameFileModal}
+                                setOpen={setRenameFileModal}
+                                setFiles={setIncomingFileList}
+                                setFileIndex={setFileIndex}
+                            />
+                        )}
+
                         <SelectLeaderModal
                             setIsModalOpen={setIsModalOpen}
                             companies={internalDocsStore?.companies}
