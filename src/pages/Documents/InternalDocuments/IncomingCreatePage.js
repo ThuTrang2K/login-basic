@@ -21,79 +21,196 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./style.scss";
 import {
+    BankOutlined,
     CloseOutlined,
+    DeleteOutlined,
+    FileTextOutlined,
     TeamOutlined,
     UploadOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
-import ListUsersModel from "./components/ListUsersModel";
 import useCapitalizeTheFirstLetter from "../../../hook/useCapitalizeFirstLetter";
+import CreateAuthIssuedModal from "./components/CreateAuthIssuedModal";
+import SelectLeaderModal from "./components/SelectLeaderModal";
+import SelectGroupsModal from "./components/SelectGroupsModal";
+import SelectUsersModal from "./components/SelectUsersModal";
+import ListGroups from "./components/ListGroups";
+import ListUsers from "./components/ListUsers";
 
 const { Option } = Select;
 const IncomingCreatePage = observer(() => {
-    const { internalDocsStore } = useContext(AuthContext);
+    const { fileStore, internalDocsStore, authorityIssuedsStore } =
+        useContext(AuthContext);
     let navigate = useNavigate();
-    const [form] = Form.useForm();
     const [bookGroupId, setBookGroupId] = useState(
         internalDocsStore?.bookGroups[0]?.id
     );
-    const [bookId, setBookId] = useState(internalDocsStore?.books[0]?.id);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectUsers, setSelectUsers] = useState({
+    const [bookId, setBookId] = useState("");
+    const [createAuthIssuedModel, setCreateAuthIssuedModel] = useState(false);
+    const [companyCode, setCompanyCode] = useState("");
+    const [incomingFileList, setIncomingFileList] = useState();
+    const [selects, setSelects] = useState({
         leader: "",
+        handleUsers: [],
+        handleGroups: [],
+        handleDepartments: [],
+        supportUsers: [],
+        supportGroups: [],
+        supportDepartments: [],
     });
+    const [groupIds, setGroupIds] = useState([]);
+    //selectLeader
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    //handleUsers
+    const [handleUsersModal, setHandleUsersModal] = useState(false);
+    const [checkedHandleUsersKeys, setCheckedHandleUsersKeys] = useState([]);
+    //handleGroups
+    const [handleGroupsModal, sethandleGroupsModal] = useState(false);
+    //supportUsers
+    const [supportUsersModal, setSupportUsersModal] = useState(false);
+    const [checkedSupportUsersKeys, setCheckedSupportUsersKeys] = useState([]);
+    //supportGroups
+    const [supportGroupsModal, setSupportGroupsModal] = useState(false);
+
+    const [form] = Form.useForm();
     useEffect(() => {
-        internalDocsStore.getListBookGroups("DEN");
-        internalDocsStore.getListUsers();
-        internalDocsStore.getListCompanies();
-        internalDocsStore.getListAuthorityIssueds("INCOMING");
+        async function fetchData() {
+            companyCode &&
+                (await Promise.all([
+                    internalDocsStore.getListGroup(companyCode),
+                    internalDocsStore.getListUsers(companyCode),
+                ]));
+            setGroupIds(
+                internalDocsStore?.listGroups?.map((item) => item.id.toString())
+            );
+        }
+        fetchData();
+    }, [companyCode]);
+
+    useEffect(() => {
+        async function fetchData() {
+            await Promise.all([
+                internalDocsStore.getListBookGroups("DEN"),
+                internalDocsStore.getListCompanies(),
+            ]);
+            setBookGroupId(internalDocsStore?.bookGroups[0]?.id);
+            setCompanyCode(internalDocsStore?.companies[0]?.code);
+            form.setFieldsValue({
+                outgoing_date: moment(),
+                book_group_id: internalDocsStore?.bookGroups[0]?.id,
+            });
+        }
+        fetchData();
+        authorityIssuedsStore.getListAuthorityIssueds("INCOMING");
     }, []);
+
     useEffect(() => {
-        internalDocsStore.getListBooks(bookGroupId);
+        async function fetchListBooks() {
+            await internalDocsStore.getListBooks(bookGroupId);
+            setBookId(internalDocsStore?.books[0]?.id);
+        }
+        bookGroupId && fetchListBooks();
     }, [bookGroupId]);
     useEffect(() => {
-        internalDocsStore.getIncomingNumber(bookId);
+        bookId && internalDocsStore.getIncomingNumber(bookId);
     }, [bookId]);
     const showModal = () => {
         setIsModalOpen(true);
     };
 
-    
+    internalDocsStore.incoming_number &&
+        internalDocsStore?.books[0] &&
+        console.log(
+            internalDocsStore?.bookGroups[0],
+            internalDocsStore?.books[0]
+        );
+    form.setFieldsValue({
+        book_id: internalDocsStore?.books[0]?.id,
+        incoming_number: internalDocsStore?.incoming_number,
+    });
+    // const handleDocNumberChange  =(value)=>{
+    //     console.log('incoming value',value)
+    //     value?.document_number && internalDocsStore.warnDocNumber(value?.document_number,"INCOMING")
+    // }
+    const handleUploadFile = (value) => {
+        setIncomingFileList(value.fileList);
+    };
+    console.log("value", incomingFileList);
     const onFinish = async (fieldsValue) => {
+        const new_file = new File(
+            [fieldsValue?.attachments?.fileList[0]],
+            "hello.txt"
+        );
+        console.log("new_file", new_file);
+        // await Promise.all(
+        //     fieldsValue?.attachments?.fileList.map((item) =>
+        //         fileStore.uploadFile(item)
+        //     )
+        // );
         const values = {
-            // ...fieldsValue,
-            // start_date: fieldsValue["start_at"].toISOString(),
-            // end_at:
-            //     fieldsValue["end_time"] &&
-            //     fieldsValue["end_time"].toISOString(),
-            // start_at: moment(
-            //     `${fieldsValue["start_at"].format("YYYY-MM-DD")} ${fieldsValue[
-            //         "start_time"
-            //     ].format("HH:mm:ss")}`
-            // )
-            //     .locale("vi", vi)
-            //     .toISOString(),
-            // start_time: fieldsValue["start_time"].toISOString(),
-            // end_time:
-            //     fieldsValue["end_time"] &&
-            //     fieldsValue["end_time"].toISOString(),
+            authority_issued_id: fieldsValue?.authority_issued_id,
+            book_group_id: fieldsValue?.book_group_id,
+            book_id: fieldsValue?.book_id,
+            document_number: fieldsValue?.document_number,
+            signer: fieldsValue?.signer,
+            title: fieldsValue?.title,
+            urgency_level: fieldsValue?.urgency_level,
+            outgoing_date: fieldsValue?.outgoing_date?.toISOString(),
+            date_issued: fieldsValue?.date_issued?.toISOString(),
+            incoming_number: fieldsValue?.incoming_number?.toString(),
+            attachments: fileStore.files,
+            document_type: null,
+            sign_date: null,
+            assign_user: {
+                assign_user: [
+                    {
+                        assignee_code: selects.leader.user_name,
+                        assignee_type: "USER",
+                        permission: "PIC",
+                    },
+                    ...selects.handleGroups.map((group) => ({
+                        assignee_code: group.id,
+                        assignee_type: "GRP",
+                        permission: "COOR",
+                    })),
+                    ...selects.supportGroups.map((group) => ({
+                        assignee_code: group.id,
+                        assignee_type: "GRP",
+                        permission: "VIEW",
+                    })),
+                    ...selects.handleDepartments.map((department) => ({
+                        assignee_code: department.value,
+                        assignee_type: "DPT",
+                        permission: "COOR",
+                    })),
+                    ...selects.supportDepartments.map((department) => ({
+                        assignee_code: department.value,
+                        assignee_type: "DPT",
+                        permission: "VIEW",
+                    })),
+                    ...selects.handleUsers.map((user) => ({
+                        assignee_code: user.value,
+                        assignee_type: "USER",
+                        permission: "COOR",
+                    })),
+                    ...selects.supportUsers.map((user) => ({
+                        assignee_code: user.value,
+                        assignee_type: "USER",
+                        permission: "VIEW",
+                    })),
+                ],
+                end_date: fieldsValue?.end_date?.toISOString(),
+                start_date: fieldsValue?.start_date?.toISOString(),
+            },
         };
         console.log("value", values);
-
-        // await eventStore.createEvent(values);
-        navigate(-1);
+        fileStore.files = [];
+        // await internalDocsStore.createIncoming(values);
+        // navigate(-1);
     };
-
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
-    };
-    const handleDelete = () => {
-        setSelectUsers({
-            ...selectUsers,
-            leader: "",
-        });
-        setIsModalOpen(false);
     };
     const breadcrumb = [
         {
@@ -133,6 +250,7 @@ const IncomingCreatePage = observer(() => {
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                        // onValuesChange={handleDocNumberChange}
                         autoComplete="off"
                     >
                         <div className="flex-column">
@@ -148,9 +266,6 @@ const IncomingCreatePage = observer(() => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue={[
-                                        `${internalDocsStore?.bookGroups[0]?.name}`,
-                                    ]}
                                     placeholder="--Chọn nhóm sổ văn bản--"
                                     style={{
                                         width: "100%",
@@ -184,9 +299,6 @@ const IncomingCreatePage = observer(() => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue={
-                                        internalDocsStore?.books[0]?.name
-                                    }
                                     placeholder="--Chọn nhóm sổ văn bản--"
                                     style={{
                                         width: "100%",
@@ -216,14 +328,33 @@ const IncomingCreatePage = observer(() => {
                                         required: true,
                                         message: "Bắt buộc!",
                                     },
+                                    {
+                                        validator: async (_, value) => {
+                                            await internalDocsStore.warnDocNumber(
+                                                value,
+                                                "INCOMING"
+                                            );
+                                            console.log(
+                                                internalDocsStore.error
+                                                    .warnDocNumber
+                                            );
+                                            return internalDocsStore.error
+                                                .warnDocNumber === ""
+                                                ? Promise.resolve()
+                                                : Promise.reject(
+                                                      new Error(
+                                                          internalDocsStore.error.warnDocNumber
+                                                      )
+                                                  );
+                                        },
+                                    },
                                 ]}
                             >
                                 <Input placeholder="Nhập số hiệu văn bản" />
                             </Form.Item>
                             <Form.Item
                                 label="Số đến"
-                                name="location"
-                                value={internalDocsStore?.incoming_number}
+                                name="incoming_number"
                                 rules={[
                                     {
                                         required: true,
@@ -323,7 +454,7 @@ const IncomingCreatePage = observer(() => {
                         </div>
                         <Form.Item
                             label="Tài liệu đính kèm"
-                            name="file_ids"
+                            name="attachments"
                             rules={[
                                 {
                                     type: "object",
@@ -332,32 +463,58 @@ const IncomingCreatePage = observer(() => {
                                 },
                             ]}
                         >
-                            <Upload {...props}>
+                            <Upload
+                                {...props}
+                                data={(file) => (file.name = "foo")}
+                                className="incoming-file"
+                                onChange={handleUploadFile}
+                            >
                                 <Button icon={<UploadOutlined />}>
                                     Chọn tài liệu đính kèm
                                 </Button>
+                                
                             </Upload>
+                            <div className="file-list">
+                            {incomingFileList?.length > 0 &&
+                                    incomingFileList.map((file) => (
+                                        <div className="file-row">
+                                            <div><FileTextOutlined />
+                                            <span style={{marginLeft:16}}>{file.name}</span></div>
+                                            <div><span style={{marginRight:16}} className="digital-signature">
+                                                    Kí số
+                                                </span>
+                                                <span style={{marginRight:16}} className="rename">
+                                                    Đổi tên
+                                                </span>
+                                                <DeleteOutlined className="delete-file" /></div>
+                                        </div>
+                                    ))}
+                            </div>
+                           
                         </Form.Item>
-                        <Form.Item
-                            label="Cơ quan ban hành"
-                            name="authority_issued_id"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Bắt buộc!",
-                                },
-                            ]}
+                        <div
+                            className="flex-column"
+                            style={{ position: "relative" }}
                         >
-                            <div className="flex-column">
+                            <Form.Item
+                                label="Cơ quan ban hành"
+                                name="authority_issued_id"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Bắt buộc!",
+                                    },
+                                ]}
+                            >
                                 <Select
                                     placeholder="--Chọn cơ quan ban hành--"
                                     style={{
                                         flex: 1,
                                     }}
                                 >
-                                    {internalDocsStore?.authorityIssueds
+                                    {authorityIssuedsStore?.authorityIssueds
                                         ?.length > 0 &&
-                                        internalDocsStore?.authorityIssueds?.map(
+                                        authorityIssuedsStore?.authorityIssueds?.map(
                                             (authorityIssued) => (
                                                 <Option
                                                     value={authorityIssued.id}
@@ -368,54 +525,70 @@ const IncomingCreatePage = observer(() => {
                                             )
                                         )}
                                 </Select>
-                                <Button
-                                    style={{ width: 80 }}
-                                    className="secondary-button"
-                                >
-                                    Tạo mới
-                                </Button>
-                            </div>
-                        </Form.Item>
+                            </Form.Item>
+
+                            <Button
+                                style={{
+                                    position: "absolute",
+                                    right: "0",
+                                    top: "32px",
+                                    width: 80,
+                                }}
+                                className="secondary-button"
+                                onClick={() => setCreateAuthIssuedModel(true)}
+                            >
+                                Tạo mới
+                            </Button>
+                        </div>
                         <div style={{ marginTop: 54, fontWeight: 600 }}>
                             Thông tin phân phát
                         </div>
                         <div className="box-shadow">
                             <div className="flex-column">
                                 <div>
-                                    <span>Lãnh đạo sử lý:</span>
-                                    <Tooltip
-                                        title="Chọn người dùng"
-                                        color="rgb(44, 101, 172)"
-                                        key="rgb(44, 101, 173)"
-                                    >
-                                        <Button
-                                            className="button-icon button-user secondary-button"
-                                            onClick={showModal}
+                                    <div>
+                                        <span>Lãnh đạo sử lý:</span>
+                                        <Tooltip
+                                            title="Chọn người dùng"
+                                            color="rgb(44, 101, 172)"
+                                            key="rgb(44, 101, 173)"
                                         >
-                                            <UserOutlined />
-                                        </Button>
-                                    </Tooltip>
-                                    {!selectUsers.leader ?"": (
-                                <div className="tag-selected">
-                                    <Avatar className="user-item-avatar">
-                                        {selectUsers.leader.name_uppercase.at(
-                                            0
-                                        )}
-                                    </Avatar>
-                                    {useCapitalizeTheFirstLetter(
-                                        selectUsers.leader.name_uppercase
+                                            <Button
+                                                className="button-icon button-user secondary-button"
+                                                onClick={() => {
+                                                    showModal();
+                                                }}
+                                            >
+                                                <UserOutlined />
+                                            </Button>
+                                        </Tooltip>
+                                    </div>
+                                    {!selects.leader ? (
+                                        ""
+                                    ) : (
+                                        <div className="tag-selected">
+                                            <Avatar className="user-item-avatar">
+                                                {selects.leader.name_uppercase.at(
+                                                    0
+                                                )}
+                                            </Avatar>
+                                            {useCapitalizeTheFirstLetter(
+                                                selects.leader.name_uppercase
+                                            )}
+                                            <CloseOutlined
+                                                style={{
+                                                    color: "red",
+                                                    marginLeft: 8,
+                                                }}
+                                                onClick={() =>
+                                                    setSelects({
+                                                        ...selects,
+                                                        leader: "",
+                                                    })
+                                                }
+                                            />
+                                        </div>
                                     )}
-                                    <CloseOutlined
-                                        style={{ color: "red", marginLeft: 8 }}
-                                        onClick={() =>
-                                            setSelectUsers({
-                                                ...selectUsers,
-                                                leader: "",
-                                            })
-                                        }
-                                    />
-                                </div>
-                            )}
                                 </div>
                                 <div>
                                     <span>Người sử lý:</span>
@@ -426,7 +599,11 @@ const IncomingCreatePage = observer(() => {
                                     >
                                         <Button
                                             className="button-icon button-user secondary-button"
-                                            onClick={showModal}
+                                            onClick={() => {
+                                                setHandleUsersModal(
+                                                    !handleUsersModal
+                                                );
+                                            }}
                                         >
                                             <UserOutlined />
                                         </Button>
@@ -436,21 +613,49 @@ const IncomingCreatePage = observer(() => {
                                         color="rgb(255, 192, 105)"
                                         key="rgb(44, 101, 174)"
                                     >
-                                        <Button className="button-icon secondary-button button-group">
+                                        <Button
+                                            className="button-icon secondary-button button-group"
+                                            onClick={() => {
+                                                sethandleGroupsModal(
+                                                    !handleGroupsModal
+                                                );
+                                            }}
+                                        >
                                             <TeamOutlined />
                                         </Button>
                                     </Tooltip>
+                                    <div className="group-box">
+                                        <ListUsers
+                                            selects={selects}
+                                            setSelects={setSelects}
+                                            setCheckedKeys={
+                                                setCheckedHandleUsersKeys
+                                            }
+                                            typeDepartments="handleDepartments"
+                                            typeUsers="handleUsers"
+                                            hasEmpty={false}
+                                        />
+                                        <ListGroups
+                                            selects={selects}
+                                            setSelects={setSelects}
+                                            typeGroups="handleGroups"
+                                        />
+                                    </div>
                                 </div>
                                 <div>
                                     <span>Phối hợp/ Theo dõi:</span>
                                     <Tooltip
                                         title="Chọn người dùng"
                                         color="rgb(44, 101, 172)"
-                                        key="rgb(44, 101, 175)"
+                                        key="rgb(44, 101, 173)"
                                     >
                                         <Button
                                             className="button-icon button-user secondary-button"
-                                            onClick={showModal}
+                                            onClick={() => {
+                                                setSupportUsersModal(
+                                                    !supportUsersModal
+                                                );
+                                            }}
                                         >
                                             <UserOutlined />
                                         </Button>
@@ -458,18 +663,43 @@ const IncomingCreatePage = observer(() => {
                                     <Tooltip
                                         title="Chọn nhóm"
                                         color="rgb(255, 192, 105)"
-                                        key="rgb(44, 101, 172)"
+                                        key="rgb(44, 101, 174)"
                                     >
-                                        <Button className="button-icon secondary-button button-group">
+                                        <Button
+                                            className="button-icon secondary-button button-group"
+                                            onClick={() => {
+                                                setSupportGroupsModal(
+                                                    !supportGroupsModal
+                                                );
+                                            }}
+                                        >
                                             <TeamOutlined />
                                         </Button>
                                     </Tooltip>
+                                    <div className="group-box">
+                                        <ListUsers
+                                            selects={selects}
+                                            setSelects={setSelects}
+                                            setCheckedKeys={
+                                                setCheckedSupportUsersKeys
+                                            }
+                                            typeDepartments="supportDepartments"
+                                            typeUsers="supportUsers"
+                                            hasEmpty={false}
+                                        />
+
+                                        <ListGroups
+                                            selects={selects}
+                                            setSelects={setSelects}
+                                            typeGroups="supportGroups"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex-column">
                                 <Form.Item
                                     style={{ width: "100%" }}
-                                    name="start_at"
+                                    name="start_date"
                                     label="Ngày bắt đầu"
                                 >
                                     <DatePicker
@@ -482,7 +712,7 @@ const IncomingCreatePage = observer(() => {
                                 </Form.Item>
                                 <Form.Item
                                     style={{ width: "100%" }}
-                                    name="start_at"
+                                    name="end_date"
                                     label="Ngày kết thúc"
                                 >
                                     <DatePicker
@@ -518,8 +748,106 @@ const IncomingCreatePage = observer(() => {
                                 Tạo văn bản
                             </Button>
                         </Form.Item>
-                        <ListUsersModel setIsModalOpen={setIsModalOpen} companies={internalDocsStore?.companies} isModalOpen={isModalOpen} users={internalDocsStore?.users} selectUsers={selectUsers} setSelectUsers={setSelectUsers} handleDelete={handleDelete}/>
+                        <CreateAuthIssuedModal
+                            open={createAuthIssuedModel}
+                            setOpen={setCreateAuthIssuedModel}
+                        />
+                        <SelectLeaderModal
+                            setIsModalOpen={setIsModalOpen}
+                            companies={internalDocsStore?.companies}
+                            isModalOpen={isModalOpen}
+                            users={internalDocsStore?.users}
+                            selects={selects}
+                            setSelects={setSelects}
+                            companyCode={companyCode}
+                            setCompanyCode={setCompanyCode}
+                        />
+                        <SelectUsersModal
+                            setIsModalOpen={setHandleUsersModal}
+                            companies={internalDocsStore?.companies}
+                            isModalOpen={handleUsersModal}
+                            users={internalDocsStore?.users}
+                            selects={selects}
+                            setSelects={setSelects}
+                            companyCode={companyCode}
+                            setCompanyCode={setCompanyCode}
+                            checkedKeys={checkedHandleUsersKeys}
+                            setCheckedKeys={setCheckedHandleUsersKeys}
+                            typeDepartments="handleDepartments"
+                            typeUsers="handleUsers"
+                        >
+                            <ListUsers
+                                selects={selects}
+                                setSelects={setSelects}
+                                setCheckedKeys={setCheckedHandleUsersKeys}
+                                typeDepartments="handleDepartments"
+                                typeUsers="handleUsers"
+                                hasEmpty={true}
+                            />
+                        </SelectUsersModal>
+                        <SelectGroupsModal
+                            groupIds={groupIds}
+                            setGroupIds={setGroupIds}
+                            setIsModalOpen={sethandleGroupsModal}
+                            companies={internalDocsStore?.companies}
+                            isModalOpen={handleGroupsModal}
+                            selects={selects}
+                            setSelects={setSelects}
+                            companyCode={companyCode}
+                            setCompanyCode={setCompanyCode}
+                            selectedGroups={selects.handleGroups}
+                            typeGroups="handleGroups"
+                        >
+                            <ListGroups
+                                selects={selects}
+                                setSelects={setSelects}
+                                typeGroups="handleGroups"
+                            />
+                        </SelectGroupsModal>
+                        <SelectUsersModal
+                            companies={internalDocsStore?.companies}
+                            companyCode={companyCode}
+                            setCompanyCode={setCompanyCode}
+                            users={internalDocsStore?.users}
+                            selects={selects}
+                            setSelects={setSelects}
+                            setIsModalOpen={setSupportUsersModal}
+                            isModalOpen={supportUsersModal}
+                            checkedKeys={checkedSupportUsersKeys}
+                            setCheckedKeys={setCheckedSupportUsersKeys}
+                            typeDepartments="supportDepartments"
+                            typeUsers="supportUsers"
+                        >
+                            <ListUsers
+                                selects={selects}
+                                setSelects={setSelects}
+                                setCheckedKeys={setCheckedSupportUsersKeys}
+                                typeDepartments="supportDepartments"
+                                typeUsers="supportUsers"
+                                hasEmpty={true}
+                            />
+                        </SelectUsersModal>
+                        <SelectGroupsModal
+                            groupIds={groupIds}
+                            setGroupIds={setGroupIds}
+                            companies={internalDocsStore?.companies}
+                            companyCode={companyCode}
+                            setCompanyCode={setCompanyCode}
+                            selects={selects}
+                            setSelects={setSelects}
+                            setIsModalOpen={setSupportGroupsModal}
+                            isModalOpen={supportGroupsModal}
+                            selectedGroups={selects.supportGroups}
+                            typeGroups="supportGroups"
+                        >
+                            <ListGroups
+                                selects={selects}
+                                setSelects={setSelects}
+                                typeGroups="supportGroups"
+                            />
+                        </SelectGroupsModal>
                     </Form>
+                    {/*  */}
                 </div>
             </div>
         </div>

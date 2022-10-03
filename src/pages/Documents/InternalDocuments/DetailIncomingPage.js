@@ -133,9 +133,21 @@ const DetailIncomingPage = observer(() => {
             ]}
         />
     );
-    const userHandle =internalDocsStore?.detailIncoming?.user_assigneds && internalDocsStore?.detailIncoming?.user_assigneds.filter(user=>user.permission==="COOR")
-    const userPic =internalDocsStore?.detailIncoming?.user_assigneds && internalDocsStore?.detailIncoming?.user_assigneds.find(user=>user.permission==="PIC")
-    const userView= internalDocsStore?.detailIncoming?.user_assigneds && internalDocsStore?.detailIncoming?.user_assigneds.filter(user=>user.permission==="VIEW")
+    const userHandle =
+        internalDocsStore?.detailIncoming?.user_assigneds &&
+        internalDocsStore?.detailIncoming?.user_assigneds.filter(
+            (user) => user.permission === "COOR"
+        );
+    const userPic =
+        internalDocsStore?.detailIncoming?.user_assigneds &&
+        internalDocsStore?.detailIncoming?.user_assigneds.find(
+            (user) => user.permission === "PIC"
+        );
+    const userView =
+        internalDocsStore?.detailIncoming?.user_assigneds &&
+        internalDocsStore?.detailIncoming?.user_assigneds.filter(
+            (user) => user.permission === "VIEW"
+        );
     return (
         <>
             <div className="general-flex-header">
@@ -175,8 +187,8 @@ const DetailIncomingPage = observer(() => {
                     </a>
                 </Dropdown>
             </div>
-            <div style={{display:'flex'}}>
-            <div className="" style={{flex:1}}></div>
+            <div style={{ display: "flex" }}>
+                <div className="" style={{ flex: 1 }}></div>
                 {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.min.js">
             <Viewer
                     fileUrl={url}
@@ -184,152 +196,205 @@ const DetailIncomingPage = observer(() => {
                         defaultLayoutPluginInstance,
                     ]}
                 />
-</Worker> */}  
- <div>
-
-
-                <div className="detail-desc info-table">
-                    <Descriptions>
-                        <Descriptions.Item
-                            labelStyle={{ fontWeight: "bold" }}
-                            contentStyle={{ fontWeight: "bold" }}
-                            span="12"
-                            label="Thông tin chung"
-                        >
-                           
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Số hiệu">
-                            {internalDocsStore?.detailIncoming?.document_number}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Số đến">
-                            {internalDocsStore?.detailIncoming?.incoming_number}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Ngày văn bản">
-                        <span className="detail-icon">
-                                <CalendarOutlined />
-                            </span>
-                            {internalDocsStore?.detailIncoming?.date_issued ? (
-                                moment(internalDocsStore?.detailIncoming?.date_issued)
-                                    .locale("vi", vi)
-                                    .format("DD-MM-YYYY")
-                            ) : (
-                                <div className="no-infor">Không rõ.</div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Ngày đến">
-                        <span className="detail-icon">
-                                <CalendarOutlined />
-                            </span>
-                        {internalDocsStore?.detailIncoming?.outgoing_date ? (
-                                moment(internalDocsStore?.detailIncoming?.outgoing_date)
-                                    .locale("vi", vi)
-                                    .format("DD-MM-YYYY")
-                            ) : (
-                                <div className="no-infor">Không rõ.</div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Người ký">
-                            {internalDocsStore?.detailIncoming?.signer ? (
-                                internalDocsStore?.detailIncoming?.signer
-                            ) : (
-                                <div className="no-infor">
-                                    Không rõ.
-                                </div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="CQ ban hành">
-                        {internalDocsStore?.detailIncoming?.authority_issued_id?.name ? (
-                                internalDocsStore?.detailIncoming?.authority_issued_id?.name
-                            ) : (
-                                <div className="no-infor">
-                                    Không rõ.
-                                </div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Tài liệu đính kèm">
-                        <FileAttached
-                                files={internalDocsStore?.detailIncoming?.attachments}
-                                fileName="name"
-                                fileId="id"
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item
-                            span="12"
-                            label="Liên kết nhiệm vụ
-"
-                        >
-                            {internalDocsStore?.detailIncoming?.name ? (
-                                internalDocsStore?.detailIncoming?.name
-                            ) : (
-                                <div className="no-infor">
-                                    Không rõ.
-                                </div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item
-                            span="12"
-                            label="Liên kết công việc"
-                            className="work-item"
-                        >
-                            {internalDocsStore?.detailIncoming?.linkedWork?.length>0 ? (
-                                internalDocsStore?.detailIncoming?.linkedWork.map(work=>(<Link to={""} className={"work-link"}><LinkOutlined /><div>{work.title}</div></Link>))
+</Worker> */}
+                <div>
+                    <div className="detail-desc info-table">
+                        <Descriptions>
+                            <Descriptions.Item
+                                labelStyle={{ fontWeight: "bold" }}
+                                contentStyle={{ fontWeight: "bold" }}
+                                span="12"
+                                label="Thông tin chung"
+                            ></Descriptions.Item>
+                            <Descriptions.Item span="12" label="Số hiệu">
+                                {
+                                    internalDocsStore?.detailIncoming
+                                        ?.document_number
+                                }
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Số đến">
+                                {
+                                    internalDocsStore?.detailIncoming
+                                        ?.incoming_number
+                                }
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Ngày văn bản">
+                                <span className="detail-icon">
+                                    <CalendarOutlined />
+                                </span>
+                                {internalDocsStore?.detailIncoming
+                                    ?.date_issued ? (
+                                    moment(
+                                        internalDocsStore?.detailIncoming
+                                            ?.date_issued
+                                    )
+                                        .locale("vi", vi)
+                                        .format("DD-MM-YYYY")
                                 ) : (
-                                <div className="no-infor">
-                                    Không rõ.
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Ngày đến">
+                                <span className="detail-icon">
+                                    <CalendarOutlined />
+                                </span>
+                                {internalDocsStore?.detailIncoming
+                                    ?.outgoing_date ? (
+                                    moment(
+                                        internalDocsStore?.detailIncoming
+                                            ?.outgoing_date
+                                    )
+                                        .locale("vi", vi)
+                                        .format("DD-MM-YYYY")
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Người ký">
+                                {internalDocsStore?.detailIncoming?.signer ? (
+                                    internalDocsStore?.detailIncoming?.signer
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="CQ ban hành">
+                                {internalDocsStore?.detailIncoming
+                                    ?.authority_issued_id?.name ? (
+                                    internalDocsStore?.detailIncoming
+                                        ?.authority_issued_id?.name
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item
+                                span="12"
+                                label="Tài liệu đính kèm"
+                            >
+                                <FileAttached
+                                    files={
+                                        internalDocsStore?.detailIncoming
+                                            ?.attachments
+                                    }
+                                    fileName="name"
+                                    fileId="id"
+                                />
+                            </Descriptions.Item>
+                            <Descriptions.Item
+                                span="12"
+                                label="Liên kết nhiệm vụ
+"
+                            >
+                                {internalDocsStore?.detailIncoming?.name ? (
+                                    internalDocsStore?.detailIncoming?.name
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item
+                                span="12"
+                                label="Liên kết công việc"
+                                className="work-item"
+                            >
+                                {internalDocsStore?.detailIncoming?.linkedWork
+                                    ?.length > 0 ? (
+                                    internalDocsStore?.detailIncoming?.linkedWork.map(
+                                        (work) => (
+                                            <Link
+                                                to={""}
+                                                className={"work-link"}
+                                            >
+                                                <LinkOutlined />
+                                                <div>{work.title}</div>
+                                            </Link>
+                                        )
+                                    )
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </div>
+                    <div className="detail-desc info-table">
+                        <Descriptions>
+                            <Descriptions.Item
+                                labelStyle={{ fontWeight: "bold" }}
+                                contentStyle={{ fontWeight: "bold" }}
+                                span="12"
+                                label="Xử lý văn bản"
+                            >
+                                <div
+                                    style={{ marginLeft: "auto" }}
+                                    className="inprogress"
+                                >
+                                    Phân phát
                                 </div>
-                            )}
-                        </Descriptions.Item>
-                        
-                    </Descriptions>
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Lãnh đạo xử lý">
+                                {userPic && (
+                                    <div className="work-btn">
+                                        {useCapitalizeTheFirstLetter(
+                                            userPic.name_uppercase
+                                        )}
+                                    </div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Người xử lý">
+                                {userHandle?.length > 0 &&
+                                    userHandle.map((user) => (
+                                        <div className="work-btn">
+                                            {useCapitalizeTheFirstLetter(
+                                                user.name_uppercase
+                                            )}
+                                        </div>
+                                    ))}
+                            </Descriptions.Item>
+                            <Descriptions.Item
+                                span="12"
+                                label="Phối hợp/ Theo dõi"
+                            >
+                                {userView?.length > 0 &&
+                                    userView.map((user) => (
+                                        <div className="work-btn">
+                                            {useCapitalizeTheFirstLetter(
+                                                user.name_uppercase
+                                            )}
+                                        </div>
+                                    ))}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Ngày bắt đầu">
+                                <span className="detail-icon">
+                                    <CalendarOutlined />
+                                </span>
+                                {internalDocsStore?.detailIncoming
+                                    ?.start_date ? (
+                                    moment(
+                                        internalDocsStore?.detailIncoming
+                                            ?.start_date
+                                    )
+                                        .locale("vi", vi)
+                                        .format("DD-MM-YYYY")
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                            <Descriptions.Item span="12" label="Ngày kết thúc">
+                                <span className="detail-icon">
+                                    <CalendarOutlined />
+                                </span>
+                                {internalDocsStore?.detailIncoming?.end_date ? (
+                                    moment(
+                                        internalDocsStore?.detailIncoming
+                                            ?.end_date
+                                    )
+                                        .locale("vi", vi)
+                                        .format("DD-MM-YYYY")
+                                ) : (
+                                    <div className="no-infor">Không rõ.</div>
+                                )}
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </div>
                 </div>
-                <div className="detail-desc info-table">
-                    <Descriptions>
-                        <Descriptions.Item
-                            labelStyle={{ fontWeight: "bold" }}
-                            contentStyle={{ fontWeight: "bold" }}
-                            span="12"
-                            label="Xử lý văn bản"
-                        >
-                        <div style={{marginLeft:"auto"}}  className="inprogress">Phân phát</div>
-                           
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Lãnh đạo xử lý">
-                            {userPic &&  <div className="work-btn">{useCapitalizeTheFirstLetter(userPic.name_uppercase)}</div>}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Người xử lý">
-                        {userHandle?.length>0 && userHandle.map(user=><div className="work-btn">{useCapitalizeTheFirstLetter(user.name_uppercase)}</div>)}
-                            
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Phối hợp/ Theo dõi">
-                        {userView?.length>0 && userView.map(user=><div className="work-btn">{useCapitalizeTheFirstLetter(user.name_uppercase)}</div>)}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Ngày bắt đầu">
-                        <span className="detail-icon">
-                                <CalendarOutlined />
-                            </span>
-                            {internalDocsStore?.detailIncoming?.start_date ? (
-                                moment(internalDocsStore?.detailIncoming?.start_date)
-                                    .locale("vi", vi)
-                                    .format("DD-MM-YYYY")
-                            ) : (
-                                <div className="no-infor">Không rõ.</div>
-                            )}
-                        </Descriptions.Item>
-                        <Descriptions.Item span="12" label="Ngày kết thúc">
-                        <span className="detail-icon">
-                                <CalendarOutlined />
-                            </span>
-                        {internalDocsStore?.detailIncoming?.end_date ? (
-                                moment(internalDocsStore?.detailIncoming?.end_date)
-                                    .locale("vi", vi)
-                                    .format("DD-MM-YYYY")
-                            ) : (
-                                <div className="no-infor">Không rõ.</div>
-                            )}
-                        </Descriptions.Item>                       
-                    </Descriptions>
-                </div>
-            </div>
             </div>
         </>
     );

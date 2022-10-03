@@ -33,7 +33,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 const IncomingDocPage = observer(() => {
-    const { internalDocsStore } = useContext(AuthContext);
+    const { internalDocsStore ,authorityIssuedsStore} = useContext(AuthContext);
     const [curentPage, setCurentPage] = useState(0);
     const navigate = useNavigate();
     const [openSelectList, setOpenSelectList] = useState(false);
@@ -46,7 +46,7 @@ const IncomingDocPage = observer(() => {
     });
     const [searchCount, setSearchCount] = useState(0);
     useEffect(() => {
-        internalDocsStore.getListAuthorityIssueds("INCOMING");
+        authorityIssuedsStore.getListAuthorityIssueds("INCOMING");
     }, []);
     useEffect(() => {
         console.log("hello");

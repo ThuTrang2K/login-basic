@@ -21,15 +21,16 @@ import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLett
 const { Panel } = Collapse;
 const { Option } = Select;
 const { Search } = Input;
-const SelectGroupModel = observer(
+const SelectLeaderModal = observer(
     ({
         setIsModalOpen,
         companies,
         isModalOpen,
         users,
-        selectUsers,
-        setSelectUsers,
-        handleDelete
+        selects,
+        setSelects,
+        setCompanyCode,
+        companyCode,
     }) => {
         const handleOk = () => {
             setIsModalOpen(false);
@@ -38,16 +39,26 @@ const SelectGroupModel = observer(
         const handleCancel = () => {
             setIsModalOpen(false);
         };
-
-        console.log(selectUsers);
+        const handleDelete = () => {
+            setSelects({
+                ...selects,
+                leader: "",
+            });
+            setIsModalOpen(false);
+        };
         return (
-            <div className="user-modal">
+            <>
                 <Modal
+                    className="user-modal"
                     title={
                         <div className="general-flex-header">
                             <Select
                                 placeholder="--Chọn cơ quan ban hành--"
                                 defaultValue={companies[0]?.name}
+                                onChange={(value) => {
+                                    setCompanyCode(value);
+                                }}
+                                value={companyCode}
                             >
                                 {companies?.length > 0 &&
                                     companies?.map((company) => (
@@ -117,9 +128,9 @@ const SelectGroupModel = observer(
                                     <Collapse
                                         expandIcon={({ isActive }) =>
                                             isActive ? (
-                                                <CaretRightOutlined />
-                                            ) : (
                                                 <CaretDownOutlined />
+                                            ) : (
+                                                <CaretRightOutlined />
                                             )
                                         }
                                     >
@@ -137,7 +148,7 @@ const SelectGroupModel = observer(
                                                                         <Checkbox
                                                                             checked={
                                                                                 user.user_code ===
-                                                                                selectUsers
+                                                                                selects
                                                                                     .leader
                                                                                     .user_code
                                                                             }
@@ -150,21 +161,18 @@ const SelectGroupModel = observer(
                                                                             onChange={(
                                                                                 e
                                                                             ) => {
-                                                                                console.log(
-                                                                                    selectUsers.leader
-                                                                                );
                                                                                 e
                                                                                     .target
                                                                                     .checked
-                                                                                    ? setSelectUsers(
+                                                                                    ? setSelects(
                                                                                           {
-                                                                                              ...selectUsers,
+                                                                                              ...selects,
                                                                                               leader: user,
                                                                                           }
                                                                                       )
-                                                                                    : setSelectUsers(
+                                                                                    : setSelects(
                                                                                           {
-                                                                                              ...selectUsers,
+                                                                                              ...selects,
                                                                                               leader: "",
                                                                                           }
                                                                                       );
@@ -200,23 +208,21 @@ const SelectGroupModel = observer(
                             <div className="selected-list-title">
                                 Danh sách đã chọn
                             </div>
-                            {!selectUsers.leader ? (
+                            {!selects.leader ? (
                                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                             ) : (
                                 <div className="tag-selected">
                                     <Avatar className="user-item-avatar">
-                                        {selectUsers.leader.name_uppercase.at(
-                                            0
-                                        )}
+                                        {selects.leader.name_uppercase.at(0)}
                                     </Avatar>
                                     {useCapitalizeTheFirstLetter(
-                                        selectUsers.leader.name_uppercase
+                                        selects.leader.name_uppercase
                                     )}
                                     <CloseOutlined
                                         style={{ color: "red", marginLeft: 4 }}
                                         onClick={() =>
-                                            setSelectUsers({
-                                                ...selectUsers,
+                                            setSelects({
+                                                ...selects,
                                                 leader: "",
                                             })
                                         }
@@ -226,11 +232,9 @@ const SelectGroupModel = observer(
                         </div>
                     </div>
                 </Modal>
-            </div>
+            </>
         );
     }
 );
 
-export default SelectGroupModel;
-
-
+export default SelectLeaderModal;

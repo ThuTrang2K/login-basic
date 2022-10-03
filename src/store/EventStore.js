@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import FormData from "form-data";
-import { makeAutoObservable, runInAction } from "mobx";
+    import { makeAutoObservable, runInAction } from "mobx";
 
 class EventStore {
     access_token = JSON.parse(window.localStorage.getItem("token"));

@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import AuthorityIssuedsStore from '../store/AuthorityIssuedsStore';
 import AuthStore from '../store/AuthStore';
 import DepartmentsStore from '../store/DepartmentsStore';
 import EventStore from '../store/EventStore';
@@ -23,7 +24,8 @@ function AuthProvider(props){
     const positionsStore = new PositionsStore()
     const rolesStore = new RolesStore();
     const internalDocsStore = new InternalDocsStore();
-    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore,internalDocsStore}
+    const authorityIssuedsStore = new AuthorityIssuedsStore();
+    const value={authStore, workSchedulesStore,eventStore,generalNotifStore,fileStore,usersStore,departmentsStore,positionsStore,rolesStore,internalDocsStore,authorityIssuedsStore}
     return <AuthContext.Provider {...props} value={value}></AuthContext.Provider>
 }
 export {AuthContext,AuthProvider}

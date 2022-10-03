@@ -258,8 +258,8 @@ const CreateEvent = observer(() => {
                         <Form.Item label="Thành viên tham gia" name="attenders">
                             <Input placeholder="--Thành viện tham gia--" />
                         </Form.Item>
-                        <Form.Item label="Thông báo" name="assignees">
-                            <TreeSelect {...tProps} />
+                        <Form.Item label="Thông báo" name="assignees" >
+                            <TreeSelect {...tProps}  />
                         </Form.Item>
 
                         <Form.Item style={{ textAlign: "right" }}>
