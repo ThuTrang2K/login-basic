@@ -17,6 +17,8 @@ import {
     CloseOutlined,
 } from "@ant-design/icons";
 import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLetter";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -32,6 +34,19 @@ const SelectLeaderModal = observer(
         setCompanyCode,
         companyCode,
     }) => {
+        const [disableUsers, setDisableUsers] = useState();
+        useEffect(() => {
+            setDisableUsers([
+                ...selects.handleUsers.map((item) => ({
+                    ...item,
+                    type: "handleUsers",
+                })),
+                ...selects.supportUsers.map((item) => ({
+                    ...item,
+                    type: "supportUsers",
+                })),
+            ]);
+        }, [isModalOpen]);
         const handleOk = () => {
             setIsModalOpen(false);
         };
@@ -146,6 +161,7 @@ const SelectLeaderModal = observer(
                                                                 <div className="user-item">
                                                                     <span>
                                                                         <Checkbox
+                                                                        disabled ={disableUsers?.some(item=> item.value===user.user_name)}
                                                                             checked={
                                                                                 user.user_code ===
                                                                                 selects

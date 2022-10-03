@@ -132,10 +132,6 @@ const IncomingCreatePage = observer(() => {
         book_id: internalDocsStore?.books[0]?.id,
         incoming_number: internalDocsStore?.incoming_number,
     });
-    // const handleDocNumberChange  =(value)=>{
-    //     console.log('incoming value',value)
-    //     value?.document_number && internalDocsStore.warnDocNumber(value?.document_number,"INCOMING")
-    // }
     const handleUploadFile = (value) => {
         setIncomingFileList(value.fileList);
     };
@@ -144,18 +140,17 @@ const IncomingCreatePage = observer(() => {
         setFileIndex(index + 1);
         setRenameFileModal(true);
     };
-    console.log("value", incomingFileList);
     const onFinish = async (fieldsValue) => {
         const new_file = new File(
             [fieldsValue?.attachments?.fileList[0]],
             "hello.txt"
         );
         console.log("new_file", new_file);
-        // await Promise.all(
-        //     fieldsValue?.attachments?.fileList.map((item) =>
-        //         fileStore.uploadFile(item)
-        //     )
-        // );
+        await Promise.all(
+            fieldsValue?.attachments?.fileList.map((item) =>
+                fileStore.uploadFile(item)
+            )
+        );
         const values = {
             authority_issued_id: fieldsValue?.authority_issued_id,
             book_group_id: fieldsValue?.book_group_id,
@@ -171,7 +166,7 @@ const IncomingCreatePage = observer(() => {
             document_type: null,
             sign_date: null,
             assign_user: {
-                assign_user: [
+                assignees: [
                     {
                         assignee_code: selects.leader.user_name,
                         assignee_type: "USER",
@@ -214,8 +209,8 @@ const IncomingCreatePage = observer(() => {
         };
         console.log("value", values);
         fileStore.files = [];
-        // await internalDocsStore.createIncoming(values);
-        // navigate(-1);
+        await internalDocsStore.createIncoming(values);
+        navigate(-1);
     };
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
@@ -258,7 +253,6 @@ const IncomingCreatePage = observer(() => {
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
-                        // onValuesChange={handleDocNumberChange}
                         autoComplete="off"
                     >
                         <div className="flex-column">
@@ -338,20 +332,16 @@ const IncomingCreatePage = observer(() => {
                                     },
                                     {
                                         validator: async (_, value) => {
+                                        
                                             await internalDocsStore.warnDocNumber(
                                                 value,
                                                 "INCOMING"
                                             );
-                                            console.log(
-                                                internalDocsStore.error
-                                                    .warnDocNumber
-                                            );
-                                            return internalDocsStore.error
-                                                .warnDocNumber === ""
+                                            return internalDocsStore?.warnDocNumberError === ""
                                                 ? Promise.resolve()
                                                 : Promise.reject(
                                                       new Error(
-                                                          internalDocsStore.error.warnDocNumber
+                                                          internalDocsStore?.warnDocNumberError
                                                       )
                                                   );
                                         },
@@ -764,7 +754,7 @@ const IncomingCreatePage = observer(() => {
                                     marginTop: "16px",
                                     marginRight: 8,
                                 }}
-                                // onClick={() => handleCancel()}
+                                onClick={() => navigate(-1)}
                             >
                                 Hủy bỏ
                             </Button>

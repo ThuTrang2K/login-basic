@@ -9,6 +9,7 @@ import {
     Modal,
     Popconfirm,
     Select,
+    Tooltip,
 } from "antd";
 import {
     CaretDownOutlined,
@@ -44,7 +45,12 @@ const SelectGroupsModal = observer(
         const { internalDocsStore } = useContext(AuthContext);
         const [groupId, setGroupId] = useState("");
         const [members, setMembers] = useState([]);
-
+        const [disableGroup, setDisableGroup] = useState();
+        useEffect(()=>{
+            setDisableGroup( [...selects.handleGroups.map(item=>({...item,type:'handleGroups' })),...selects.supportGroups.map(item=>({...item,type:'supportGroups' }))
+            ].filter(item=>item.type!==typeGroups))
+        },[isModalOpen])
+        console.log("disableGroup",disableGroup);
         useEffect(() => {
             async function fetchData() {
                 await internalDocsStore.getListGroupMembers(groupId);
@@ -177,13 +183,14 @@ const SelectGroupsModal = observer(
                                                         checked={selectedGroups?.some(
                                                             item => item.id===group.id
                                                         )}
+                                                        disabled={disableGroup?.some(item=> item.id===group.id)} 
                                                         onChange={onChange}
                                                         onClick={(event) => {
                                                             event.stopPropagation();
                                                         }}
                                                         value={group}
                                                     >
-                                                        {group.name}
+                                                        {disableGroup?.some(item=> item.id===group.id)?<Tooltip title={"Phòng ban này đã được chọn"}>{group.name}</Tooltip>  :group.name}
                                                     </Checkbox>
                                                 }
                                                 key={group.id}

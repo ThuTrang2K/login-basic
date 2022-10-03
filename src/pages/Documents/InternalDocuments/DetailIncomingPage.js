@@ -12,7 +12,7 @@ import {
     ProfileOutlined,
     SolutionOutlined,
 } from "@ant-design/icons";
-import { Button, Descriptions, Dropdown, Menu, Typography } from "antd";
+import { Button, Descriptions, Dropdown, Menu, Modal, Typography } from "antd";
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../../../components/Layout/Breadcrumbs";
@@ -71,6 +71,15 @@ const DetailIncomingPage = observer(() => {
     //
     //     const blob = base64toBlob();
     // const url = URL.createObjectURL(blob);
+    const handleDelete = ()=>{
+        Modal.confirm({
+            title: "Bạn có chắc chắn muốn xóa?",
+            onOk: async() => {
+                await internalDocsStore.deleteIncoming(id);
+                navigate(-1);
+            },
+        });
+    }
     const menu = (id) => (
         <Menu
             items={[
@@ -128,7 +137,7 @@ const DetailIncomingPage = observer(() => {
                     ),
                     key: "5",
                     danger: true,
-                    // onClick: () => handleDelete(id),
+                    onClick: () => handleDelete(id),
                 },
             ]}
         />

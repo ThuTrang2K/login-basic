@@ -18,7 +18,7 @@ class InternalDocsStore {
     listGroups=[];
     groupMembers=[]
     loading = false; 
-    error = {warnDocNumber: false};
+    warnDocNumberError= "";
     constructor() {
         makeAutoObservable(this);
     }
@@ -93,7 +93,7 @@ class InternalDocsStore {
     }
     async warnDocNumber(document_number,type) {
         this.loading = true;
-        this.error.warnDocNumber = "";
+        this.warnDocNumberError = "";
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_BASE_URL}/api/v1/internal-documents/incoming/warning-document-number?document_number=${document_number}&type=${type}`,
@@ -106,11 +106,11 @@ class InternalDocsStore {
             runInAction(() => {
                 this.loading = false;
                 console.log(response.data.status)
-                this.error.warnDocNumber =response.data.status==="OK"? "": response.data.message;
+                this.warnDocNumberError =response.data.status==="OK"? "": response.data.message;
             });
         } catch (e) {
             console.log("e", e);
-            this.error.warnDocNumber = "Có Lỗi xảy ra";
+            this.warnDocNumberError = "Có Lỗi xảy ra";
             this.loading = false;
         }
     }

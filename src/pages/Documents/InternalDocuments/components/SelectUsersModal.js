@@ -12,6 +12,7 @@ import {
 } from "antd";
 import useCapitalizeTheFirstLetter from "../../../../hook/useCapitalizeFirstLetter";
 import useUsersCheck from "../../../../hook/useUsersCheck";
+import { useEffect } from "react";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -31,6 +32,15 @@ const SelectUsersModal = observer(
         typeUsers,
         children,
     }) => {
+        const [disableDepartments, setDisableDepartments] = useState();
+        const [disableUsers,setDisableUsers]=useState();
+        console.log(selects);
+        useEffect(()=>{
+             setDisableDepartments( [...selects.handleDepartments.map(item=>({...item,type:'handleDepartments' })),...selects.supportDepartments.map(item=>({...item,type:'supportDepartments' }))
+            ].filter(item=>item.type!==typeDepartments))
+            setDisableUsers( [...selects.handleUsers.map(item=>({...item,type:'handleUsers' })),...selects.supportUsers.map(item=>({...item,type:'supportUsers' }))
+            ].filter(item=>item.type!==typeUsers))
+        },[isModalOpen])
         const {onCheck}=useUsersCheck(setCheckedKeys,setSelects,selects,typeDepartments,typeUsers)
         const handleOk = () => {
             setIsModalOpen(false);
@@ -45,14 +55,15 @@ const SelectUsersModal = observer(
         };
         const treeData = users?.map((department) => {
             return {
-                title: department.name,
+                title: disableDepartments?.some(item=> item.value===department.code)?<Tooltip title={"Phòng ban này đã được chọn"}>{department.name}</Tooltip> : department.name,
                 value: department.code,
                 key: `${department.code}`,
                 type: "DPT",
+                disabled: disableDepartments?.some(item=> item.value===department.code),
                 children: department.users.map((user) => {
                     return {
                         title:
-                            user.user_name === selects.leader.user_name ? (
+                            (user.user_name === selects.leader.user_name|| disableUsers?.some(item=> item.value===user.user_name)) ? (
                                 <Tooltip title={"Người dùng đã được chọn"}>
                                     <div className="tag-selected">
                                         <Avatar className="user-item-avatar">
@@ -74,7 +85,7 @@ const SelectUsersModal = observer(
                                 </div>
                             ),
                         name: useCapitalizeTheFirstLetter(user.name_uppercase),
-                        disabled: user.user_name === selects.leader.user_name,
+                        disabled: user.user_name === selects.leader.user_name||disableUsers?.some(item=> item.value===user.user_name),
                         value: user.user_name,
                         key: `${department.code}-${user.user_name}`,
                         department: department.code,
